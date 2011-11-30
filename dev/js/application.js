@@ -1,6 +1,9 @@
 /*
  * Application core handles module registration/creation [and abstracts away the base lib (jQuery, dojo, YUI..) | TODO! ]
  */
+/* The module has dependncies ['sandbox'] -> sandbox.js.
+ * the function specifies an argument "sandbox". This is the module represented by the "sandbox" module name */
+
 define(['sandbox'], function(sandbox){
 
   var application = function(){
