@@ -1,0 +1,7 @@
+- Make the zebra visible on Gnu/Linux browser:
+	in css
+	#zebra-scale {
+	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
+	---> Browser on Linux fail to load the url (??? mistery)
+
+- 
