@@ -1,7 +1,21 @@
-- Make the zebra visible on Gnu/Linux browser:
+- ---> !!!Comment everything!!! <-----
+
+- to Fix: Make the zebra visible on Gnu/Linux browser:
 	in css
 	#zebra-scale {
 	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
 	---> Browser on Linux fail to load the url (??? mistery)
+	(it happens just on some browsers -> it's not an urgent issue)
 
-- 
+- toFix: dialog-open.html incorrect dimensions for small-sized windows
+
+- toFix: zebra unusable at first page load
+
+- toFix: when editing text, it comes back to the position where it was created.
+	 goes back to the its right place after editing.
+
+- toAdd: text editing tools (at least color and size-up, size-down)
+
+- toAdd: lines and simple shapes support
+
+- toAdd: Path Tool
