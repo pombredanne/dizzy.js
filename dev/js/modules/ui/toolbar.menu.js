@@ -10,35 +10,42 @@ define(['sandbox'], function (sandbox) {
   /*
    * Toolbar is loaded, bind menu items.
    */
+   
+  //when Toolbar is loaded:
   sandbox.subscribe('dizzy.ui.toolbar.loaded', function (tool) {
-    toolbar = tool.toolbar;
-    var menu = $('#menu');
-
+    toolbar = tool.toolbar; // get the toolbar
+    var menu = $('#menu');	// get the (hidden) expandable menu
+	
+	//when the Menu button is clicked:
     sandbox.subscribe('dizzy.ui.toolbar.clicked.menu-button', function () {
-      menu.toggleClass('hidden');
+      menu.toggleClass('hidden'); // toggle the visibility of the menu
       sandbox.publish('dizzy.ui.canvas.focus', {
         hasFocus: menu.hasClass('hidden')
       });
     });
 
-
+	// when a menu-option button is clicked:
     menu.delegate('.menu-option', 'click', function () {
-      var id = $(this).attr('id');
+      var id = $(this).attr('id'); // get the id
 
       switch (id) {
+	  // if the id is 'menu-open'..
       case 'menu-open':
+		// ask the opening of the dialog box to open file
         sandbox.publish('dizzy.ui.dialog.file.open', {
           ok: function () {},
           cancel: function () {}
         });
-        break;
+        break; // Other cases still not implemented/written but menu-save that's just below
       };
     });
 
-
-    menu.find('#menu-save').bind('click', function (e) {
+	// Why isn't this in the switch above??								???
+	// when the menu-save button is clicked:
+    menu.find('#menu-save').bind('click', function (e) { // 'e' seems useless
+	  // The SVG prolog, not used??										???
       var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
-
+	  
       var svgText = canvas.serialize();
       var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
       window.open(svgBase64);
@@ -46,7 +53,8 @@ define(['sandbox'], function (sandbox) {
 
 
   });
-
+  
+  //when Presentation is loaded -> get the canvas
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
   });

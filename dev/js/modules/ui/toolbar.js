@@ -7,10 +7,11 @@ define(['sandbox'],  function (sandbox) {
   var toolbar;
 
   // subscribe to own and foreign events (o:
+  // when a button of the toolbar is clicked:
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (d) {
-    var button = toolbar.find('#' + d.button);
-    button.siblings().removeClass('pressed');
-    button.addClass('pressed');
+    var button = toolbar.find('#' + d.button); // get the button (jquery object instance)
+    button.siblings().removeClass('pressed'); // make the siblings appear not pressed
+    button.addClass('pressed'); // make it appear pressed
   });
 
 
@@ -21,10 +22,20 @@ define(['sandbox'],  function (sandbox) {
 
       // create a container for dizzy svg file
       var body = $('#container');
-
+	  
+	  /* loads data from 'html/toolbar.html' and calls:
+	   * 	- the success( function(d) if the request succeeds
+	   * 	- the error(function(e) if the request fails
+	   * 	- the complete(function() when the request finishes (after success and error callbacks are executed)
+	   * 
+	   * 'd' contains the data returned by the ajax call (the toolbar's html)
+	   * jqxhr: jQuery XMLHTTPRequest Object
+	   */
       var jqxhr = $.get('html/toolbar.html').success(function (d) {
-        body.prepend(d);
-        toolbar = body.find('#toolbar');
+        body.prepend(d); //prepend the toolbar's html to the body
+        toolbar = body.find('#toolbar'); // get the toolbar (jquery object instance)
+        
+        // publish the toolbar.loaded event, passing the toolbar object
         sandbox.publish('dizzy.ui.toolbar.loaded', {
           toolbar: toolbar
         });
@@ -49,6 +60,8 @@ define(['sandbox'],  function (sandbox) {
 
         // publish a message to the sandbox notifying the editing methods
         var buttonId = $target.attr('id');
+        
+        console.log('toolbar button '+buttonId+' pressed.');
         /*
          * includes the button id in both message-name and message data. 
          * Since we use namespacing, modules can just subscribe to "dizzy.ui.toolbar.clicked" and get every button click
@@ -61,6 +74,7 @@ define(['sandbox'],  function (sandbox) {
     },
 
     destroy: function () {
+	  // Remove the toolbar and the menu objects from the DOM
       $('#toolbar, #menu').remove();
     }
 
