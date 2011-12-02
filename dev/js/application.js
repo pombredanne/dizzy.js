@@ -16,7 +16,7 @@ define(['sandbox'], function(sandbox){
     registerModule: function (name, factory) {
       if (arguments.length === 1) { // name ommited
         factory = name;
-        name = ''+Math.random();
+        name = ''+Math.random(); //random???
       }
 
       if (!(name in this.modules)) {
@@ -26,7 +26,7 @@ define(['sandbox'], function(sandbox){
       if( typeof factory === 'function' ){
         mod = {
           'builder': factory
-        }
+        };
       }else{
         mod = {
           'instance': factory

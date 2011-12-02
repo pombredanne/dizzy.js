@@ -14,7 +14,8 @@ define(['sandbox'], function (sandbox) {
       enabled = false;
     }
   };
-
+	
+  // to return
   var obj = {
     init: function () {
       sandbox.publish('dizzy.modes.register', {

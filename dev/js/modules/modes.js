@@ -13,7 +13,7 @@ define(['sandbox'], function (sandbox) {
   function startMode(name) {
     var mod = modes[name];
     if (mod === undefined) {
-      console.log("Mode " + name + " called but not defined");
+      console.log("Mode " + name + " called but not defined"); //when trying to start a mode not "registered"
     } else {
       console.log("Starting mode: " + name);
       var dependencies = mod.depends || [];
@@ -32,12 +32,12 @@ define(['sandbox'], function (sandbox) {
     }
   }
 
-  sandbox.subscribe('dizzy.ui.toolbar.clicked', function (data, name) {
+  sandbox.subscribe('dizzy.ui.toolbar.clicked', function (data, name) { //what's name for???
     stopModes();
-    startMode(data.button);
+    startMode(data.button); // data.button contains the button id (from toolbar.js)
   });
 
-  sandbox.subscribe('dizzy.modes.register', function (data, name) {
+  sandbox.subscribe('dizzy.modes.register', function (data, name) {  //what's name for???
     var mod = modes[data.name];
     if (mod === undefined) {
       console.log("Registering mode: " + data.name);

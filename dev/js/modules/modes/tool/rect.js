@@ -35,7 +35,7 @@ define(['sandbox'],  function(sandbox){
       };
       
       
-      sandbox.publish('dizzy.modes.register', { name : 'tool-rect', instance : textMode } );
+      //sandbox.publish('dizzy.modes.register', { name : 'tool-rect', instance : textMode } );
       
       sandbox.subscribe( 'dizzy.canvas.io.mouse.click', function(e){
          if( active ){

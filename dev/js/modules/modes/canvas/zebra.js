@@ -234,16 +234,18 @@ define(['sandbox'], function (sandbox) {
       this.removeEventHandlers();
       zebraNode.hide();
     }
-  };
+  }; //zebraMode ends here <-------
+  
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
   });
+  
   function hideZebra(d) {
     if (zebraNode) {
       zebraNode.hide();
     }
   }
-
+  
   sandbox.subscribe('dizzy.presentation.transform', hideZebra);
 
   var selectedGroup;
@@ -251,7 +253,7 @@ define(['sandbox'], function (sandbox) {
     if (zebraNode) {
       var event = d.event;
       selectedGroup = d.group;
-      zebraNode.css({
+      zebraNode.css({ //check if width() and height() should be exchanged
         top: event.pageY - zebraNode.width() / 2,
         left: event.pageX - zebraNode.height() / 2
       });
@@ -269,10 +271,10 @@ define(['sandbox'], function (sandbox) {
       var jqxhr = $.get('html/zebra.html').success(function (d) {
         zebraNode = $(d);
         body.prepend(zebraNode);
-
         zebraNode.hide();
 
         sandbox.publish('dizzy.ui.zebra.loaded');
+        
       }).error(function (e) {
         console.error("Could not load zebra control: " + e);
       }).complete(function () {
@@ -281,10 +283,6 @@ define(['sandbox'], function (sandbox) {
           instance: zebraMode
         });
       });
-
-
-
-
 
     },
     destroy: function () {

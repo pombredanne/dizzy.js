@@ -225,6 +225,7 @@ define(['sandbox'],  function(sandbox){
           $('#container').append(textOverlay);
 
           sandbox.publish('dizzy.ui.textbox.loaded');
+          
         }).error(function (e) {
           console.error("Could not load textbox: " + e);
         }).complete(function () {
