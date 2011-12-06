@@ -1,12 +1,5 @@
 - ---> !!!Comment everything!!! <-----
 
-- to Fix: Make the zebra visible on Gnu/Linux browser:
-	in css
-	#zebra-scale {
-	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
-	---> Browser on Linux fail to load the url (??? mistery)
-	(it happens just on some browsers -> it's not an urgent issue)
-
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
 - toFix: zebra unusable at first page load !!! it registers after being called :S
@@ -19,3 +12,9 @@
 - toAdd: lines and simple shapes support
 
 - toAdd: Path Tool
+
+- to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
+	in css
+	#zebra-scale {
+	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
+	---> Browser on Linux fail to load the url (??? mistery)

@@ -154,6 +154,14 @@ hr{
 	opacity: 0;
 }
 
+#trial{
+	position: absolute;
+	background-color: red;
+	width: 200px;
+	height: 200px;
+	z-index: 11;
+}
+
 .toolbutton, #toolbar, #zebra-toolbar  {
 	background: #AAAAAA;
 	
@@ -659,4 +667,54 @@ svg .invisible{
 	left: 0;
 	width: 100px;
 	height: 100px;
+}
+
+/* linuslabo - slider */
+
+#anteprime{
+	position: absolute;
+	bottom: 0;
+	left: 1%;
+	right: 1%;
+	z-index:3;
+	border: 2px solid #000;
+	height: 150px;
+	width: 98%;
+	background-color: white;
+	color: black;
+	overflow: hidden;
+}
+#loader{
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+#x{
+	position:absolute;
+	top:0;
+	right:1%;
+	font-weight: bold;
+	cursor: pointer;
+	z-index:2;
+}
+#apriAnteprime{
+	display: none;
+	position: absolute;
+	bottom:0;
+	left: 1%;
+	border: 2px solid #000;
+	font-weight: bold;
+	cursor: pointer;
+	z-index:6;
+	background-color: white;
+	color: black;
+}
+#preview{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#333;
+	padding:3px;
+	display:none;
+	color:#fff;
+	z-index:7;
 }
