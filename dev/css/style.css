@@ -718,3 +718,84 @@ svg .invisible{
 	color:#fff;
 	z-index:7;
 }
+
+/* linuslabo - carousel */
+.infiniteCarousel {
+  width: 100%;
+  height:100%;
+  position: absolute;
+  top: 0;
+  overflow:hidden;
+  margin: 40px 60px;
+  margin: 17px 0;
+}
+
+.infiniteCarousel .wrapper {
+  /*width: 90%;  .infiniteCarousel width - (.wrapper margin-left + .wrapper margin-right) */
+  overflow: auto;
+  min-height: 10em;
+  margin: 0 40px;
+  position: absolute;
+  text-align: center;
+}
+
+.infiniteCarousel ul a img {
+  border: 2px solid #000;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+
+.infiniteCarousel .wrapper ul {
+  width: 9999px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin:0;
+  padding:0;
+  position: absolute;
+  top: 0;
+}
+
+.infiniteCarousel ul li {
+  display:block;
+  float:left;
+  padding: 2px;
+  height: 102px;
+  width: 150px;
+  margin: 0 5px;
+}
+
+.infiniteCarousel ul li a img {
+  display:block;
+}
+
+.infiniteCarousel .arrow {
+  display: block;
+  height: 20px;
+  width: 14px;
+  text-indent: -999px;
+  position: absolute;
+  top: 37px;
+  cursor: pointer;
+}
+
+.infiniteCarousel .forward {
+  background-position: 0 0;
+  background: url(../img/next.png) no-repeat 0 0;
+  right: 0;
+}
+
+.infiniteCarousel .back {
+  background-position: 0 -72px;
+  background: url(../img/prev.png) no-repeat 0 0;
+  left: 0;
+}
+
+#preview{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#333;
+	padding:3px;
+	display:none;
+	color:#fff;
+}

@@ -1,5 +1,5 @@
 /*
- * The trial module loads a trial div upon the canvas
+ * The  module loads a slider div upon the canvas
  */
 define(['sandbox'],  function (sandbox) {
   var canvas;

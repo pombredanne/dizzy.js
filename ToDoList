@@ -3,6 +3,7 @@
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
 - toFix: zebra unusable at first page load !!! it registers after being called :S
+	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".
 
 - toFix: when editing text, it comes back to the position where it was created.
 	 goes back to the its right place after editing.
