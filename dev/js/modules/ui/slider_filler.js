@@ -124,6 +124,9 @@ define(['sandbox'], function (sandbox) {
         $(this).bind('goto', function (event, page) {
             gotoPage(page);
         });
+        
+        sandbox.publish('dizzy.ui.slider.filled.', {});
+        
     });  
 };
   
