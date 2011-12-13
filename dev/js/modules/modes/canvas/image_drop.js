@@ -66,11 +66,11 @@ define(['sandbox'], function (sandbox) {
   }
   
   
-  //set all the images of the page as draggable (to change) ???
+  //set all the images of the page as draggable and set the source as the to-transfer property
   // (not needed in Firefox)
   var setDraggable = function (dataToSet) {
 	  //Indica al browser gli elementi trascinabili e cose fare dei dati di questi elementi (punto 1 e 2)
-	  $(document).delegate("*:not(img)", "dragstart", function(ev){});
+	  //$(document).delegate("*:not(img)", "dragstart", function(ev){});
 	  $(document).delegate("img", "dragstart", function(ev){
 			//con queste due righe di codice si salva una parte dei dati
 			var dt = ev.originalEvent.dataTransfer;
@@ -78,6 +78,7 @@ define(['sandbox'], function (sandbox) {
 			//dataToSet è solo una stringa di riferimento che dovrà essere uguale nel droppable
 			//per trasferire e recuperare i dati giusti (qui trasferisco la descrizione alternativa dell'immagine)
 			return true;
+			//ev.stopPropagation(); //to prevent strange div-drag event xD
 	  });
   }
 	

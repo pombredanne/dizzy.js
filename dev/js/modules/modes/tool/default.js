@@ -1,5 +1,5 @@
 /*
- * The default mode is the mode in which groups can be moved, resized and rotated. 
+ * The default mode is the mode in which groups can be moved, resized and rotated. (TODO: and deleted)
  * TODO: as soon as the user starts typing it should activate text mode and open the text box with the typed text (similiar to the old version)
  */
 define(['sandbox'], function (sandbox) {
@@ -11,8 +11,10 @@ define(['sandbox'], function (sandbox) {
     depends: ['zoom', 'pan', 'zebra'],
     start: function () {
       if (ready) {
+		//add the class 'editing' to the svg canvas
         $(canvas.svg.root()).addClass('editing');
         this.bindMouselistener();
+        this.bindKeyboardlistener();
       }
     },
 
@@ -25,6 +27,7 @@ define(['sandbox'], function (sandbox) {
 
     bindMouselistener: function () {
       var svg = canvas.svg.root();
+      //touchstart: happens every time a finger is placed on the screen
       $(svg).delegate('g.group', 'click.dizzy.default touchstart.dizzy.default', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -37,13 +40,29 @@ define(['sandbox'], function (sandbox) {
 
         return false;
       });
-
     },
 
     unbindMouselistener: function () {
       var svg = canvas.svg.root();
       $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace
-    }
+    },
+    
+    bindKeyboardlistener: function() {
+	  //Deletes from the DOM the selected item when pressing 'Del' ???????
+	  $(document).keydown(function (e) {
+			var keycode =  e.keyCode ? e.keyCode : e.which;
+			if (keycode == 46){
+				var sel = $("g.selected");
+				if(sel.length==1){
+					sel.remove();
+					sandbox.publish('dizzy.presentation.group.removed', {
+						id: sel.attr("id")
+					});
+					console.log("Removed group: "+sel.attr("id"));
+				}
+			}
+      });
+	}
 
 
   };

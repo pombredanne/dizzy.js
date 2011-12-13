@@ -2,7 +2,7 @@
 
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
-- toFix: zebra unusable at first page load !!! it registers after being called :S
+- toFix: (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
 	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".
 
 - toFix: when editing text, it comes back to the position where it was created.
@@ -13,6 +13,8 @@
 - toAdd: lines and simple shapes support
 
 - toAdd: Path Tool
+
+- toAdd: item tracker (to never loose any in the great white xD)
 
 - to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
 	in css
