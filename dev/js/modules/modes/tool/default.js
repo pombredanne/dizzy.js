@@ -22,6 +22,7 @@ define(['sandbox'], function (sandbox) {
       if (ready) {
         $(canvas.svg.root()).removeClass('editing');
         this.unbindMouselistener();
+        this.unbindKeyboardlistener();
       }
     },
 
@@ -44,12 +45,13 @@ define(['sandbox'], function (sandbox) {
 
     unbindMouselistener: function () {
       var svg = canvas.svg.root();
-      $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace
+      $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace (???)
     },
     
+    //as soon as I can, I'll change this function somehow
     bindKeyboardlistener: function() {
 	  //Deletes from the DOM the selected item when pressing 'Del' ???????
-	  $(document).keydown(function (e) {
+	  $(document).bind('keydown.dizzy.default', function (e) {
 			var keycode =  e.keyCode ? e.keyCode : e.which;
 			if (keycode == 46){
 				var sel = $("g.selected");
@@ -58,10 +60,15 @@ define(['sandbox'], function (sandbox) {
 					sandbox.publish('dizzy.presentation.group.removed', {
 						id: sel.attr("id")
 					});
+					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
 					console.log("Removed group: "+sel.attr("id"));
 				}
 			}
       });
+	},
+	
+	unbindKeyboardlistener: function() {
+		$(document).unbind('keydown.dizzy.default');
 	}
 
 

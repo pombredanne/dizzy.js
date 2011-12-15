@@ -43,7 +43,7 @@ define(['sandbox'],  function (sandbox) {
         // TODO
       }).complete(function () {
         that.assignEventHandlers();
-        // click default button
+        // click default button ??? something goes wrong here
         var firstButton = $('#toolbar .toolbutton.pressed').click();
       });
 

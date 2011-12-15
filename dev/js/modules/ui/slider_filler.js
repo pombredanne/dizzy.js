@@ -28,6 +28,7 @@ define(['sandbox'], function (sandbox) {
 	$("#wrapper").width($(".infiniteCarousel").innerWidth()-80);
 	
 	$(window).resize(function(){
+		//on window.resize should reload the slider with new 'visible' value (TODO)
 		$("#wrapper").width($(".infiniteCarousel").innerWidth()-80);
 	});
 	
@@ -36,8 +37,10 @@ define(['sandbox'], function (sandbox) {
     }
     
     //alert("ci sono ancora");
-  
-    return $('.infiniteCarousel').each(function () {
+	toReturn();
+	
+    function toReturn(){
+		return $('.infiniteCarousel').each(function () {
 		
 		//var $wrapper = $("#wrapper").css('overflow', 'hidden'),
         var $wrapper = $('> div', this).css('overflow', 'hidden'),
@@ -127,7 +130,8 @@ define(['sandbox'], function (sandbox) {
         
         sandbox.publish('dizzy.ui.slider.filled.', {});
         
-    });  
+    });
+    };
 };
   
   return {

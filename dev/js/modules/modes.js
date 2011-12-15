@@ -32,12 +32,13 @@ define(['sandbox'], function (sandbox) {
     }
   }
 
+	// !!! I think this must be changed, not all the buttons correspond to modes !!!
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (data, name) { //what's name for???
     stopModes();
     startMode(data.button); // data.button contains the button id (from toolbar.js)
   });
 
-  sandbox.subscribe('dizzy.modes.register', function (data, name) {  //what's name for???
+  sandbox.subscribe('dizzy.modes.register', function (data, name) {
     var mod = modes[data.name];
     if (mod === undefined) {
       console.log("Registering mode: " + data.name);

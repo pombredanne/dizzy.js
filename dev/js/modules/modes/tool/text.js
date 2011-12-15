@@ -9,6 +9,19 @@ define(['sandbox'],  function(sandbox){
     var textOverlay;
     // 
     var clickOpensTextbox = false;
+    
+    /*
+     * Subscribtions
+     */
+    sandbox.subscribe('dizzy.presentation.loaded', function (c) {
+      canvas = c.canvas;
+    });
+    // if canvas was panned, don't open up a textbox
+    sandbox.subscribe('dizzy.presentation.transform.do', function (data, name) {
+      //if( name.indexOf('.end') < 0 ){
+      clickOpensTextbox = false;
+      //}
+    });
 
     var textMode = {
       depends: ['zoom', 'pan'],
@@ -46,7 +59,7 @@ define(['sandbox'],  function(sandbox){
             };
             var viewportCoordinates = canvas.toViewboxCoordinates(textCoordinates, true);
 
-            canvas.gotoGroup(group, {
+            canvas.gotoGroup(group, { // usefull !!!
               duration: 100,
               complete: function () {
                 showTextbox(group, viewportCoordinates);
@@ -57,7 +70,18 @@ define(['sandbox'],  function(sandbox){
           }
         }
         return false;
-      });
+      }),
+      
+      /*
+       * The Text Box shouldn't close when clicking on color picker !!!
+      //Changing fill color
+      $(document).delegate('#tool-input-color-fill', 'onchange.dizzy.mode.text.edit', function (e) {
+		
+		  var text = $("g.invisible").children('text');
+		  text.attr({
+            fill: $("#tool-input-color-fill").val() //temp solution !!!
+		  });
+	  }); */
       
       
       // new text
@@ -80,7 +104,9 @@ define(['sandbox'],  function(sandbox){
 
           newText.attr({
             x: svgOffset.x,
-            y: svgOffset.y
+            y: svgOffset.y,
+            stroke: $("#tool-input-color-stroke").val(),
+            fill: $("#tool-input-color-fill").val() //temp solution !!!
           });
           newText.append(newTextSpan);
           newGroupDom.append(newText);
@@ -199,21 +225,6 @@ define(['sandbox'],  function(sandbox){
 
       clickOpensTextbox = true;
     }
-
-    /*
-     * Subscribtions
-     */
-    sandbox.subscribe('dizzy.presentation.loaded', function (c) {
-      canvas = c.canvas;
-    });
-    // if canvas was panned, don't open up a textbox
-    sandbox.subscribe('dizzy.presentation.transform.do', function (data, name) {
-      //if( name.indexOf('.end') < 0 ){
-      clickOpensTextbox = false;
-      //}
-    });
-
-
 
     return {
       init: function () {
