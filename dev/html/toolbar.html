@@ -9,11 +9,11 @@
 
    <div class="toolbutton" id="tool-text" title="Enter text"><img src="./img/tool_text.png" alt="text mode" /></div>
 
-   <!--div class="toolbutton" id="tool-line" title="Draw lines"><img src="./img/tool_line.png" alt="draw line mode" /></div>
-   <div class="toolbutton inactive" id="tool-arrow" title="not implemented yet" ><img src="./img/tool_arrow.png" alt="draw arrow mode" /></div -->
+   <div class="toolbutton" id="tool-line" title="Draw lines"><img src="./img/tool_line.png" alt="draw line mode" /></div>
+   <!--div class="toolbutton inactive" id="tool-arrow" title="not implemented yet" ><img src="./img/tool_arrow.png" alt="draw arrow mode" /></div -->
 
-   <!-- div class="toolbutton" id="tool-rect" title="Draw frames"><img src="./img/tool_rect.png" alt="draw frame mode" /></div>
-   <div class="toolbutton" id="tool-circle" title="Draw ellipses"><img src="./img/tool_circle.png" alt="draw ellipse mode" /></div -->
+   <div class="toolbutton" id="tool-rect" title="Draw frames"><img src="./img/tool_rect.png" alt="draw frame mode" /></div>
+   <!--div class="toolbutton" id="tool-circle" title="Draw ellipses"><img src="./img/tool_circle.png" alt="draw ellipse mode" /></div -->
 
    <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./img/tool_image_add.png" alt="insert image button" /></div>
    <!-- div class="toolbutton inactive" id="tool-media" title="not implemented yet"><img src="./img/tool_formula.png" alt="insert media button" /></div -->
@@ -21,16 +21,10 @@
    <div class="toolbutton hidden" id="tool-previous" title="Previous group"><img src="./img/tool_previous.png" alt="Transition to previous group" /></div>
    <div class="toolbutton hidden" id="tool-next" title="Next group"><img src="./img/tool_next.png" alt="Transition to next group" /></div>
 
-
-
    <div id="tool-color" class="toolbutton fullwidth" title="Choose fill and stroke colors">
       <img src="./img/zebra_tool_color.png" alt="color icon" class="hidden" />
-      <input type="color" value="#000000" id="tool-input-color-fill" title="Fill color" />
-      <input type="color" value="#FFFFFF" id="tool-input-color-stroke" title="Stroke color" />
-   </div>
-   
-   <div id="tool-dummy" class="toolbutton fullwidth" title="A Dummy button" >
-      <img src="./img/misc_help.png" alt="a dummy button" />
+      <input class="color" type="color" value="#000000" id="tool-input-color-fill" title="Fill color" />
+      <input class="color" type="color" value="#FFFFFF" id="tool-input-color-stroke" title="Stroke color" />
    </div>
 
    <div id="present-toggle-button" class="toolbutton fullwidth" title="Start presentation" >

@@ -39,6 +39,7 @@ define(['sandbox'], function (sandbox) {
   });
 
   sandbox.subscribe('dizzy.modes.register', function (data, name) {
+	  //data is usually { name: ...., instance: modenameMode }
     var mod = modes[data.name];
     if (mod === undefined) {
       console.log("Registering mode: " + data.name);

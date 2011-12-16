@@ -2,9 +2,6 @@
 
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
-- toFix: (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
-	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".
-
 - toFix: when editing text, it comes back to the position where it was created.
 	 goes back to the its right place after editing.
 
@@ -21,3 +18,6 @@
 	#zebra-scale {
 	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
 	---> Browser on Linux fail to load the url (??? mistery)
+
+- toFix (fixed somehow): (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
+	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".

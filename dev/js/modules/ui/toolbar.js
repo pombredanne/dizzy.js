@@ -43,8 +43,11 @@ define(['sandbox'],  function (sandbox) {
         // TODO
       }).complete(function () {
         that.assignEventHandlers();
-        // click default button ??? something goes wrong here
-        var firstButton = $('#toolbar .toolbutton.pressed').click();
+        
+        // click default button ??? sometimes the zebra mode hasn't been registered yet when this happens
+        // that's why I put this timeout, waiting for a better solution to come :)
+        // "how to check if all modes have been registered?"
+        setTimeout(function(){var firstButton = $('#toolbar .toolbutton.pressed').click();}, 1000);
       });
 
     },
@@ -81,4 +84,3 @@ define(['sandbox'],  function (sandbox) {
   };
 
 });
-
