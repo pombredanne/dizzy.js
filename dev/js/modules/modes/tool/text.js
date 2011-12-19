@@ -105,8 +105,8 @@ define(['sandbox'],  function(sandbox){
           newText.attr({
             x: svgOffset.x,
             y: svgOffset.y,
-            stroke: $("#tool-input-color-stroke").val(),
-            fill: $("#tool-input-color-fill").val() //temp solution !!!
+            stroke: canvas.getStrokeColor(),
+            fill: canvas.getFillColor() //temp solution !!!
           });
           newText.append(newTextSpan);
           newGroupDom.append(newText);

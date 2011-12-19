@@ -307,7 +307,16 @@ define(['dizzy/group', 'dizzy/transformation'], function (Group, Transformation)
           numbers.splice(pos, 1);
         }
       }
-    }
+    },
+    
+    //Maybe these two function must be moved somewhere else !!!
+    getFillColor: function(){
+		return $("#tool-input-color-fill").val();
+	},
+	
+	getStrokeColor: function(){
+		return $("#tool-input-color-stroke").val();
+	}
   };
 
   return Canvas;

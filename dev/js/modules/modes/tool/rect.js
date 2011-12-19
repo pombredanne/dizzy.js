@@ -1,81 +1,108 @@
 /*
- * The rect mode allows to draw a rect on the canvas. Can be used to frame something (visible or invisible).
+ * The line mode allow to create lines on the canvas
  */
-
-define(['sandbox'],  function(sandbox){
-  var canvas;
-  
-  var ready = false;
-  // the complete textfield overlay, including buttons
-  var viewportRect;
-  var svgRect;
-  var  active = false;
-  var editing = false;
-  
-  var textMode = {
+define(['sandbox'], function (sandbox) {
 	
-	 depends : [],
-	 
-	 start : function(){
-		active = true;
+	var canvas;
+	var line;
+	var x, y;
+	
+	/*
+	 * Mode to register
+	 */
+	var lineMode = {
+		depends: ['zoom'],
 		
-		viewportRect = $('<div id="debugrect" />');
-		$('#container').append(viewportRect);
+		start: function () {
+			if(canvas){
+				$(canvas.svg.root()).bind('mousedown.dizzy.mode.line', function(e){ return editorLineStart(e); });
+				$(canvas.svg.root()).bind('mouseup.dizzy.mode.line', function(e){ return editorLineEnd(e); });
+				$(canvas.svg.root()).addClass('editing drawing');
+			}
+		},
+	
+		stop: function () {
+			$(canvas.svg.root()).unbind('mousedown.dizzy.mode.line');
+			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.line');
+			$(canvas.svg.root()).removeClass('editing drawing');
+		}
+	};
+	
+	sandbox.subscribe('dizzy.presentation.loaded', function (c) {
+      canvas = c.canvas;
+    });
+	
+	function editorLineStart(ev) {
+        var that = this;
+        ev.stopPropagation();
+		ev.preventDefault();
 		
-		svgRect = canvas.svg.rect( 0, 0, 100, 100, { stroke: 'blue', fill: 'none'  } );
-		//canvas.createGroup().dom().append(svgRect);
-		$(canvas.svg.root())/*.find('#canvas')*/.append(svgRect);
-	 },
-	 
-	 stop : function(){
-		active = false;
-	 }
+        $(canvas.svg.root()).bind('mousemove.dizzy.mode.line', function(e){ return editorLineDrag(e); });
+        
+        var svgOffset = canvas.toViewboxCoordinates({
+            x: ev.pageX,
+            y: ev.pageY
+        });
+        
+        var newGroup = canvas.createGroup();
+        var newGroupDom = newGroup.dom();
+        
+        var color = canvas.getStrokeColor();
+        
+        // !!! Set color management
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 10}));
+        x=svgOffset.x;
+        y=svgOffset.y;
+        
+        newGroupDom.append(line);
+    }
+    
+    function editorLineDrag(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
 		
-	 
-  };
-  
-  
-  //sandbox.publish('dizzy.modes.register', { name : 'tool-rect', instance : textMode } );
-  
-  sandbox.subscribe( 'dizzy.canvas.io.mouse.click', function(e){
-	 if( active ){
-		e.preventDefault();
-		e.stopPropagation();
-		var coords = {
-		   x: e.pageX,
-		   y: e.pageY
-		};
-		var svgOffset =  canvas.toViewboxCoordinates( coords );
-		/*
-		svgOffset.x = canvas.WIDTH/2;
-		svgOffset.y = canvas.HEIGHT/2;
-		//*/
-		
-		
-		$(svgRect).attr({
-		   x : svgOffset.x,
-		   y : svgOffset.y
+        var svgOffset = canvas.toViewboxCoordinates({
+			x: evt.pageX,
+			y: evt.pageY
 		});
 		
-		var viewportCoords =  canvas.toViewboxCoordinates( svgOffset, true );
-		$(viewportRect).css({
-		   left : viewportCoords.x,
-		   top : viewportCoords.y
+		var w = Math.abs(svgOffset.x-x);
+		var h = Math.abs(svgOffset.y-y);
+        
+        /* If it grows to the left */
+        if(svgOffset.x-x<0)
+			line.attr({
+				x: x-w
+			});
+			
+		line.attr({
+			width: w
 		});
-	 }
-  });
-  
-
-  
-  sandbox.subscribe( 'dizzy.presentation.loaded', function(c){
-	 canvas = c.canvas;
-	 ready = true;
-  });
-  
- 
-  
-  sandbox.subscribe( 'dizzy.presentation.transformed', function(){
-	 //resetInput();
-  });
-  
+		
+		/* If it grows upwards */
+		if(svgOffset.y-y<0)
+			line.attr({
+				y: y-h
+			});
+		line.attr({
+			height: h
+		});
+		
+    }
+    
+    function editorLineEnd(ev) {
+        $(canvas.svg.root()).unbind('mousemove.dizzy.mode.line');
+    }
+	
+	return {
+		init: function () {
+			sandbox.publish('dizzy.modes.register', {
+				name: 'tool-rect',
+				instance: lineMode
+			});
+		},
+		
+		destroy: function () {}
+	};
+	
 });

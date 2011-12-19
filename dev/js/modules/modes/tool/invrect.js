@@ -5,6 +5,7 @@ define(['sandbox'], function (sandbox) {
 	
 	var canvas;
 	var line;
+	var x, y;
 	
 	/*
 	 * Mode to register
@@ -48,8 +49,9 @@ define(['sandbox'], function (sandbox) {
         
         var color = canvas.getStrokeColor();
         
-        // !!! Set color management
-        line = $(canvas.svg.line(svgOffset.x, svgOffset.y, svgOffset.x, svgOffset.y, {stroke: canvas.getStrokeColor(), strokeWidth : 10}));
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {opacity:0}));
+        x=svgOffset.x;
+        y=svgOffset.y;
         
         newGroupDom.append(line);
     }
@@ -57,16 +59,34 @@ define(['sandbox'], function (sandbox) {
     function editorLineDrag(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
-        
+		
         var svgOffset = canvas.toViewboxCoordinates({
 			x: evt.pageX,
 			y: evt.pageY
 		});
+		
+		var w = Math.abs(svgOffset.x-x);
+		var h = Math.abs(svgOffset.y-y);
         
-        line.attr({
-			y2: svgOffset.y,
-			x2: svgOffset.x
+        /* If it grows to the left */
+        if(svgOffset.x-x<0)
+			line.attr({
+				x: x-w
+			});
+			
+		line.attr({
+			width: w
 		});
+		
+		/* If it grows upwards */
+		if(svgOffset.y-y<0)
+			line.attr({
+				y: y-h
+			});
+		line.attr({
+			height: h
+		});
+		
     }
     
     function editorLineEnd(ev) {
@@ -76,7 +96,7 @@ define(['sandbox'], function (sandbox) {
 	return {
 		init: function () {
 			sandbox.publish('dizzy.modes.register', {
-				name: 'tool-line',
+				name: 'tool-rect',
 				instance: lineMode
 			});
 		},

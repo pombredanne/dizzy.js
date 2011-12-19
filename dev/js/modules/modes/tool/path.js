@@ -108,7 +108,7 @@ define(['sandbox'], function (sandbox) {
   return {
     init: function () {
       sandbox.publish('dizzy.modes.register', {
-		  name: 'tool_path',
+		  name: 'tool-path',
 		  instance: pathMode
 	  });
     },

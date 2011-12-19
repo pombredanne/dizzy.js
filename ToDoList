@@ -5,13 +5,15 @@
 - toFix: when editing text, it comes back to the position where it was created.
 	 goes back to the its right place after editing.
 
+- toFix: the zebra is not visible on selected black elements
+
 - toAdd: text editing tools (at least color and size-up, size-down)
 
-- toAdd: lines and simple shapes support
+- toAdd: Capture View (as in Prezi.com)
 
 - toAdd: Path Tool
 
-- toAdd: item tracker (to never loose any in the great white xD)
+- toAdd: item tracker (to never loose any in the great white xD) using canvas.groupList()
 
 - to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
 	in css
@@ -19,5 +21,5 @@
 	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
 	---> Browser on Linux fail to load the url (??? mistery)
 
-- toFix (fixed somehow): (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
+- (toFix) fixed somehow: (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
 	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".

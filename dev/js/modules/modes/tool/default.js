@@ -54,6 +54,20 @@ define(['sandbox'], function (sandbox) {
 	  $(document).bind('keydown.dizzy.default', function (e) {
 			var keycode =  e.keyCode ? e.keyCode : e.which;
 			if (keycode == 46){
+				
+				/* Ver 2 - it's a bit less efficient than the Ver 1 but is probably better */
+				var sel = canvas.findGroup("g.selected");
+				if (sel){
+					canvas.removeGroup(sel);
+					var id = sel.dom().attr("id");
+					sandbox.publish('dizzy.presentation.group.removed', {
+						id: id
+					});
+					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
+					console.log("Removed group: "+id);
+				}
+				/* Ver 1
+				/*
 				var sel = $("g.selected");
 				if(sel.length==1){
 					sel.remove();
@@ -62,7 +76,7 @@ define(['sandbox'], function (sandbox) {
 					});
 					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
 					console.log("Removed group: "+sel.attr("id"));
-				}
+				}*/
 			}
       });
 	},
