@@ -28,6 +28,7 @@ define(['sandbox'], function (sandbox) {
 
     bindMouselistener: function () {
       var svg = canvas.svg.root();
+      
       //touchstart: happens every time a finger is placed on the screen
       $(svg).delegate('g.group', 'click.dizzy.default touchstart.dizzy.default', function (e) {
         e.preventDefault();

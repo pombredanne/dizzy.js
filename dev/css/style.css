@@ -154,14 +154,6 @@ hr{
 	opacity: 0;
 }
 
-#trial{
-	position: absolute;
-	background-color: red;
-	width: 200px;
-	height: 200px;
-	z-index: 11;
-}
-
 .toolbutton, #toolbar, #zebra-toolbar  {
 	background: #AAAAAA;
 	
@@ -377,8 +369,6 @@ input[type="color"]{
 
 }
 
-
-
 .hidden{
 	display: none;
 	overflow: hidden;
@@ -504,6 +494,7 @@ input[type="color"]{
 	background: #888888;
 }
 
+/* e.g. to flip the zebra-expand-button when clicked*/
 .mirrored{
 	-moz-transform: rotate(180deg);
 	-webkit-transform: rotate(180deg);
@@ -518,8 +509,8 @@ input[type="color"]{
 #zebra #zebra-toolbar{
 	position: absolute;
 	
-	top: 52px;
-	left: 145px;
+	top: 38px;
+	left: 108px;
 	
 	width: 66px;
 
@@ -791,11 +782,53 @@ svg .invisible{
   left: 0;
 }
 
-#preview{
+#preview {
 	position:absolute;
 	border:1px solid #ccc;
 	background:#333;
 	padding:3px;
 	display:none;
 	color:#fff;
+}
+
+.unselectable /* actually not used anywhere in the code */ {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#tracker{
+	position: absolute;
+	right:2%;
+	top:0;
+	width: 100px;
+	
+	
+	-ms-transition: 0.8s opacity ease-in-out;
+	-o-transition: 0.8s opacity ease-in-out;
+	-webkit-transition: 0.8s opacity ease-in-out;
+	-moz-transition: 0.8s opacity ease-in-out;
+	transition: 0.8s opacity ease-in-out;
+	
+	opacity: 1;
+	
+	z-index: 10;
+}
+
+#tracker #tracker-list {
+display:none;
+}
+
+.toolbutton, #tracker {
+	background: #AAAAAA;
+	
+}
+
+#tracker > .toolbutton {
+	width: 100%;
+	height: 15px;
+	border: 1px solid black;
+	line-height: 15px;
+	font-size: 13px;
 }

@@ -23,14 +23,17 @@ define(['sandbox'], function (sandbox) {
       var that = this;
 
       if (canvas) {
+		  
+		zebraNode.disableTextSelect();
+		
         var groupTranslate = function (node, e) {
             return that.translateStart(node, e);
           };
         var groups = jQuery(canvas.svg.root()).delegate('g.group', 'mousedown.dizzy.zebra.scale', function (e) {
           return groupTranslate(this, e);
         });
-
-        var rotate = zebraNode.find('#zebra-rotate');
+		
+		var rotate = zebraNode.find('#zebra-rotate');
         rotate.bind('mousedown.dizzy.zebra.rotate', function (e) {
           return that.rotateStart(rotate, e);
         });
@@ -42,6 +45,13 @@ define(['sandbox'], function (sandbox) {
         translate.bind('mousedown.dizzy.zebra.translate', function (e) {
           return groupTranslate(selectedGroup.dom(), e);
         });
+        
+        /* Bind the expand-menu-button to open the zebra-menu */
+        var expand = zebraNode.find("#zebra-expand-button");
+        expand.bind('click.dizzy.zebra.expand', function(e) {
+			$('#zebra-toolbar').toggleClass('hidden');
+			$(this).toggleClass('mirrored');
+		});
       }
     },
 
@@ -57,6 +67,8 @@ define(['sandbox'], function (sandbox) {
       scale.unbind('mousedown.dizzy.zebra.scale');
       var translate = zebraNode.find('#zebra-translate');
       translate.unbind('mousedown.dizzy.zebra.translate');
+      var expand = zebraNode.find("#zebra-expand-button");
+      expand.unbind('click.dizzy.zebra.expand');
     },
 
     /*
@@ -243,6 +255,8 @@ define(['sandbox'], function (sandbox) {
   function hideZebra(d) {
     if (zebraNode) {
       zebraNode.hide();
+      $('#zebra-toolbar').addClass('hidden');
+	  $('#zebra-expand-button').removeClass('mirrored');
     }
   }
   

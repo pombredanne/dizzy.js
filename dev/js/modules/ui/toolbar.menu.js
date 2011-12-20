@@ -15,6 +15,8 @@ define(['sandbox'], function (sandbox) {
   sandbox.subscribe('dizzy.ui.toolbar.loaded', function (tool) {
     toolbar = tool.toolbar; // get the toolbar
     var menu = $('#menu');	// get the (hidden) expandable menu
+    
+    menu.disableTextSelect();
 	
 	//when the Menu button is clicked:
     sandbox.subscribe('dizzy.ui.toolbar.clicked.menu-button', function () {

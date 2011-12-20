@@ -46,7 +46,7 @@ define(['sandbox', 'dizzy/canvas'], function (sandbox, Canvas) {
       var body = $('#container');
       dizzyContainer = $('<div id="' + containerId + '" class="loading" />');
       body.append(dizzyContainer);
-      dizzyContainer.disableTextSelect();
+      dizzyContainer.disableTextSelect(); //it is already in js/dizzy/canvas.js !!! maybe useless now
       //disable text selection (e.g holding left click of mouse)
       /* On Chrome and Opera left-to-right mouse selecting works anyway
        * if starting outside the disabled div (really annoying sometimes) (tocheck) =[ */

@@ -57,6 +57,9 @@ define(['sandbox'],  function (sandbox) {
      * A click on the button triggers a publish to the above function (that does the 
      */
     assignEventHandlers: function () {
+		
+	  toolbar.children(":not(#tool-color)").disableTextSelect();
+	  
       // event delegation, "this" referrs to .toolbutton that has been clicked
       toolbar.delegate('.toolbutton', 'click', function (e) {
         var $target = $(this);

@@ -1,4 +1,4 @@
-define(['dizzy/group', 'dizzy/transformation'], function (Group, Transformation) {
+define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Transformation, sandbox) {
 
   var Canvas = function (c, opt) {
       this.container = $(c);
@@ -26,7 +26,7 @@ define(['dizzy/group', 'dizzy/transformation'], function (Group, Transformation)
       var that = this;
 
       options = options || {};
-      this.container.disableTextSelect();
+      this.container.disableTextSelect(); //it is already in js/modules/canvas.js !!! maybe useless now
       this.container.empty().removeClass('hasSVG').svg({
         loadURL: url,
         onLoad: (function (svgw) {
@@ -68,12 +68,17 @@ define(['dizzy/group', 'dizzy/transformation'], function (Group, Transformation)
       var newDizzyGroup = new Group(newGroup);
       newDizzyGroup.transformation(newTransform);
       this.groupList.push(newDizzyGroup);
+      
+      sandbox.publish('dizzy.canvas.group.created', {
+		  group: newDizzyGroup
+	  });
 
       return newDizzyGroup;
     },
 
     removeGroup: function (g) {
       g.dom().remove();
+      //shouldn't it remove g from groupList too?
     },
 
     /*

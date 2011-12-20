@@ -65,7 +65,7 @@ define(['dizzy/transformation'], function (Transformation) {
       }
     },
 
-
+	//what are they?
     numbers: function () {
       return this.numbers;
     },

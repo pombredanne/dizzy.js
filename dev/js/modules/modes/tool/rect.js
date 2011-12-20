@@ -1,5 +1,5 @@
 /*
- * The line mode allow to create lines on the canvas
+ * The rect mode allow to create rectangles on the canvas
  */
 define(['sandbox'], function (sandbox) {
 	
@@ -49,8 +49,8 @@ define(['sandbox'], function (sandbox) {
         
         var color = canvas.getStrokeColor();
         
-        // !!! Set color management
-        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 10}));
+        // !!! Set color and opacity management
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 10, fillOpacity:0}));
         x=svgOffset.x;
         y=svgOffset.y;
         
