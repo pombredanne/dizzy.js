@@ -13,7 +13,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     WIDTH: 2000,
     HEIGHT: 1500,
 
-    /*
+    /**
      * Loads file into the container via XmlHttpRequest.
      * @param url URL of SVG file to load.
      * @param options Optional object that holds options and callbacks fileloading. Default options are as follows:
@@ -26,18 +26,21 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       var that = this;
 
       options = options || {};
-      this.container.disableTextSelect(); //it is already in js/modules/canvas.js !!! maybe useless now
+      
+      //it is already in js/modules/canvas.js !!! and doesn't work anyway
+      //maybe useless here
+      this.container.children().disableTextSelect();
       this.container.empty().removeClass('hasSVG').svg({
         loadURL: url,
         onLoad: (function (svgw) {
-          that.svg = that.container.svg('get');
+          that.svg = that.container.svg('get'); //canvas.svg
           that.canvas = $('g#canvas');
           var groups = that.canvas.find('.group');
           groups.each(function () {
             that.getGroup($(this));
           });
 
-          if (typeof options.success === 'function') {
+          if (typeof options.success === 'function') { // ???
             options.success();
           }
         })
@@ -45,7 +48,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     },
 
     /*
-     * Converts dom to string representation<
+     * Converts dom to string representation
      */
     serialize: function () {
       // Fixes Chrome. I really have no clue why chrome leaves that out otherwise...
@@ -59,9 +62,9 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 
     createGroup: function () {
       var canvas = this.getGroup(0);
-      var newGroup = $(this.svg.group(canvas.dom()));
+      var newGroup = $(this.svg.group(canvas.dom())); //add this as a new group, son of canvas
 
-      var newTransform = Transformation.createTransform(canvas.transformation().matrix().inverse());
+      var newTransform = Transformation.createTransform(canvas.transformation().matrix().inverse()); // ???
 
       newGroup.addClass('group');
 
@@ -72,17 +75,31 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       sandbox.publish('dizzy.canvas.group.created', {
 		  group: newDizzyGroup
 	  });
+	  console.log("Created new group, list-size: "+this.groupList.length);
 
       return newDizzyGroup;
     },
 
     removeGroup: function (g) {
-      g.dom().remove();
-      //shouldn't it remove g from groupList too?
+      /* g.dom().remove(); */
+      var removed;
+      var idToRemove = g.dom().attr('id');
+      for (var i=0; i<this.groupList.length; i++)
+		if (this.groupList[i].dom().attr('id') == idToRemove){
+			g.dom().remove();
+			removed = this.groupList.splice(i,1);
+			console.log("Group "+idToRemove+" removed! list-size: "+this.groupList.length);
+			
+			sandbox.publish('dizzy.canvas.group.removed', {
+					id: idToRemove
+			});
+			
+			break;
+		}
     },
 
     /*
-     * Finds a group by it's node representation.
+     * Finds a group by it's node representation. <g id="..." ...></g>
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
     findGroup: function (node) {
@@ -93,7 +110,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       }
       var g;
       node = jQuery(node);
-      if (node.size() > 0) {
+      if (node.size() > 0) { // ???
         g = new Group(node[0]);
         this.groupList.push(g);
       }
@@ -101,7 +118,9 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     },
 
     /*
-     * Returns an instance of Dizzy.Group with all the information about a group. Group 0 is the canvas (the "root element"), groups 1 - Inf are the normal groups
+     * Returns an instance of Dizzy.Group with all the information about a group.
+     * Group 0 is the canvas (the "root element"), groups 1 - Inf are the normal groups
+     * @param number the number of the group to get
      */
     getGroup: function (number) {
       // passed in element is already a group, dummy (o:
@@ -153,7 +172,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     },
 
     /*
-     * Goes to the group specified by the internal counter (useful, if panning/zooming is allowed). Returns currently active pathnumber.
+     * Goes to the group specified by the internal counter (useful, if panning/zooming is allowed).
+     * Returns currently active pathnumber.
      */
     current: function (options) {
       var canvas = this.getGroup(0);
@@ -197,8 +217,9 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       }
     },
 
-    /**
-     * Translates Viewport-Coordinates (Browser coordinates, as returned by many events, like MouseEvent.pageX) to coordinates in the SVG viewbox.
+    /*
+     * Translates Viewport-Coordinates (Browser coordinates,
+     * as returned by many events, like MouseEvent.pageX) to coordinates in the SVG viewbox.
      */
     toViewboxCoordinates: function (xy, reverse) {
       var svgPoint = this.svg.root().createSVGPoint();

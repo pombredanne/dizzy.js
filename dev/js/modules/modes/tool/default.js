@@ -65,7 +65,6 @@ define(['sandbox'], function (sandbox) {
 						id: id
 					});
 					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
-					console.log("Removed group: "+id);
 				}
 				/* Ver 1
 				/*
