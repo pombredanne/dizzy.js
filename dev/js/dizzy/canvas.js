@@ -235,7 +235,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 
       return svgPoint;
     },
-    /**
+    /*
      * Translates Viewport-Coordinates to Coordinates on the Canvas (a subgroup of the viewBox of the svg).
      */
     toCanvasCoordinates: function (xy, reverse) {

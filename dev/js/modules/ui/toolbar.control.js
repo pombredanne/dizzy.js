@@ -30,7 +30,7 @@ define(['sandbox'], function (sandbox) {
     canvas.previous();
   });
   //when Present button is clicked -> toggle it
-  sandbox.subscribe('dizzy.ui.toolbar.clicked.present-toggle-button', function (c) {
+  sandbox.subscribe('dizzy.ui.toolbar.clicked.mode.present-toggle-button', function (c) {
     toolbar.find('.toolbutton').not(':first-child, :last-child').toggle();
     //why not:: toolbar.find("#present-toggle-button").toggle() ?
   });

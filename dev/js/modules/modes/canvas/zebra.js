@@ -12,13 +12,22 @@ define(['sandbox'], function (sandbox) {
     },
 
 /*
-         <div id="zebra-rotate">
-            <div id="zebra-scale">
-               <div id="zebra-translate"></div>
-            </div>
-         </div>
-         
-         */
+		<div id="zebra">
+			<div id="zebra-rotate">
+				<div id="zebra-scale">
+					<div id="zebra-translate"></div>
+				</div>
+			</div>
+   
+			<div id="zebra-expand-button">&rsaquo;</div>
+			<div id="zebra-toolbar" class="hidden">
+				<div class="zebra-toolbar-row">
+					<div class="toolbutton" id="zebra-toolbar-up" title="Raise group one level"><img src="./img/zebra_tool_up.png" alt="arrow up icon" /></div>
+					<div class="toolbutton" id="zebra-toolbar-down" title="Lower group one level"><img src="./img/zebra_tool_down.png" alt="arrow down icon" /></div>
+				</div>
+			</div>
+		</div>
+*/
     assignEventHandlers: function () {
       var that = this;
 
@@ -48,9 +57,29 @@ define(['sandbox'], function (sandbox) {
         
         /* Bind the expand-menu-button to open the zebra-menu */
         var expand = zebraNode.find("#zebra-expand-button");
-        expand.bind('click.dizzy.zebra.expand', function(e) {
+        expand.bind('click.dizzy.zebra.expand', function() {
 			$('#zebra-toolbar').toggleClass('hidden');
 			$(this).toggleClass('mirrored');
+		});
+		
+		/* Levels management */
+		var up = zebraNode.find('#zebra-toolbar-up');
+		up.bind('click.dizzy.zebra.toolbar.up', function(){
+			return that.raiseLayer();
+		});
+		var down = zebraNode.find('#zebra-toolbar-down');
+		down.bind('click.dizzy.zebra.toolbar.down', function(){
+			return that.lowerLayer();
+		});
+		
+		/* Border weight management */
+		var strokeWidthUp = zebraNode.find('#zebra-toolbar-border-weight-up');
+		strokeWidthUp.bind('click.dizzy.zebra.toolbar.strokeWidth.up', function(){
+			return that.raiseStrokeWidth();
+		});
+		var strokeWidthDown = zebraNode.find('#zebra-toolbar-border-weight-down');
+		strokeWidthDown.bind('click.dizzy.zebra.toolbar.strokeWidth.down', function(){
+			return that.lowerStrokeWidth();
 		});
       }
     },
@@ -69,6 +98,10 @@ define(['sandbox'], function (sandbox) {
       translate.unbind('mousedown.dizzy.zebra.translate');
       var expand = zebraNode.find("#zebra-expand-button");
       expand.unbind('click.dizzy.zebra.expand');
+      zebraNode.find('#zebra-toolbar-up').unbind('click.dizzy.zebra.toolbar.up');
+      zebraNode.find('#zebra-toolbar-down').unbind('click.dizzy.zebra.toolbar.down');
+      zebraNode.find('#zebra-toolbar-border-weight-up').unbind('click.dizzy.zebra.toolbar.strokeWidth.up');
+      zebraNode.find('#zebra-toolbar-border-weight-down').unbind('click.dizzy.zebra.toolbar.strokeWidth.down');
     },
 
     /*
@@ -245,7 +278,44 @@ define(['sandbox'], function (sandbox) {
     stop: function () {
       this.removeEventHandlers();
       zebraNode.hide();
-    }
+    },
+    
+    //the 4 following functions are replyed once for any time the zebra mode has been started from the last page load ???
+    lowerLayer : function(){
+      var node = $('.selected', canvas.svg.root());
+      if( !node.hasClass('group') ){
+         node = node.parents('g.group').first();
+      }
+      node.insertBefore(node.prev('g.group'));
+    },
+      
+    raiseLayer : function(){
+      var node = $('.selected', canvas.svg.root());
+      if( !node.hasClass('group') ){
+         node = node.parents('g.group').first();
+      }
+      node.insertAfter(node.next('g.group'));
+    },
+    
+    lowerStrokeWidth: function(){
+		var node = $('.selected', canvas.svg.root());
+		//if( !node.hasClass('group') ) node = node.parents('g.group').first();
+		
+		$children = node.children();
+		if ($children.length == 1) node = $children.first();
+		var sw = parseInt(node.attr('stroke-width'))-1;
+		if(sw != -1) node.attr('stroke-width', sw);
+	},
+	
+	raiseStrokeWidth: function(){
+		var node = $('.selected', canvas.svg.root());
+		//if( !node.hasClass('group') ) node = node.parents('g.group').first();
+		
+		$children = node.children();
+		if ($children.length == 1) node = $children.first();
+		var sw = parseInt(node.attr('stroke-width'))+1;
+		node.attr('stroke-width', sw);
+	}
   }; //zebraMode ends here <-------
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {

@@ -42,5 +42,5 @@
 			}
 			closedir($dh);
 		}
-	}
+	} else echo 'File not found: '.$dir;
 ?>

@@ -7,6 +7,7 @@ define(['sandbox'], function (sandbox) {
 	 * Mode to register
 	 */
 	var nameMode = {
+		depends: ['zoom', 'pan'],
 		start: function () {
 			//what to do to start the mode
 		},

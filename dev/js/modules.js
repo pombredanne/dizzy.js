@@ -11,7 +11,7 @@ define(
     'modules/modes/tool/default', 'modules/modes/tool/image', 'modules/modes/tool/path', 
     'modules/modes/tool/line', 'modules/modes/tool/rect', 'modules/modes/tool/text',
     /*'modules/ui/slider', 'modules/ui/slider.filler', 'modules/ui/image_drop',*/
-    'modules/ui/tracker'
+    'modules/ui/tracker', 'modules/modes/tool/presentation'
     
   ], function(){
   return arguments;

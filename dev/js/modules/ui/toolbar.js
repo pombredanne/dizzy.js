@@ -6,6 +6,7 @@ define(['sandbox'],  function (sandbox) {
   var containerId = 'dizzy';
   var toolbar;
 
+
   // subscribe to own and foreign events (o:
   // when a button of the toolbar is clicked:
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (d) {
@@ -72,7 +73,12 @@ define(['sandbox'],  function (sandbox) {
          * includes the button id in both message-name and message data. 
          * Since we use namespacing, modules can just subscribe to "dizzy.ui.toolbar.clicked" and get every button click
          */
-        sandbox.publish('dizzy.ui.toolbar.clicked.' + buttonId, {
+         
+         /* Buttons which represent modes get 'mode.' as a suffix of their namespace to be handled differently */
+         var wtp="";
+         if($target.hasClass('mode')) wtp += 'mode.';
+         
+        sandbox.publish('dizzy.ui.toolbar.clicked.' + wtp + buttonId, {
           button: buttonId
         });
       });

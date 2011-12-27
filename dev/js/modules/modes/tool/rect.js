@@ -50,7 +50,7 @@ define(['sandbox'], function (sandbox) {
         var color = canvas.getStrokeColor();
         
         // !!! Set color and opacity management
-        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 10, fillOpacity:0}));
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 3, fillOpacity:0}));
         x=svgOffset.x;
         y=svgOffset.y;
         

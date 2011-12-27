@@ -31,11 +31,11 @@ define(['sandbox'], function (sandbox) {
       }
     }
   }
-
-	// !!! I think this must be changed, not all the buttons correspond to modes !!!
-  sandbox.subscribe('dizzy.ui.toolbar.clicked', function (data, name) { //what's name for???
+  
+  //Chagnged to handle modes and other buttons differently
+  sandbox.subscribe('dizzy.ui.toolbar.clicked.mode', function (data, name) { //what's name for???
     stopModes();
-    startMode(data.button); // data.button contains the button id (from toolbar.js)
+    startMode(data.button); // data.button contains the button id (from toolbar.js) that should correspond to the mode name
   });
 
   sandbox.subscribe('dizzy.modes.register', function (data, name) {

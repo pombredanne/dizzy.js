@@ -4,18 +4,18 @@
       Menu &#9656;
    </div>
 
-   <div class="toolbutton pressed" id="tool-default" title="Default controls"><img src="./img/tool_default.png" alt="default mode" /></div>
-   <div class="toolbutton" id="tool-path" title="Edit presentation path"><img src="./img/tool_path.png" alt="edit path mode" /></div>
+   <div class="toolbutton mode pressed" id="tool-default" title="Default controls"><img src="./img/tool_default.png" alt="default mode" /></div>
+   <div class="toolbutton mode" id="tool-path" title="Edit presentation path"><img src="./img/tool_path.png" alt="edit path mode" /></div>
 
-   <div class="toolbutton" id="tool-text" title="Enter text"><img src="./img/tool_text.png" alt="text mode" /></div>
+   <div class="toolbutton mode" id="tool-text" title="Enter text"><img src="./img/tool_text.png" alt="text mode" /></div>
 
-   <div class="toolbutton" id="tool-line" title="Draw lines"><img src="./img/tool_line.png" alt="draw line mode" /></div>
+   <div class="toolbutton mode" id="tool-line" title="Draw lines"><img src="./img/tool_line.png" alt="draw line mode" /></div>
    <!--div class="toolbutton inactive" id="tool-arrow" title="not implemented yet" ><img src="./img/tool_arrow.png" alt="draw arrow mode" /></div -->
 
-   <div class="toolbutton" id="tool-rect" title="Draw frames"><img src="./img/tool_rect.png" alt="draw frame mode" /></div>
+   <div class="toolbutton mode" id="tool-rect" title="Draw frames"><img src="./img/tool_rect.png" alt="draw frame mode" /></div>
    <!--div class="toolbutton" id="tool-circle" title="Draw ellipses"><img src="./img/tool_circle.png" alt="draw ellipse mode" /></div -->
 
-   <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./img/tool_image_add.png" alt="insert image button" /></div>
+   <div class="toolbutton mode" id="tool-image" title="Insert an image"><img src="./img/tool_image_add.png" alt="insert image button" /></div>
    <!-- div class="toolbutton inactive" id="tool-media" title="not implemented yet"><img src="./img/tool_formula.png" alt="insert media button" /></div -->
 
    <div class="toolbutton hidden" id="tool-previous" title="Previous group"><img src="./img/tool_previous.png" alt="Transition to previous group" /></div>
@@ -27,7 +27,7 @@
       <input class="color" type="color" value="#000000" id="tool-input-color-stroke" title="Stroke color" />
    </div>
 
-   <div id="present-toggle-button" class="toolbutton fullwidth" title="Start presentation" >
+   <div id="present-toggle-button" class="toolbutton mode fullwidth" title="Start presentation" >
       <img src="./img/menu_present.png" alt="start presentation image" /> <span>Present</span>
    </div>
 </div>
@@ -43,12 +43,13 @@
                      id="menu-open" class="menu-option"
                      data-description="Open a saved dizzy presentation. If you choose a new file the current content of the canvas will be erased!">
                   <img src="./img/menu_open.png" alt="Open file" /> Open 
-                  <div id="menu-open-extended" class="hidden">
+                  <div id="menu-open-extended">
                      <hr />
                      <form>
                         <fieldset>
                            <label for="menu-open-input">File:</label>
                            <input type="file" id="menu-open-input" />
+                           <button id="menu-open-ok">Ok</button>
                         </fieldset>
                      </form>  
                   </div>
