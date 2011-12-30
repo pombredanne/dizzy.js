@@ -55,6 +55,10 @@ define(['sandbox'], function (sandbox) {
         y=svgOffset.y;
         
         newGroupDom.append(line);
+        
+        sandbox.publish('dizzy.canvas.group.created.rect', {
+		  group: newGroup
+		});
     }
     
     function editorLineDrag(evt) {

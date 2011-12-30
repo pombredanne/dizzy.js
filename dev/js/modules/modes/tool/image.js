@@ -24,12 +24,12 @@ define(['sandbox'], function (sandbox) {
           sandbox.publish('dizzy.presentation.insertImage', {
             ref: data
           });
-          sandbox.publish('dizzy.ui.toolbar.clicked.tool-default', {
+          sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {
             button: 'tool-default'
           });
         },
         cancel: function () {
-          sandbox.publish('dizzy.ui.toolbar.clicked.tool-default', {
+          sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {
             button: 'tool-default'
           });
         }
@@ -63,8 +63,14 @@ define(['sandbox'], function (sandbox) {
       var img = $(canvas.svg.image(group.dom(), ((canvas.WIDTH - widthHeight.x) / 2).toString(), ((canvas.HEIGHT - widthHeight.y) / 2).toString(), image.width + 'px', image.height + 'px', data.ref));
 
       image.src = '';
+      
+      sandbox.publish('dizzy.canvas.group.created.image', {
+		  group: group
+	  });
     };
     image.src = data.ref;
+    
+    
   });
 
 

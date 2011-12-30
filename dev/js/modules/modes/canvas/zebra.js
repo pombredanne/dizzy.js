@@ -110,6 +110,7 @@ define(['sandbox'], function (sandbox) {
     rotateStart: function (r, e) {
       e.preventDefault();
       if (selectedGroup !== undefined) {
+		/* .offset() (JQuery): Get the current coordinates of the first element in the set of matched elements, relative to the document */
         var zebraOffset = zebraNode.offset();
 
         var zebraOrigin = {
@@ -152,10 +153,6 @@ define(['sandbox'], function (sandbox) {
           var matrix = nodeTransform.matrix();
 
           nodeTransform = nodeTransform.multiply(matrix.inverse()).rotate(angle, svgOffset.x, svgOffset.y).multiply(matrix);
-
-
-
-
 
           rotationAngleSum = (angle + rotationAngleSum) % 360;
 
@@ -280,7 +277,6 @@ define(['sandbox'], function (sandbox) {
       zebraNode.hide();
     },
     
-    //the 4 following functions are replyed once for any time the zebra mode has been started from the last page load ???
     lowerLayer : function(){
       var node = $('.selected', canvas.svg.root());
       if( !node.hasClass('group') ){
@@ -297,14 +293,17 @@ define(['sandbox'], function (sandbox) {
       node.insertAfter(node.next('g.group'));
     },
     
+    //TODO: use a function to raise the width proportionally to the current size (eg. if it's 15 should grow by 3)
     lowerStrokeWidth: function(){
 		var node = $('.selected', canvas.svg.root());
 		//if( !node.hasClass('group') ) node = node.parents('g.group').first();
 		
 		$children = node.children();
 		if ($children.length == 1) node = $children.first();
-		var sw = parseInt(node.attr('stroke-width'))-1;
-		if(sw != -1) node.attr('stroke-width', sw);
+		var sw = parseFloat(node.attr('stroke-width'));
+		if(sw > 0)
+			if (sw > 1) node.attr('stroke-width', sw-1);
+			else node.attr('stroke-width', Math.round((sw*10)-1)/10);
 	},
 	
 	raiseStrokeWidth: function(){
@@ -313,8 +312,9 @@ define(['sandbox'], function (sandbox) {
 		
 		$children = node.children();
 		if ($children.length == 1) node = $children.first();
-		var sw = parseInt(node.attr('stroke-width'))+1;
-		node.attr('stroke-width', sw);
+		var sw = parseFloat(node.attr('stroke-width'));
+		if(sw >= 1)  node.attr('stroke-width', sw+1);
+		else node.attr('stroke-width', Math.round((sw*10)+1)/10);
 	}
   }; //zebraMode ends here <-------
   

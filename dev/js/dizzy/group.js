@@ -65,7 +65,7 @@ define(['dizzy/transformation'], function (Transformation) {
       }
     },
 
-	//what are they in use of???
+	//These are the path numbers (they are not usually added when the group is created)
     numbers: function () {
       return this.numbers;
     },

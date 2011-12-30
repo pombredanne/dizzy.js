@@ -23,9 +23,9 @@ define(function () {
      * Gets or sets the current matrix
      */
     matrix: function (optionalMatrix) {
-      if (optionalMatrix !== undefined) {
+      if (optionalMatrix !== undefined) { //setter
         this.transformationMatrix = optionalMatrix;
-      } else {
+      } else { //getter
         return this.transformationMatrix;
       }
     },

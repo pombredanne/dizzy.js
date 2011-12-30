@@ -5,40 +5,55 @@ define(['sandbox'],  function (sandbox) {
   var canvas;
   var containerId = 'dizzy';
   var tracker;
+  var list = new Array();
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
+    start();    
   });
   
   sandbox.subscribe('dizzy.canvas.group.created',function(d){
-	  var g = d.group;
-	  var id = g.dom().attr('id');
-	  //tracker.find("#tracker-list").append("<tr><td>"+id+"</td><td></td></tr>");*/
-	  updateList();
+	  var g = d.group.dom();
+	  var id = g.attr('id');
+	  var type = g.children().prop('localName');
+	  list.push({type: type, id: id});
+	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td>'+id+'</td></tr>');
 	  console.log("Group "+id+" tracked");
-	  //...should fill the list
-	  // it could also print the groupList anytime item is added/removed
   });
   
   sandbox.subscribe('dizzy.canvas.group.removed',function(d){
-	  updateList();
 	  var id = d.id;
+	  for (var i=0; i<list.length; i++){
+		  if (id == list[i].id){
+			  list.splice(i, 1);
+			  tracker.find("#tracker-list").find('tr:nth-child('+(i+1)+')').remove();
+			  break;
+		  }
+	  }
 	  console.log("Group "+id+" removed from tracker");
-	  //...should fill the list
-	  // it could also print the groupList anytime item is added/removed
   });
   
+  /*
   var updateList = function () {
 		tracker.find("#tracker-list").empty();
 		for(var i=0; i<canvas.groupList.length; i++){
 			tracker.find("#tracker-list").append("<tr><td>"+canvas.groupList[i].dom().attr('id')+"</td></tr>");
 		}
-  }
+  } */
   
-
-  return {
-
-    init: function () {
+  var loadExistingGroups = function () {
+		if(canvas)
+		for (var i=0; i<canvas.groupList.length; i++){
+			var g = canvas.groupList[i].dom();
+			var id = g.attr('id');
+			var type = g.children().prop('localName');
+			list.push({type: type, id: id});
+			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td>'+id+'</td></tr>');
+			console.log("Group "+id+" tracked");
+		};		
+	}
+	
+  var start = function () {
       var that = this;
 
       var body = $('#container');
@@ -54,12 +69,12 @@ define(['sandbox'],  function (sandbox) {
       }).error(function (e) {
         // TODO
       }).complete(function () {
-        that.assignEventHandlers(); //in case of error too?
+		  assignEventHandlers();
+		  loadExistingGroups(); //in case of error too?
       });
-
-    },
-
-    assignEventHandlers: function () {
+    }
+    
+  var assignEventHandlers = function () {
 		
 		var button = tracker.find('#tracker-expand');
 		button.toggle(function(){
@@ -70,7 +85,11 @@ define(['sandbox'],  function (sandbox) {
 			});
 		
 	  //tracker.disableTextSelect();
-    },
+    }
+  
+  return {
+
+    init: function () {},
 
     destroy: function () {
 	  // Remove the tracker from the DOM

@@ -12,7 +12,7 @@ define(['sandbox'], function (sandbox) {
     start: function () {
       if (ready) {
 		//add the class 'editing' to the svg canvas
-        $(canvas.svg.root()).addClass('editing');
+        $(canvas.svg.root()).addClass('editing default');
         this.bindMouselistener();
         this.bindKeyboardlistener();
       }
@@ -20,7 +20,7 @@ define(['sandbox'], function (sandbox) {
 
     stop: function () {
       if (ready) {
-        $(canvas.svg.root()).removeClass('editing');
+        $(canvas.svg.root()).removeClass('editing default');
         this.unbindMouselistener();
         this.unbindKeyboardlistener();
       }
@@ -60,10 +60,10 @@ define(['sandbox'], function (sandbox) {
 				var sel = canvas.findGroup("g.selected");
 				if (sel){
 					canvas.removeGroup(sel);
-					var id = sel.dom().attr("id");
-					sandbox.publish('dizzy.presentation.group.removed', {
+					/*var id = sel.dom().attr("id");
+					/*sandbox.publish('dizzy.presentation.group.removed', {
 						id: id
-					});
+					});*/
 					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
 				}
 				/* Ver 1

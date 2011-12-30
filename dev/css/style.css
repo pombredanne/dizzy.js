@@ -94,7 +94,8 @@ hr{
 	opacity: 0.5;
 }
 
-#dizzy .editing .group:hover{
+
+#dizzy .editing.default .group:hover{
 	cursor: pointer;
 	opacity: 0.75;
 }
@@ -546,7 +547,8 @@ input[type="color"]{
 }
 
 #zebra #zebra-toolbar .zebra-toolbar-row .toolbutton{
-	border-left: 1px solid black;
+	border-left: 0px solid black;
+	/*border-left: 1px solid black; linuslabo*/
 }
 
 #zebra #zebra-toolbar .zebra-toolbar-row .toolbutton:first-child{

@@ -115,6 +115,10 @@ define(['sandbox'],  function(sandbox){
             x: e.pageX,
             y: e.pageY
           });
+          
+          sandbox.publish('dizzy.canvas.group.created.text', {
+			group: newGroup
+		  });
         } else {
           hideTextbox();
         }

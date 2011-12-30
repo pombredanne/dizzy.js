@@ -4,7 +4,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 2000 1500"
-     preserveAspectRatio="xMidYMid"
+     preserveAspectRatio="xMinYMin"
      xml:space="preserve">
      
    <style type="text/css" id="dizzy-internal-style">
@@ -17,7 +17,7 @@ text tspan{
    <g  id="canvas">
       
       <g class="group group_1">
-         <text x="700" y="750">
+         <text x="1000" y="750">
             <tspan>Default text</tspan>
          </text>
       </g>

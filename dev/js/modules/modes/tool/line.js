@@ -52,6 +52,10 @@ define(['sandbox'], function (sandbox) {
         line = $(canvas.svg.line(svgOffset.x, svgOffset.y, svgOffset.x, svgOffset.y, {stroke: canvas.getStrokeColor(), strokeWidth : 3}));
         
         newGroupDom.append(line);
+        
+        sandbox.publish('dizzy.canvas.group.created.line', {
+		  group: newGroup
+		});
     }
     
     function editorLineDrag(evt) {

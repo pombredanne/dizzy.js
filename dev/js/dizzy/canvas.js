@@ -72,11 +72,13 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       newDizzyGroup.transformation(newTransform);
       this.groupList.push(newDizzyGroup);
       
+      /*
       sandbox.publish('dizzy.canvas.group.created', {
 		  group: newDizzyGroup
 	  });
 	  console.log("Created new group, list-size: "+this.groupList.length);
-
+	  */
+	  
       return newDizzyGroup;
     },
 
@@ -102,7 +104,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
      * Finds a group by it's node representation. <g id="..." ...></g>
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
-    findGroup: function (node) {
+    findGroup: function (node) { //node is a JQuery Selector
       for (var i = 0; i < this.groupList.length; ++i) {
         if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(node).attr('id')) {
           return this.groupList[i];
@@ -181,15 +183,68 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 
       if (group !== undefined) {
         var groupTransform = group.transformation();
-
-
-        var inverseTransform = Transformation.createTransform(groupTransform.matrix());
-
-        this.transform(canvas, inverseTransform, options);
-
+        console.log("group's: "+groupTransform);
+		var inverseTransform = Transformation.createTransform(groupTransform.matrix()); //where is the inversion ??? ???
+		console.log("inverted: "+inverseTransform);
+		
+		if (!this.activeGroupNumber) // path 0
+			this.transform(canvas, inverseTransform, options);
+		else 
+		{ // path 1- Inf
+			/* Transfrorm the canvas to show rects centered and biggest possible to fit the screen area
+			 * (the svg document MUST have the attributes --viewBox="0 0 someWidth someHeight"-- and --preserveAspectRatio="xMinYMin"-- )*/
+			try {
+			var elem = group.dom().children().first();
+			var ex = elem.attr('x');
+			var ey = elem.attr('y');
+			var ew = elem.attr('width');
+			var eh = elem.attr('height');
+			var svgWidth = $(document).width();
+			var svgHeight = $(document).height();			
+			var viewBox = $('svg').attr('viewBox');
+			var viewBoxParams = viewBox.split(" ", 4);
+			var viewWidth = viewBoxParams[2];
+			var viewHeight = viewBoxParams[3];
+			var wpixels, hpixels;
+			
+			var ratio = svgWidth/svgHeight;
+			if(ratio >= 4/3) {
+				hpixels = viewHeight;
+				wpixels = (viewHeight/svgHeight)*svgWidth;
+			} else {
+				wpixels = viewWidth;
+				hpixels = (viewWidth/svgWidth)*svgHeight;
+			}
+			
+			scaleVal = Math.min(wpixels/ew, hpixels/eh);
+			/*alert(scaleVal);*/
+			
+			
+			var translatedTransform = Transformation.createTransform(inverseTransform.matrix());
+			var mat = translatedTransform.matrix();
+			translatedTransform = translatedTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
+			
+			var scaledTransform = Transformation.createTransform(translatedTransform.matrix());
+			var mats = scaledTransform.matrix();
+			scaledTransform = translatedTransform.multiply(mats.inverse()).scale(scaleVal).multiply(mats);
+			
+			var toTranslateX = (wpixels - ew*scaleVal)/2;
+			var toTranslateY = (hpixels - eh*scaleVal)/2;
+			
+			//alert("toX: "+toTranslateX+" toY: "+toTranslateY);
+			
+			var translatedTransform2 = Transformation.createTransform(scaledTransform.matrix());
+			var mat2 = translatedTransform2.matrix();
+			translatedTransform2 = scaledTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
+			
+			this.transform(canvas, translatedTransform2, options);
+			} catch (e){
+				alert("errore: "+e.message);
+			}
+		}
 
       } else {
-        throw "Noez! (o:"
+        throw "Ops! This should not have happened! (o:"
       }
 
       return this.activeGroupNumber;
@@ -203,7 +258,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
         complete: function () {},
         duration: this.options.transformDuration
       }, options);
-
+      
+      //if no duration is set, the default one will be used (see Canvas consctuctor)
       var duration = options.duration === undefined ? this.options.transformDuration : options.duration;
 
       group.transform = transformation;
@@ -211,7 +267,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       if (duration <= 10) { // speed optimization here..
         $(group.dom(), this.svg.root()).attr('transform', transformation.toString());
       } else {
-        $(group.dom(), this.svg.root()).animate({
+        $(group.dom(), this.svg.root()).animate({ // <-- Animation is here
           svgTransform: transformation.toString()
         }, options);
       }
