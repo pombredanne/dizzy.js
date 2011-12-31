@@ -21,6 +21,7 @@ define(['sandbox'], function (sandbox) {
     stop: function () {
       $(canvas.svg.root()).undelegate('g.group', 'click');
       $(canvas.svg.root()).undelegate('.pathNumber', 'mousedown');
+      $(canvas.svg.root()).removeClass('path');
       $('.pathnum').remove();
     }
   };

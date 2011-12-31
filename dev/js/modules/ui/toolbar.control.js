@@ -29,10 +29,18 @@ define(['sandbox'], function (sandbox) {
   sandbox.subscribe('dizzy.ui.toolbar.clicked.tool-previous', function () {
     canvas.previous();
   });
-  //when Present button is clicked -> toggle it
+  //when Present button is clicked -> toggle all but Menu and Present
   sandbox.subscribe('dizzy.ui.toolbar.clicked.mode.present-toggle-button', function (c) {
+	  toolbar.find('#present-toggle-button').removeClass('mode');
     toolbar.find('.toolbutton').not(':first-child, :last-child').toggle();
-    //why not:: toolbar.find("#present-toggle-button").toggle() ?
+  });
+  
+  //when Present button is clicked -> toggle all but Menu and Present
+  sandbox.subscribe('dizzy.ui.toolbar.clicked.present-toggle-button', function (c) {
+	  toolbar.find('#present-toggle-button').addClass('mode');
+    toolbar.find('.toolbutton').not(':first-child, :last-child').toggle();
+    
+    sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});
   });
 
   return {

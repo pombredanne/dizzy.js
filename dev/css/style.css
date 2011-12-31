@@ -94,6 +94,17 @@ hr{
 	opacity: 0.5;
 }
 
+#dizzy .editing .invisibleRect, #dizzy .path .invisibleRect{
+	opacity: 1;
+	stoke: red;
+	fill-opacity: 0.2;
+	fill: green;
+	stroke-width: 5;
+	stroke-miterlimit:4;
+	stroke-dasharray:9.9,29.7;
+	stroke-dashoffset:0;
+	stroke-opacity:1
+}
 
 #dizzy .editing.default .group:hover{
 	cursor: pointer;
@@ -804,7 +815,7 @@ svg .invisible{
 	position: absolute;
 	right:2%;
 	top:0;
-	width: 100px;
+	/*width: 230px; */
 	
 	
 	-ms-transition: 0.8s opacity ease-in-out;

@@ -50,10 +50,15 @@ define(['sandbox'], function (sandbox) {
         var color = canvas.getStrokeColor();
         
         line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {opacity:0}));
+        line.toggleClass("invisibleRect");
         x=svgOffset.x;
         y=svgOffset.y;
         
         newGroupDom.append(line);
+        
+        sandbox.publish('dizzy.canvas.group.created.invrect', {
+		  group: newGroup
+		});
     }
     
     function editorLineDrag(evt) {
@@ -96,7 +101,7 @@ define(['sandbox'], function (sandbox) {
 	return {
 		init: function () {
 			sandbox.publish('dizzy.modes.register', {
-				name: 'tool-rect',
+				name: 'tool-invrect',
 				instance: lineMode
 			});
 		},

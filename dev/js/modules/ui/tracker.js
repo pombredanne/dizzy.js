@@ -5,6 +5,7 @@ define(['sandbox'],  function (sandbox) {
   var canvas;
   var containerId = 'dizzy';
   var tracker;
+  var count=0; //to give groups a different name, just to help the user to distinguish them.
   var list = new Array();
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
@@ -15,9 +16,9 @@ define(['sandbox'],  function (sandbox) {
   sandbox.subscribe('dizzy.canvas.group.created',function(d){
 	  var g = d.group.dom();
 	  var id = g.attr('id');
-	  var type = g.children().prop('localName');
+	  var type = g.children().prop('localName'); //gets the 'type' of the first child of the group created (eg. rect, line, circle, image, g...)
 	  list.push({type: type, id: id});
-	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td>'+id+'</td></tr>');
+	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -46,9 +47,24 @@ define(['sandbox'],  function (sandbox) {
 		for (var i=0; i<canvas.groupList.length; i++){
 			var g = canvas.groupList[i].dom();
 			var id = g.attr('id');
+			var name = g.attr('name')? g.attr('name'):(++count); //if the group has already a name will show it in the input
 			var type = g.children().prop('localName');
+			
+			var groupNumberMatch = /group_(\d+)/gi;
+			var classes = (g.attr('class'));
+			if (classes != undefined) //if the group hasn't any class yet
+				classes = classes.match(groupNumberMatch);
+			
+			var pathNumbers="";
+			
+			if (classes != null) //if the group has some group_x class
+				for (var j=0; j<classes.length; j++){
+					pathNumbers += classes[j].substring(classes[j].length-1)+" ";
+				}
+			
 			list.push({type: type, id: id});
-			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td>'+id+'</td></tr>');
+			
+			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -82,7 +98,58 @@ define(['sandbox'],  function (sandbox) {
 			}, 
 			function(){
 					tracker.find("#tracker-list").hide()
-			});
+		});
+		
+		$('#tracker-list').delegate('.tracker-go','click',function(){
+			var index = $(this).parent('tr').prop('rowIndex'); //rowIndex starts from 1
+			canvas.visitGroup(list[index-1].id);
+		})
+		
+		$('#tracker-list').delegate('.tracker-name','change',function(){
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			var group = canvas.groupList[index-1];
+			
+			var newName = $(this).val();
+			
+			//it writes to the group the name the user gives to it
+			group.dom().attr('name', $(this).val()); //'name' serves only to help the user to distinguish groups
+		})
+		
+		$('#tracker-list').delegate('.tracker-path-numbers','change',function(){
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			var group = canvas.groupList[index-1];
+			
+			var separators = /[ -.,;:+]/;
+			var numbers = ($(this).val()).split(separators); //the path numbers now set for the current group
+			
+			var groupNumberMatch = /group_(\d+)/gi;
+			var classes = (group.dom().attr('class')).match(groupNumberMatch);
+			
+			if (classes != null)
+			for (var i=0; i<classes.length; i++){
+				canvas.removePathNumber(group, classes[i].substring(classes[i].length-1));
+			}
+			
+			for (i=0; i<numbers.length; i++){
+				if(numbers[i]=="") continue;
+				canvas.addPathNumber(group, numbers[i]);
+			}
+			
+			/*
+			var gruppo1 = "lallalla group_1 puzza";
+			alert(gruppo1.match(groupNumberMatch));
+			/*
+			for (c in classes){
+				var num = c.match(groupNumberMatch);
+				if (num !== null) alert(num);
+				else alert(c);
+			}
+			*/
+			//it writes to the group the name the user gives to it
+			//group.dom().removeClass(function(index, oldClass){
+				//return oldClass;
+			//}); //'name' serves only to help the user to distinguish groups
+		})
 		
 	  //tracker.disableTextSelect();
     }

@@ -64,7 +64,7 @@ define(['sandbox'], function (sandbox) {
 					/*sandbox.publish('dizzy.presentation.group.removed', {
 						id: id
 					});*/
-					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
+					sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'}); //toChange: just need to close the zebra (how?)
 				}
 				/* Ver 1
 				/*

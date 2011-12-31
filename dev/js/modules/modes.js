@@ -1,5 +1,6 @@
 /*
  * Switches between different modes, making sure there is only one active mode. 
+ * TODO: don't stop modes if they will be started instantly by the current button clicked (also if dependencies)
  */
 define(['sandbox'], function (sandbox) {
   var modes = {};

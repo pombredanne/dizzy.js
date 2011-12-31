@@ -118,6 +118,15 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       }
       return g;
     },
+    
+    superFindGroup : function (groupQuery) {
+		for (var i = 0; i < this.groupList.length; ++i) {
+			if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(groupQuery).attr('id')) {
+				return this.groupList[i];
+			}
+		}
+		return undefined;
+	},
 
     /*
      * Returns an instance of Dizzy.Group with all the information about a group.
@@ -172,7 +181,101 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       }
       return this.activeGroupNumber;
     },
-
+	
+	/* 
+	 * Goes to group specified by id => groupId
+	 * doesn't alter the activeGroupNumber and can be used to reach any group with a RECT
+	 */ 
+	visitGroup: function(groupId, options) {
+		var group;
+		
+		for (var i = 0; i < this.groupList.length; ++i) {
+			if (this.groupList[i] && this.groupList[i].dom().attr('id') === groupId) {
+			  group = this.groupList[i];
+			  break;
+			}
+		}
+		
+		this.transformCanvasTo(group);
+	},
+	
+	/* Transfrorm the canvas to the target group with a RECT
+	 * show the rect centered and biggest possible to fit the screen area
+	 * (the svg document MUST have the attributes --viewBox="0 0 someWidth someHeight"-- and --preserveAspectRatio="xMinYMin"-- )
+	 * it would be much better to calibrate it using preserveAspectRatio="xMidYMid", but for some reason this attribute doesn't work properly atm*/
+	transformCanvasTo: function(group, options) {
+		var canvas = this.getGroup(0);
+		
+		if (group !== undefined) {
+			var groupTransform = group.transformation();
+			var inverseTransform = Transformation.createTransform(groupTransform.matrix()); //where is the inversion ??? ???
+			
+			if(group.dom().attr('id')!='canvas') {
+				try {
+				//get the rect
+				var elem = group.dom().children().first();
+				
+				//get dimensions and position of the rect
+				var ex = elem.attr('x');
+				var ey = elem.attr('y');
+				var ew = elem.attr('width');
+				var eh = elem.attr('height');
+				
+				//get width and height of document and ViewBox
+				var svgWidth = $(document).width();
+				var svgHeight = $(document).height();			
+				var viewBox = $('svg').attr('viewBox');
+				var viewBoxParams = viewBox.split(" ", 4);
+				var viewWidth = viewBoxParams[2];
+				var viewHeight = viewBoxParams[3];
+				
+				//Effective width and height (in pixel) of the ViewBox
+				//(they don't correspond to viewWidth and viewHeight due to the preserveAspectRatio attribute)
+				var wpixels, hpixels; 
+				
+				var ratio = svgWidth/svgHeight;
+				if(ratio >= 4/3) {
+					hpixels = viewHeight;
+					wpixels = (viewHeight/svgHeight)*svgWidth;
+				} else {
+					wpixels = viewWidth;
+					hpixels = (viewWidth/svgWidth)*svgHeight;
+				}
+				
+				//get the scale value to make the rect fit the viewbox area
+				scaleVal = Math.min(wpixels/ew, hpixels/eh);			
+				
+				//Translate tha canvas to display the group at the svg point (0,0)
+				var translatedTransform = Transformation.createTransform(inverseTransform.matrix());
+				var mat = translatedTransform.matrix();
+				translatedTransform = translatedTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
+				
+				//Scale the canvas to display the group big enough to fit the screen dimensions (independant to Screen Dimensions :)
+				var scaledTransform = Transformation.createTransform(translatedTransform.matrix());
+				var mats = scaledTransform.matrix();
+				scaledTransform = translatedTransform.multiply(mats.inverse()).scale(scaleVal).multiply(mats);
+				
+				var toTranslateX = (wpixels - ew*scaleVal)/2;
+				var toTranslateY = (hpixels - eh*scaleVal)/2;
+				
+				//Center the group in the screen (independant to Screen Dimensions :)
+				var translatedTransform2 = Transformation.createTransform(scaledTransform.matrix());
+				var mat2 = translatedTransform2.matrix();
+				translatedTransform2 = scaledTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
+				
+				this.transform(canvas, translatedTransform2, options);
+				} catch (e){
+					alert("errore: "+e.message);
+				}
+			} else {
+				this.transform(canvas, inverseTransform, options);
+			}
+      } else {
+        throw "Ops! This should not have happened! (o:"
+      }
+		
+	},
+	
     /*
      * Goes to the group specified by the internal counter (useful, if panning/zooming is allowed).
      * Returns currently active pathnumber.
@@ -180,73 +283,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     current: function (options) {
       var canvas = this.getGroup(0);
       var group = this.getGroup(this.activeGroupNumber);
-
-      if (group !== undefined) {
-        var groupTransform = group.transformation();
-        console.log("group's: "+groupTransform);
-		var inverseTransform = Transformation.createTransform(groupTransform.matrix()); //where is the inversion ??? ???
-		console.log("inverted: "+inverseTransform);
-		
-		if (!this.activeGroupNumber) // path 0
-			this.transform(canvas, inverseTransform, options);
-		else 
-		{ // path 1- Inf
-			/* Transfrorm the canvas to show rects centered and biggest possible to fit the screen area
-			 * (the svg document MUST have the attributes --viewBox="0 0 someWidth someHeight"-- and --preserveAspectRatio="xMinYMin"-- )*/
-			try {
-			var elem = group.dom().children().first();
-			var ex = elem.attr('x');
-			var ey = elem.attr('y');
-			var ew = elem.attr('width');
-			var eh = elem.attr('height');
-			var svgWidth = $(document).width();
-			var svgHeight = $(document).height();			
-			var viewBox = $('svg').attr('viewBox');
-			var viewBoxParams = viewBox.split(" ", 4);
-			var viewWidth = viewBoxParams[2];
-			var viewHeight = viewBoxParams[3];
-			var wpixels, hpixels;
-			
-			var ratio = svgWidth/svgHeight;
-			if(ratio >= 4/3) {
-				hpixels = viewHeight;
-				wpixels = (viewHeight/svgHeight)*svgWidth;
-			} else {
-				wpixels = viewWidth;
-				hpixels = (viewWidth/svgWidth)*svgHeight;
-			}
-			
-			scaleVal = Math.min(wpixels/ew, hpixels/eh);
-			/*alert(scaleVal);*/
-			
-			
-			var translatedTransform = Transformation.createTransform(inverseTransform.matrix());
-			var mat = translatedTransform.matrix();
-			translatedTransform = translatedTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
-			
-			var scaledTransform = Transformation.createTransform(translatedTransform.matrix());
-			var mats = scaledTransform.matrix();
-			scaledTransform = translatedTransform.multiply(mats.inverse()).scale(scaleVal).multiply(mats);
-			
-			var toTranslateX = (wpixels - ew*scaleVal)/2;
-			var toTranslateY = (hpixels - eh*scaleVal)/2;
-			
-			//alert("toX: "+toTranslateX+" toY: "+toTranslateY);
-			
-			var translatedTransform2 = Transformation.createTransform(scaledTransform.matrix());
-			var mat2 = translatedTransform2.matrix();
-			translatedTransform2 = scaledTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
-			
-			this.transform(canvas, translatedTransform2, options);
-			} catch (e){
-				alert("errore: "+e.message);
-			}
-		}
-
-      } else {
-        throw "Ops! This should not have happened! (o:"
-      }
-
+      
+      this.transformCanvasTo(group, options);
       return this.activeGroupNumber;
     },
 
@@ -360,20 +398,20 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       };
     },
 
-    pathCounter: 0,
+    pathCounter: 0, //it's not managed properly
     /**
      * @param g Group object that the path number is assigned to
      * @param n optional. number that is assigned.
      */
-    addPathNumber: function (g, n) {
+    addPathNumber: function (group, n) {
       if (n === undefined) {
-        n = ++pathCounter;
+        n = ++pathCounter; //maybe ++this.pathCounter
       }
       group.dom().addClass('group_' + n);
-      group.numbers().push(n);
+      //group.numbers().push(n);
     },
 
-    removePathNumber: function (g, n) {
+    removePathNumber: function (group, n) {
       if (n === undefined) {
         n = [];
       }
@@ -383,11 +421,11 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       for (var i = 0; i < n.length; ++i) {
         group.dom().removeClass('group_' + n[i]);
         // delete from internal array.
-        var numbers = group.numbers();
+        /*var numbers = group.numbers();
         var pos = numbers.indexOf(n[i]);
         if (pos >= 0) {
           numbers.splice(pos, 1);
-        }
+        } */
       }
     },
     

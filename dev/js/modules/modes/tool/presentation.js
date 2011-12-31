@@ -4,7 +4,7 @@
  
 define(['sandbox'], function (sandbox) {
 	
-	var cancas;
+	var canvas;
 	
 	/*
 	 * Mode to register
@@ -17,7 +17,6 @@ define(['sandbox'], function (sandbox) {
 		},
 	
 		stop: function () {
-			
 		}
 	};
 	
