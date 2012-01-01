@@ -4,6 +4,7 @@
 define(['sandbox'], function (sandbox) {
   var canvas;
   var enabled = false;
+  var svgCanvas;
 
   /*
    * Mode to register
@@ -44,7 +45,7 @@ define(['sandbox'], function (sandbox) {
         };
         newPost = canvas.vectorTranslate(newPost);
 
-        var svgCanvas = canvas.getGroup(0);
+        //var svgCanvas = canvas.getGroup(0);
         var newTransform = svgCanvas.transformation().translate(newPost.x - position.x, newPost.y - position.y);
 
         sandbox.publish('dizzy.presentation.transform.do');
@@ -64,6 +65,7 @@ define(['sandbox'], function (sandbox) {
 
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
+    svgCanvas = canvas.getGroup(0);
   });
 
 

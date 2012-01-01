@@ -72,27 +72,25 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       newDizzyGroup.transformation(newTransform);
       this.groupList.push(newDizzyGroup);
       
-      console.log("new group created, id: "+newDizzyGroup.dom().attr('id'));
-      
       /*
       sandbox.publish('dizzy.canvas.group.created', {
 		  group: newDizzyGroup
 	  });
 	  console.log("Created new group, list-size: "+this.groupList.length);
+	  console.log("new group created, id: "+newDizzyGroup.dom().attr('id'));
 	  */
 	  
       return newDizzyGroup;
     },
 
     removeGroup: function (g) {
-      /* g.dom().remove(); */
       var removed;
       var idToRemove = g.dom().attr('id');
       for (var i=0; i<this.groupList.length; i++)
 		if (this.groupList[i].dom().attr('id') == idToRemove){
 			g.dom().remove();
 			removed = this.groupList.splice(i,1);
-			console.log("Group "+idToRemove+" removed! list-size: "+this.groupList.length);
+			console.log("Group "+idToRemove+" removed!");
 			
 			sandbox.publish('dizzy.canvas.group.removed', {
 					id: idToRemove
@@ -107,8 +105,6 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
     findGroup: function (node) {
-		
-		console.log('called findGroup('+node+')');
       for (var i = 0; i < this.groupList.length; ++i) {
         if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(node).attr('id')) {
           return this.groupList[i];
@@ -119,7 +115,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       if (node.size() > 0) { // ???
         g = new Group(node[0]);
         this.groupList.push(g);
-        console.log('created and pushed group id: '+g.dom().attr('id'));
+        //console.log('created and pushed group id: '+g.dom().attr('id'));
       }
       return g;
     },
@@ -141,10 +137,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     getGroup: function (number) {
       // passed in element is already a group, dummy (o:
       if (number.dom && number.transformation) {
-		  console.log("called canvas.getGroup for an already group. id: "+number.dom().attr('id'));
         return number;
       }
-      console.log('called canvas.getGroup('+number+')');
       var groupNode;
       if (number > 0) {
         groupNode = this.canvas.find('.group_' + number);
@@ -215,12 +209,10 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 		
 		if (group !== undefined) {
 			var groupTransform = group.transformation();
-			//in group.transformation for some reason there's already the inverse matrix.
-			//sometimes it's not true and these cases generate errors in presenting (all but when the object was in the svg just opened and not yet transformed)
-			var inverseTransform = Transformation.createTransform(groupTransform.matrix()); //where is the inversion ??? ???
+			var inverseTransform = Transformation.createTransform(groupTransform.matrix());
 			
-			var mt = inverseTransform.matrix();
-			inverseTransform.inverse();
+			//var mt = inverseTransform.matrix();
+			inverseTransform.inverse(); //inversion is here
 			
 			console.log("group transf: "+groupTransform);
 			console.log("inver transf: "+inverseTransform);
@@ -231,19 +223,39 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
-				if (SVGtype=='rect' || SVGtype=='image'){
-				
-				//get dimensions and position of the rect
-				var ex = elem.attr('x');
-				var ey = elem.attr('y');
-				var ew = elem.attr('width');
-				var eh = elem.attr('height');
-				
-				if (SVGtype == 'image'){
-					ew = ew.substring(0, ew.length-2);
-					eh = eh.substring(0, eh.length-2);
-				}
-				
+				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line'){
+					var ex, ey, ew, eh;
+					
+					switch (SVGtype){ //get dimensions and position of the element
+						case 'rect':
+							ex = elem.attr('x');
+							ey = elem.attr('y');
+							ew = elem.attr('width');
+							eh = elem.attr('height');
+							break;
+							
+						case 'image':
+							ex = elem.attr('x');
+							ey = elem.attr('y');
+							ew = ew.substring(0, ew.length-2);
+							eh = eh.substring(0, eh.length-2);
+							break;
+							
+						case 'ellipse':
+							ex = elem.attr('cx')-elem.attr('rx');
+							ey = elem.attr('cy')-elem.attr('ry');
+							ew = elem.attr('rx')*2;
+							eh = elem.attr('ry')*2;
+							break;
+						
+						case 'line':
+							ex = elem.attr('x1');
+							ey = elem.attr('y1');
+							ew = Math.abs(ex-elem.attr('x2'));
+							eh = Math.abs(ey-elem.attr('y2'));
+							break;
+					}
+							
 				//get width and height of document and ViewBox
 				var svgWidth = $(document).width();
 				var svgHeight = $(document).height();			
@@ -268,7 +280,6 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				//get the scale value to make the rect fit the viewbox area
 				scaleVal = Math.min(wpixels/ew, hpixels/eh);
 				
-				console.log("valori presi correttamente! "+ex+" "+ey+" "+ew+" "+eh);
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();
 				inverseTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
@@ -283,9 +294,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				//Center the group in the screen (independant to Screen Dimensions :)
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
-				
-				//console.log('final tranf: '+translatedTransform2);
-				
+				console.log("final transform: "+inverseTransform);
 				this.transform(canvas, inverseTransform, options);
 				/*
 				//Translate tha canvas to display the group at the svg point (0,0)

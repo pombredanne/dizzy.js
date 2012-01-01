@@ -6,12 +6,13 @@ define(['sandbox'], function (sandbox) {
   var toolbar;
   /*
    * Subcriptions:
+   * 	dizzy.presentation.loaded
+   * 	dizzy.ui.toolbar.loaded
    */
+
   /*
-   * Toolbar is loaded, bind menu items.
+   * When Toolbar is loaded, bind the menu items.
    */
-   
-  //when Toolbar is loaded:
   sandbox.subscribe('dizzy.ui.toolbar.loaded', function (tool) {
     toolbar = tool.toolbar; // get the toolbar
     var menu = $('#menu');	// get the (hidden) expandable menu
@@ -27,50 +28,58 @@ define(['sandbox'], function (sandbox) {
     });
 
 	// when a menu-option button is clicked:
-    menu.delegate('.menu-option', 'click', function () {
+    menu.delegate('.menu-option', 'click', function (evt) {
       var id = $(this).attr('id'); // get the id
 
       switch (id) {
-	  // if the id is 'menu-open'..
-      case 'menu-open':
-		// ask the opening of the dialog box to open file
-        sandbox.publish('dizzy.ui.dialog.file.open', {
-          ok: function () {},
-          cancel: function () {}
-        });
-        break; // Other cases still not implemented/written but menu-save that's just below
+		/*  
+		case 'menu-open-ok':
+			console.log("opening a file..");
+			alert($('#menu-open-input').val());
+			
+			// ask the opening of the dialog box to open file
+			sandbox.publish('dizzy.ui.dialog.file.open', {
+			  ok: function () {},
+			  cancel: function () {}
+			});
+			break;
+		*/  
+		case 'menu-save':
+			// The SVG prolog, not needed anymore
+			//var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
+			var svgText = canvas.serialize();
+			var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
+			window.open(svgBase64);
+			break;
+			
+		case 'menu-download':
+			var svgText = canvas.serialize();
+			var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
+
+			$.post('php/downloadSVG.php', {svg:svgText}, function(url){
+			  window.open("php/"+url, 'Download');
+			});
+		break;
+				
       };
     });
-
-	// Why isn't this in the switch above??								???
-	// when the menu-save button is clicked:
-    menu.find('#menu-save').bind('click', function (e) {
-	  // The SVG prolog, not used??										???
-      var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
-	  
-      var svgText = canvas.serialize();
-      var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
-      window.open(svgBase64);
-    });
     
-    menu.find('#menu-download').bind('click', function (e) {
-	  // The SVG prolog, not used??										???
-      var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
-	  
-      var svgText = canvas.serialize();
-      var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
-      
-      $.post('php/downloadSVG.php', {svg:svgText}, function(url){
-		  //$(this).innerHTML = $('<a id="download-link" href="php/'+url+'"</a>');
-		  //$(this).append($link);
-		  //$('#download-link').click();
-		  window.open("php/"+url, 'Download');
-	  });
-      
-      
-    });
-
-
+    $('#menu-open-input').bind('change', function(evt){
+      var file = evt.target.files; // FileList object
+      if ( file.length >= 1 && file[0].type==='image/svg+xml') {
+         var reader = new FileReader();
+         var openSVGFile = file[0];
+         reader.onload = function(e){
+			 console.log("loaded svg: "+e.target.result);
+			 
+			 sandbox.publish('dizzy.presentation.loadSVG', {
+				 svgDoc: e.target.result
+				});
+         };
+         reader.readAsText(openSVGFile);
+      }
+   });
+    
   });
   
   //when Presentation is loaded -> get the canvas

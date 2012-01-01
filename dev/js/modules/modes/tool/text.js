@@ -58,13 +58,16 @@ define(['sandbox'],  function(sandbox){
               y: text.attr('y')
             };
             var viewportCoordinates = canvas.toViewboxCoordinates(textCoordinates, true);
-
+			
+			/*
             canvas.gotoGroup(group, { // usefull !!!
               duration: 100,
               complete: function () {
                 showTextbox(group, viewportCoordinates);
               }
-            });
+            }); */
+            showTextbox(group, viewportCoordinates);
+            
           } else {
             hideTextbox();
           }
@@ -134,7 +137,7 @@ define(['sandbox'],  function(sandbox){
     function showTextbox(group, viewportCoordinates) {
       var svgCoordinates = canvas.toViewboxCoordinates(viewportCoordinates);
       var groupDom = group.dom();
-      groupDom.addClass('invisible');
+      //groupDom.addClass('invisible');
 
       var text = groupDom.find('text');
       var spans = text.children('tspan');

@@ -45,7 +45,6 @@ define(['dizzy/transformation'], function (Transformation) {
       this.dom(node);
       this.transform = new Transformation(transformMatrix);
       this.transform.inverse(); //this gives the group its not inverted matrix :)
-      console.log('al nuovo Group è stata assegnata la trasf: '+this.transform);
     }
     if (this.dom().attr('id') === undefined) {
       this.dom().attr('id', 'g' + Math.random());

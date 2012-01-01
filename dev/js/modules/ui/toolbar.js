@@ -10,9 +10,11 @@ define(['sandbox'],  function (sandbox) {
   // subscribe to own and foreign events (o:
   // when a button of the toolbar is clicked:
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (d) {
-    var button = toolbar.find('#' + d.button); // get the button (jquery object instance)
-    button.siblings().removeClass('pressed'); // make the siblings appear not pressed
-    button.addClass('pressed'); // make it appear pressed
+	  if(d.button != 'menu-button'){
+		var button = toolbar.find('#' + d.button); // get the button (jquery object instance)
+		button.siblings().removeClass('pressed'); // make the siblings appear not pressed
+		button.addClass('pressed'); // make it appear pressed
+	}
   });
 
 
@@ -48,7 +50,7 @@ define(['sandbox'],  function (sandbox) {
         // click default button ??? sometimes the zebra mode hasn't been registered yet when this happens
         // that's why I put this timeout, waiting for a better solution to come :)
         // "how to check if all modes have been registered?"
-        setTimeout(function(){var firstButton = $('#toolbar .toolbutton.pressed').click();}, 1000);
+        setTimeout(function(){var firstButton = $('#toolbar .toolbutton.pressed').click();}, 400);
       });
 
     },
