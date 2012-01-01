@@ -14,7 +14,7 @@ define(function () {
   };
 
   /*
-   * Methods proxy methods of SVGMatrix, with one little difference. Changes on the object (via translate, rotate, scale) change the matrix of this object.
+   * Methods proxy methods of SVGMatrix, with one little difference. Changes on the object (via translate, rotate, scale) change the matrix of THIS object.
    * These methods do not return a new object, but "this".
    */
   Transformation.prototype = {

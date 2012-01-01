@@ -44,13 +44,30 @@ define(['sandbox'], function (sandbox) {
 
 	// Why isn't this in the switch above??								???
 	// when the menu-save button is clicked:
-    menu.find('#menu-save').bind('click', function (e) { // 'e' seems useless
+    menu.find('#menu-save').bind('click', function (e) {
 	  // The SVG prolog, not used??										???
       var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
 	  
       var svgText = canvas.serialize();
       var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
       window.open(svgBase64);
+    });
+    
+    menu.find('#menu-download').bind('click', function (e) {
+	  // The SVG prolog, not used??										???
+      var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
+	  
+      var svgText = canvas.serialize();
+      var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
+      
+      $.post('php/downloadSVG.php', {svg:svgText}, function(url){
+		  //$(this).innerHTML = $('<a id="download-link" href="php/'+url+'"</a>');
+		  //$(this).append($link);
+		  //$('#download-link').click();
+		  window.open("php/"+url, 'Download');
+	  });
+      
+      
     });
 
 

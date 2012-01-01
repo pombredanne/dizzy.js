@@ -18,7 +18,7 @@ define(['sandbox'],  function (sandbox) {
 	  var id = g.attr('id');
 	  var type = g.children().prop('localName'); //gets the 'type' of the first child of the group created (eg. rect, line, circle, image, g...)
 	  list.push({type: type, id: id});
-	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td><td class="show-transf">Transf</td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -47,6 +47,7 @@ define(['sandbox'],  function (sandbox) {
 		for (var i=0; i<canvas.groupList.length; i++){
 			var g = canvas.groupList[i].dom();
 			var id = g.attr('id');
+			//if (id == 'canvas') continue; when i will remove the canvas, must set the number of indexes correctly
 			var name = g.attr('name')? g.attr('name'):(++count); //if the group has already a name will show it in the input
 			var type = g.children().prop('localName');
 			
@@ -64,7 +65,7 @@ define(['sandbox'],  function (sandbox) {
 			
 			list.push({type: type, id: id});
 			
-			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></tr>');
+			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/><td class="show-transf">Transf</td></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -149,7 +150,13 @@ define(['sandbox'],  function (sandbox) {
 			//group.dom().removeClass(function(index, oldClass){
 				//return oldClass;
 			//}); //'name' serves only to help the user to distinguish groups
-		})
+		});
+		
+		$('#tracker-list').delegate('.show-transf','click',function(){
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			var group = canvas.groupList[index-1];
+			console.log("transf: "+group.transformation());
+		});
 		
 	  //tracker.disableTextSelect();
     }

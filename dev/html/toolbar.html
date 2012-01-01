@@ -55,8 +55,23 @@
                      </form>  
                   </div>
                </li>
-               <li title="Save dizzy presentation" id="menu-save" class="menu-option" data-description="Save Dizzy presentation. The SVG file will be opened in a new window. You can then save it like a normal webpage ('File -> Save Page As' in most browsers) "><img src="./img/menu_save.png" alt="Save file" /> Save</li>
-               <li title="Import Prezi .pez file (not implemented yet)" class="hidden menu-option"><img src="./img/menu_import.png" alt="Import file" /> Import Prezi
+               <li title="Save dizzy presentation" id="menu-save" class="menu-option" data-description="Save Dizzy presentation. The SVG file will be opened in a new window. You can then save it like a normal webpage ('File -> Save Page As' in most browsers) "><img src="./img/menu_save.png" alt="Save file" /> Show SVG</li>
+               <li title="Download dizzy presentation" 
+                     id="menu-download" class="menu-option"
+                     data-description="Download Dizzy presentation">
+                  <img src="./img/menu_save.png" alt="Download file" /> Download this SVG 
+                  <div id="menu-save-extended" class="hidden">
+                     <hr />
+                     <form>
+                        <fieldset>
+                           <label for="menu-save-input">Choose a name:</label>
+                           <input type="text" id="menu-save-input" />
+                           <button id="menu-save-ok">Ok</button>
+                        </fieldset>
+                     </form>  
+                  </div>
+               </li>
+               <!-- li title="Import Prezi .pez file (not implemented yet)" class="hidden menu-option"><img src="./img/menu_import.png" alt="Import file" /> Import Prezi
                   <div id="menu-import-extended" class="hidden">
                      <hr />
                      <form>
@@ -66,7 +81,7 @@
                         </fieldset>
                      </form>
                   </div>
-               </li>
+               </li -->
             </ul>
          </li>
          <li><h2>Style</h2>

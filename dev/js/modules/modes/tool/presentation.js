@@ -14,6 +14,8 @@ define(['sandbox'], function (sandbox) {
 		start: function () {
 			$(canvas.svg.root()).removeClass('editing');
 			//buttons are binded in toolbar.control
+			
+			canvas.activeGroupNumber=0;
 		},
 	
 		stop: function () {

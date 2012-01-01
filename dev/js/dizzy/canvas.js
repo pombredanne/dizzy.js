@@ -72,6 +72,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       newDizzyGroup.transformation(newTransform);
       this.groupList.push(newDizzyGroup);
       
+      console.log("new group created, id: "+newDizzyGroup.dom().attr('id'));
+      
       /*
       sandbox.publish('dizzy.canvas.group.created', {
 		  group: newDizzyGroup
@@ -104,7 +106,9 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
      * Finds a group by it's node representation. <g id="..." ...></g>
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
-    findGroup: function (node) { //node is a JQuery Selector
+    findGroup: function (node) {
+		
+		console.log('called findGroup('+node+')');
       for (var i = 0; i < this.groupList.length; ++i) {
         if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(node).attr('id')) {
           return this.groupList[i];
@@ -115,13 +119,14 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       if (node.size() > 0) { // ???
         g = new Group(node[0]);
         this.groupList.push(g);
+        console.log('created and pushed group id: '+g.dom().attr('id'));
       }
       return g;
     },
     
-    superFindGroup : function (groupQuery) {
+    findGroupById : function (id) {
 		for (var i = 0; i < this.groupList.length; ++i) {
-			if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(groupQuery).attr('id')) {
+			if (this.groupList[i] && this.groupList[i].dom().attr('id') === id) {
 				return this.groupList[i];
 			}
 		}
@@ -136,8 +141,10 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
     getGroup: function (number) {
       // passed in element is already a group, dummy (o:
       if (number.dom && number.transformation) {
+		  console.log("called canvas.getGroup for an already group. id: "+number.dom().attr('id'));
         return number;
       }
+      console.log('called canvas.getGroup('+number+')');
       var groupNode;
       if (number > 0) {
         groupNode = this.canvas.find('.group_' + number);
@@ -208,18 +215,34 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 		
 		if (group !== undefined) {
 			var groupTransform = group.transformation();
+			//in group.transformation for some reason there's already the inverse matrix.
+			//sometimes it's not true and these cases generate errors in presenting (all but when the object was in the svg just opened and not yet transformed)
 			var inverseTransform = Transformation.createTransform(groupTransform.matrix()); //where is the inversion ??? ???
+			
+			var mt = inverseTransform.matrix();
+			inverseTransform.inverse();
+			
+			console.log("group transf: "+groupTransform);
+			console.log("inver transf: "+inverseTransform);
 			
 			if(group.dom().attr('id')!='canvas') {
 				try {
 				//get the rect
 				var elem = group.dom().children().first();
+				var SVGtype = elem.prop('localName');
+				
+				if (SVGtype=='rect' || SVGtype=='image'){
 				
 				//get dimensions and position of the rect
 				var ex = elem.attr('x');
 				var ey = elem.attr('y');
 				var ew = elem.attr('width');
 				var eh = elem.attr('height');
+				
+				if (SVGtype == 'image'){
+					ew = ew.substring(0, ew.length-2);
+					eh = eh.substring(0, eh.length-2);
+				}
 				
 				//get width and height of document and ViewBox
 				var svgWidth = $(document).width();
@@ -243,8 +266,28 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				}
 				
 				//get the scale value to make the rect fit the viewbox area
-				scaleVal = Math.min(wpixels/ew, hpixels/eh);			
+				scaleVal = Math.min(wpixels/ew, hpixels/eh);
 				
+				console.log("valori presi correttamente! "+ex+" "+ey+" "+ew+" "+eh);
+				//Translate tha canvas to display the group at the svg point (0,0)
+				var mat = inverseTransform.matrix();
+				inverseTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
+				
+				//Scale the canvas to display the group big enough to fit the screen dimensions (independant to Screen Dimensions :)
+				var mats = inverseTransform.matrix();
+				inverseTransform.multiply(mats.inverse()).scale(scaleVal).multiply(mats);
+				
+				var toTranslateX = (wpixels - ew*scaleVal)/2;
+				var toTranslateY = (hpixels - eh*scaleVal)/2;
+				
+				//Center the group in the screen (independant to Screen Dimensions :)
+				var mat2 = inverseTransform.matrix();
+				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
+				
+				//console.log('final tranf: '+translatedTransform2);
+				
+				this.transform(canvas, inverseTransform, options);
+				/*
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var translatedTransform = Transformation.createTransform(inverseTransform.matrix());
 				var mat = translatedTransform.matrix();
@@ -263,10 +306,15 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var mat2 = translatedTransform2.matrix();
 				translatedTransform2 = scaledTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
 				
+				console.log('final tranf: '+translatedTransform2);
+				
 				this.transform(canvas, translatedTransform2, options);
+				*/
+				}
 				} catch (e){
 					alert("errore: "+e.message);
 				}
+				
 			} else {
 				this.transform(canvas, inverseTransform, options);
 			}
