@@ -2,9 +2,6 @@
 
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
-- toFix: when editing text, it comes back to the position where it was created.
-	 goes back to the its right place after editing.
-
 - toFix: the zebra is not visible on selected black elements
 
 - toAdd: text editing tools (at least color and size-up, size-down)
@@ -12,8 +9,6 @@
 - toAdd: Capture View (as in Prezi.com)
 
 - toAdd: Path Tool
-
-- toAdd: item tracker (to never loose any in the great white xD) using canvas.groupList()
 
 - to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
 	in css
