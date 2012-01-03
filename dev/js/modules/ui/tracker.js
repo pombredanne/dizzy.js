@@ -10,7 +10,14 @@ define(['sandbox'],  function (sandbox) {
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
-    start();    
+    if (tracker == undefined) start();
+    else {
+		count=0;
+		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Go</th></tr>');
+		emptyList();
+		loadExistingGroups();
+	}
+    
   });
   
   sandbox.subscribe('dizzy.canvas.group.created',function(d){
@@ -34,15 +41,7 @@ define(['sandbox'],  function (sandbox) {
 	  console.log("Group "+id+" removed from tracker");
   });
   
-  /*
-  var updateList = function () {
-		tracker.find("#tracker-list").empty();
-		for(var i=0; i<canvas.groupList.length; i++){
-			tracker.find("#tracker-list").append("<tr><td>"+canvas.groupList[i].dom().attr('id')+"</td></tr>");
-		}
-  } */
-  
-  var loadExistingGroups = function () {
+  var loadExistingGroups = function () {4
 		if(canvas)
 		for (var i=0; i<canvas.groupList.length; i++){
 			var g = canvas.groupList[i].dom();
@@ -160,6 +159,12 @@ define(['sandbox'],  function (sandbox) {
 		
 	  //tracker.disableTextSelect();
     }
+    
+    var emptyList = function(){
+		
+		for (var i=0; i<list.length;) list.pop();
+		
+	}
   
   return {
 

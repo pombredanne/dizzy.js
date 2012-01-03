@@ -30,6 +30,7 @@ define(['sandbox', 'dizzy/canvas'], function (sandbox, Canvas) {
             $svg.height($(document).height());
           });
           $(window).resize();
+          $(canvas.svg.root()).attr('style', 'width: "'+$(document).width()+'" height="'+$(document).width()+'"');
 
           //canvas.gotoGroup(0);
           dizzyContainer.removeClass('loading');
@@ -41,7 +42,6 @@ define(['sandbox', 'dizzy/canvas'], function (sandbox, Canvas) {
   sandbox.subscribe('dizzy.presentation.loadSVG', function (d){
 	  
 	  var svgDoc = d.svgDoc;
-	  
 	  dizzyContainer.remove();
 	  
 	  // create a container for dizzy svg file
@@ -55,11 +55,7 @@ define(['sandbox', 'dizzy/canvas'], function (sandbox, Canvas) {
       sandbox.publish('dizzy.presentation.load', {
         file : svgDoc
       });
-	  
-	  var $svg = $(canvas.svg.root());
-		$svg.width($(document).width());
-		$svg.height($(document).height());
-            
+		
       dizzyContainer.bind('mousedown', function (e) {
         sandbox.publish('dizzy.canvas.io.mouse.down', e);
       });

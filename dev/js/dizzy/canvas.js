@@ -170,6 +170,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
      * Opposite of next()
      */
     previous: function () {
+	  if(this.activeGroupNumber == 0) return;
       return this.step(-1);
     },
 
