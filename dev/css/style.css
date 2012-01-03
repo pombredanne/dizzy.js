@@ -208,7 +208,7 @@ hr{
 	vertical-align: middle;
 }
 
-input[type="color"]{
+input[class="color"]{
 	width: 30px;
 	height: 20px;
 	cursor: pointer;
@@ -362,9 +362,7 @@ input[type="color"]{
 	
 
 	
-	box-sizing:inherit;
-	
-	
+	box-sizing:inherit;	
 }
 
 #menu > #menu-right{
@@ -803,13 +801,6 @@ svg .invisible{
 	padding:3px;
 	display:none;
 	color:#fff;
-}
-
-.unselectable /* actually not used anywhere in the code */ {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 #tracker{

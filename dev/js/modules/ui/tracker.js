@@ -41,7 +41,7 @@ define(['sandbox'],  function (sandbox) {
 	  console.log("Group "+id+" removed from tracker");
   });
   
-  var loadExistingGroups = function () {4
+  var loadExistingGroups = function () {
 		if(canvas)
 		for (var i=0; i<canvas.groupList.length; i++){
 			var g = canvas.groupList[i].dom();

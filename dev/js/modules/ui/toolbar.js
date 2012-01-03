@@ -10,7 +10,7 @@ define(['sandbox'],  function (sandbox) {
   // subscribe to own and foreign events (o:
   // when a button of the toolbar is clicked:
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (d) {
-	  if(d.button != 'menu-button'){
+	  if(d.button != 'menu-button' && d.button != 'tool-color'){
 		var button = toolbar.find('#' + d.button); // get the button (jquery object instance)
 		button.siblings().removeClass('pressed'); // make the siblings appear not pressed
 		button.addClass('pressed'); // make it appear pressed
@@ -46,6 +46,7 @@ define(['sandbox'],  function (sandbox) {
         // TODO
       }).complete(function () {
         that.assignEventHandlers();
+        that.setColorPickers();
         
         // click default button ??? sometimes the zebra mode hasn't been registered yet when this happens
         // that's why I put this timeout, waiting for a better solution to come :)
@@ -54,6 +55,54 @@ define(['sandbox'],  function (sandbox) {
       });
 
     },
+    
+    setColorPickers: function() {
+		
+	  function CPicker(inputId){
+			
+			this.selector = new jscolor.color(inputId, {});
+			this.selector.pickerOnfocus = false;
+			this.selector.pickerFace = 2;
+			this.selector.hash = true;
+			this.selector.fromString('#000000');
+			
+			this.opened = false;
+			
+			this.open = function(){
+				this.opened = true;
+				this.selector.showPicker();
+			}
+			
+			this.close = function(){
+				this.opened = false;
+				this.selector.hidePicker();
+			}
+	  }
+	  
+	  var inputFill = document.getElementById('tool-input-color-fill');
+	  var colorFill = new CPicker(inputFill);
+	  
+	  var inputStroke = document.getElementById('tool-input-color-stroke');
+	  var colorStroke = new CPicker(inputStroke);
+	  
+	  $(inputFill).click(function(){
+		  if(colorFill.opened)
+			  colorFill.close();
+		  else {
+			  colorStroke.close();
+			  colorFill.open();
+		  }
+	  });
+	  
+	  $(inputStroke).click(function(){
+		  if(colorStroke.opened)
+			  colorStroke.close();
+		  else {
+			  colorFill.close();
+			  colorStroke.open();
+		  }
+	  });
+	},
 
     /*
      * Assigns event handlers to the toolbar buttons.

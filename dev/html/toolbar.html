@@ -24,8 +24,9 @@
 
    <div id="tool-color" class="toolbutton fullwidth" title="Choose fill and stroke colors">
       <img src="./img/zebra_tool_color.png" alt="color icon" class="hidden" />
-      <input class="color" type="color" value="#FFFFFF" id="tool-input-color-fill" title="Fill color" />
-      <input class="color" type="color" value="#000000" id="tool-input-color-stroke" title="Stroke color" />
+      <input class="color" value="#FFFFFF" id="tool-input-color-fill" title="Fill color" />
+      <input class="color" value="#000000" id="tool-input-color-stroke" title="Stroke color" />
+      <!-- since type="color" is supported only by Opera I choose to use jscolor for all browsers -->
    </div>
 
    <div id="present-toggle-button" class="toolbutton mode fullwidth" title="Start presentation" >
