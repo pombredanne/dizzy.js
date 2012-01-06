@@ -55,28 +55,11 @@ define(['sandbox'], function (sandbox) {
 	  $(document).bind('keydown.dizzy.default', function (e) {
 			var keycode =  e.keyCode ? e.keyCode : e.which;
 			if (keycode == 46){
-				
-				/* Ver 2 - it's a bit less efficient than the Ver 1 but is probably better */
 				var sel = canvas.findGroup("g.selected");
 				if (sel){
 					canvas.removeGroup(sel);
-					/*var id = sel.dom().attr("id");
-					/*sandbox.publish('dizzy.presentation.group.removed', {
-						id: id
-					});*/
 					sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'}); //toChange: just need to close the zebra (how?)
 				}
-				/* Ver 1
-				/*
-				var sel = $("g.selected");
-				if(sel.length==1){
-					sel.remove();
-					sandbox.publish('dizzy.presentation.group.removed', {
-						id: sel.attr("id")
-					});
-					$('#toolbar .toolbutton.pressed').click(); //toChange: just need to close the zebra (how?)
-					console.log("Removed group: "+sel.attr("id"));
-				}*/
 			}
       });
 	},
@@ -92,7 +75,17 @@ define(['sandbox'], function (sandbox) {
     canvas = c.canvas;
     ready = true;
   });
-
+  
+  sandbox.subscribe('dizzy.ui.toolbar.color.fill.changed', function(d){
+	  var selex = canvas.findGroup("g.selected");
+	  selex.dom().children().first().attr('fill', d.color);
+  });
+  
+  sandbox.subscribe('dizzy.ui.toolbar.color.stroke.changed', function(d){
+	  var selex = canvas.findGroup("g.selected");
+	  selex.dom().children().first().attr('stroke', d.color);
+  });
+  
   var selected;
   sandbox.subscribe('dizzy.presentation.group.selected', function (g) {
     if (selected !== undefined) {

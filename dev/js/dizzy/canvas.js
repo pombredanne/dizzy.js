@@ -215,12 +215,11 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 			//var mt = inverseTransform.matrix();
 			inverseTransform.inverse(); //inversion is here
 			
-			console.log("group transf: "+groupTransform);
-			console.log("inver transf: "+inverseTransform);
+			//console.log("group transf: "+groupTransform);
+			//console.log("inver transf: "+inverseTransform);
 			
 			if(group.dom().attr('id')!='canvas') {
 				try {
-				//get the rect
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
@@ -278,8 +277,11 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 					hpixels = (viewWidth/svgWidth)*svgHeight;
 				}
 				
+				var elemZoom = elem.parent().attr('zoom');
+				var zoomPercentage = elemZoom ? elemZoom : 100;
+				zoomPercentage /= 100;
 				//get the scale value to make the rect fit the viewbox area
-				scaleVal = Math.min(wpixels/ew, hpixels/eh);
+				var scaleVal = Math.min(wpixels*zoomPercentage/ew, hpixels*zoomPercentage/eh);
 				
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();

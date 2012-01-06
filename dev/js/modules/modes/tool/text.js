@@ -73,19 +73,7 @@ define(['sandbox'],  function(sandbox){
           }
         }
         return false;
-      }),
-      
-      /*
-       * The Text Box shouldn't close when clicking on color picker !!!
-      //Changing fill color
-      $(document).delegate('#tool-input-color-fill', 'onchange.dizzy.mode.text.edit', function (e) {
-		
-		  var text = $("g.invisible").children('text');
-		  text.attr({
-            fill: $("#tool-input-color-fill").val() //temp solution !!!
-		  });
-	  }); */
-      
+      }),      
       
       // new text
       $(canvas.svg.root()).bind('click.dizzy.mode.text.new', function (e) {
@@ -106,10 +94,12 @@ define(['sandbox'],  function(sandbox){
           var svgOffset = canvas.toViewboxCoordinates(clickCoordinates);
 
           newText.attr({
+			'font-family' : 'serif',
+			'font-size': '200px',
             x: svgOffset.x,
             y: svgOffset.y,
             stroke: canvas.getStrokeColor(),
-            fill: canvas.getFillColor() //temp solution !!!
+            fill: canvas.getFillColor()
           });
           newText.append(newTextSpan);
           newGroupDom.append(newText);
@@ -137,11 +127,11 @@ define(['sandbox'],  function(sandbox){
     function showTextbox(group, viewportCoordinates) {
       var svgCoordinates = canvas.toViewboxCoordinates(viewportCoordinates);
       var groupDom = group.dom();
-      //groupDom.addClass('invisible');
+      groupDom.addClass('invisible');
 
       var text = groupDom.find('text');
       var spans = text.children('tspan');
-
+      
       // update textbox text
       textBox.val('');
       var spanWidth = 0;
@@ -206,6 +196,76 @@ define(['sandbox'],  function(sandbox){
           'rows': txt.length || 1
         });
       });
+      
+      $('#tool-textMode-bigger').bind('click', function(){
+		  var fontSize = text.attr('font-size');
+		  fontSize = parseFloat(fontSize.substring(0, fontSize.length-2));
+		  if (fontSize > 100)
+			  fontSize += fontSize/20;
+		  else if (fontSize > 30)
+			  fontSize += 3;
+		  else fontSize += 1;
+		  
+		  text.attr('font-size', fontSize+"px");
+		  fontSize *= ($(document).height() / canvas.HEIGHT);
+		  textBox.css('font-size', fontSize+"px");
+	  });
+	  
+	  $('#tool-textMode-smaller').bind('click', function(){
+		  var fontSize = text.attr('font-size');
+		  fontSize = parseFloat(fontSize.substring(0, fontSize.length-2));
+		  if (fontSize > 100)
+			  fontSize -= fontSize/20;
+		  else if (fontSize > 30)
+			  fontSize -= 3;
+		  else fontSize -= 1;
+		  
+		  text.attr('font-size', fontSize+"px");
+		  fontSize *= ($(document).height() / canvas.HEIGHT);
+		  textBox.css('font-size', fontSize+"px");
+	  });
+	  
+	  $('#tool-textMode-family').bind('change', function(){
+		  var fontFam = $("#tool-textMode-family option:selected").val();
+		  text.attr('font-family', fontFam);
+		  textBox.css('font-family', fontFam);
+	  });
+	  
+	  $('#tool-textMode-italic').bind('click', function(){
+		  var fontStyle = text.attr('font-style');
+		  if(fontStyle == 'italic'){
+			  text.removeAttr('font-style');
+			  textBox.css('font-style', 'normal');
+		  }
+		  else {
+			  text.attr('font-style', 'italic');
+			  textBox.css('font-style', 'italic');
+		  }
+	  });
+	  
+	  $('#tool-textMode-bold').bind('click', function(){
+		  var fontStyle = text.attr('font-weight');
+		  if(fontStyle == 'bold'){
+			  text.removeAttr('font-weight');
+			  textBox.css('font-weight', 'normal');
+		  }
+		  else {
+			  text.attr('font-weight', 'bold');
+			  textBox.css('font-weight', 'bold');
+		  }
+	  });
+	  
+	  $('#tool-textMode-underline').bind('click', function(){
+		  var fontStyle = text.attr('text-decoration');
+		  if(fontStyle == 'underline'){
+			  text.removeAttr('text-decoration');
+			  textBox.css('text-decoration', 'none');
+		  }
+		  else {
+			  text.attr('text-decoration', 'underline');
+			  textBox.css('text-decoration', 'underline');
+		  }
+	  });
 
       textOverlay.show();
       textOverlay.css({
@@ -229,6 +289,9 @@ define(['sandbox'],  function(sandbox){
       textBox.val('');
       textBox.unbind();
       textOverlay.hide();
+      $('#tool-textMode-bigger').unbind();
+      $('#tool-textMode-smaller').unbind();
+      $('#tool-textMode-family').unbind();
 
       clickOpensTextbox = true;
     }

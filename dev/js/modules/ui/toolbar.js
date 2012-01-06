@@ -133,6 +133,18 @@ define(['sandbox'],  function (sandbox) {
           button: buttonId
         });
       });
+      
+      toolbar.delegate('#tool-input-color-fill', 'change', function(){
+		  sandbox.publish('dizzy.ui.toolbar.color.fill.changed', {
+			 color: $(this).val()
+		  }); 
+	  });
+	  
+	  toolbar.delegate('#tool-input-color-stroke', 'change', function(){
+		  sandbox.publish('dizzy.ui.toolbar.color.stroke.changed', {
+			 color: $(this).val()
+		  }); 
+	  });
 
     },
 

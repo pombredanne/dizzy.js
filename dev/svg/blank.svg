@@ -6,18 +6,17 @@
      viewBox="0 0 2000 1500"
      preserveAspectRatio="xMinYMin"
      xml:space="preserve">
-     
-   <style type="text/css" id="dizzy-internal-style">
+   <!-- style type="text/css" id="dizzy-internal-style">
       <![CDATA[
 text tspan{
    font-size: 200px;
 }
       ]]>
-   </style>
+   </style-->
    <g  id="canvas">
       
       <g class="group group_1">
-         <text x="1000" y="750">
+         <text x="1000" y="750" font-size="200px" font-family="serif">
             <tspan>Default text</tspan>
          </text>
       </g>

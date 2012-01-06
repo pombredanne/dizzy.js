@@ -13,7 +13,7 @@ define(['sandbox'],  function (sandbox) {
     if (tracker == undefined) start();
     else {
 		count=0;
-		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Go</th></tr>');
+		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Zoom</th><th>Go</th></tr>');
 		emptyList();
 		loadExistingGroups();
 	}
@@ -25,7 +25,7 @@ define(['sandbox'],  function (sandbox) {
 	  var id = g.attr('id');
 	  var type = g.children().prop('localName'); //gets the 'type' of the first child of the group created (eg. rect, line, circle, image, g...)
 	  list.push({type: type, id: id});
-	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td><td class="show-transf">Transf</td></tr>');
+	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -62,9 +62,12 @@ define(['sandbox'],  function (sandbox) {
 					pathNumbers += classes[j].substring(classes[j].length-1)+" ";
 				}
 			
+			var zoom = g.attr('zoom');
+			zoom = zoom ? zoom : 100;
+			
 			list.push({type: type, id: id});
 			
-			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/><td class="show-transf">Transf</td></tr>');
+			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -113,7 +116,17 @@ define(['sandbox'],  function (sandbox) {
 			
 			//it writes to the group the name the user gives to it
 			group.dom().attr('name', $(this).val()); //'name' serves only to help the user to distinguish groups
-		})
+		});
+		
+		$('#tracker-list').delegate('.tracker-zoom', 'change', function(){
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			var group = canvas.groupList[index-1];
+			var val = $(this).val();
+			if (!isNaN(val) && val<=100 && val > 0)
+				group.dom().attr('zoom', $(this).val());
+			else
+				$(this).val(group.dom().attr('zoom') ? group.dom().attr('zoom') : "");
+		});
 		
 		$('#tracker-list').delegate('.tracker-path-numbers','change',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
@@ -134,28 +147,14 @@ define(['sandbox'],  function (sandbox) {
 				if(numbers[i]=="") continue;
 				canvas.addPathNumber(group, numbers[i]);
 			}
-			
-			/*
-			var gruppo1 = "lallalla group_1 puzza";
-			alert(gruppo1.match(groupNumberMatch));
-			/*
-			for (c in classes){
-				var num = c.match(groupNumberMatch);
-				if (num !== null) alert(num);
-				else alert(c);
-			}
-			*/
-			//it writes to the group the name the user gives to it
-			//group.dom().removeClass(function(index, oldClass){
-				//return oldClass;
-			//}); //'name' serves only to help the user to distinguish groups
 		});
 		
+		/*
 		$('#tracker-list').delegate('.show-transf','click',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			console.log("transf: "+group.transformation());
-		});
+		});*/
 		
 	  //tracker.disableTextSelect();
     }
