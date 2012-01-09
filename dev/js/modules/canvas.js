@@ -8,7 +8,7 @@ define(['sandbox', 'dizzy/canvas'], function (sandbox, Canvas) {
 
 
   /*
-   * Subcriptions:
+   * Subcriptions: 'dizzy.presentation.load', 'dizzy.presentation.loadSVG'
    */
   /*
    * Loads a requested presentation.

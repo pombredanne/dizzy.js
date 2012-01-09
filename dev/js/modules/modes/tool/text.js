@@ -198,6 +198,7 @@ define(['sandbox'],  function(sandbox){
       });
       
       $('#tool-textMode-bigger').bind('click', function(){
+		  console.log(text);
 		  var fontSize = text.attr('font-size');
 		  fontSize = parseFloat(fontSize.substring(0, fontSize.length-2));
 		  if (fontSize > 100)
@@ -292,6 +293,9 @@ define(['sandbox'],  function(sandbox){
       $('#tool-textMode-bigger').unbind();
       $('#tool-textMode-smaller').unbind();
       $('#tool-textMode-family').unbind();
+      $('#tool-textMode-italic').unbind();
+      $('#tool-textMode-bold').unbind();
+      $('#tool-textMode-underline').unbind();
 
       clickOpensTextbox = true;
     }

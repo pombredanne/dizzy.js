@@ -149,6 +149,14 @@ define(['sandbox'],  function (sandbox) {
 			}
 		});
 		
+		$('#tracker-list tr').hover(
+			function(){
+				console.log('sono sulla riga');
+			},
+			function(){
+				console.log('lascio la riga');
+		});
+		
 		/*
 		$('#tracker-list').delegate('.show-transf','click',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
