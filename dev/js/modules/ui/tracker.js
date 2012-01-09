@@ -149,12 +149,12 @@ define(['sandbox'],  function (sandbox) {
 			}
 		});
 		
-		$('#tracker-list tr').hover(
-			function(){
-				console.log('sono sulla riga');
-			},
-			function(){
-				console.log('lascio la riga');
+		$('#tracker-list').delegate('tr','hover',function(e){
+				var index = $(this).prop('rowIndex'); //rowIndex starts from 1 - 0 is the th
+				if(index){
+					var group = canvas.groupList[index-1];
+					group.dom().children().toggleClass('hoveringElem');
+				}
 		});
 		
 		/*

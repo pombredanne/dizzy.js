@@ -96,9 +96,10 @@ hr{
 
 #dizzy .editing .invisibleRect, #dizzy .path .invisibleRect{
 	opacity: 1;
-	stoke: red;
 	fill-opacity: 0.2;
+	stroke-opacity: 0.5;
 	fill: green;
+	stoke: red;
 	stroke-width: 5;
 	stroke-miterlimit:4;
 	stroke-dasharray:9.9,29.7;
@@ -838,4 +839,17 @@ display:none;
 	border: 1px solid black;
 	line-height: 15px;
 	font-size: 13px;
+}
+
+#dizzy .hoveringElem{
+	opacity: 1 !important;
+	stoke: red !important;
+	fill-opacity: 0.3 !important;
+	stroke-opacity: 1 !important;
+	fill: red !important;
+	stroke-width: 5;
+	stroke-miterlimit:4;
+	stroke-dasharray:9.9,29.7;
+	stroke-dashoffset:0;
+	stroke-opacity:1
 }
