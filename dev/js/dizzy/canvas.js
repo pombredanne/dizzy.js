@@ -198,7 +198,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 			}
 		}
 		
-		this.transformCanvasTo(group);
+		this.transformCanvasTo(group, options);
 	},
 	
 	/* Transfrorm the canvas to the target group with a RECT
@@ -237,6 +237,8 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 						case 'image':
 							ex = elem.attr('x');
 							ey = elem.attr('y');
+							ew = elem.attr('width');
+							eh = elem.attr('height');
 							ew = ew.substring(0, ew.length-2);
 							eh = eh.substring(0, eh.length-2);
 							break;
@@ -298,30 +300,15 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
 				console.log("final transform: "+inverseTransform);
+				
+				//Get the animation speed
+				var speed = elem.parent().attr('speed');
+				speed = speed ? speed : 1;
+				options = $.extend({
+					duration: parseInt(speed*1000)
+				}, options);
+				
 				this.transform(canvas, inverseTransform, options);
-				/*
-				//Translate tha canvas to display the group at the svg point (0,0)
-				var translatedTransform = Transformation.createTransform(inverseTransform.matrix());
-				var mat = translatedTransform.matrix();
-				translatedTransform = translatedTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
-				
-				//Scale the canvas to display the group big enough to fit the screen dimensions (independant to Screen Dimensions :)
-				var scaledTransform = Transformation.createTransform(translatedTransform.matrix());
-				var mats = scaledTransform.matrix();
-				scaledTransform = translatedTransform.multiply(mats.inverse()).scale(scaleVal).multiply(mats);
-				
-				var toTranslateX = (wpixels - ew*scaleVal)/2;
-				var toTranslateY = (hpixels - eh*scaleVal)/2;
-				
-				//Center the group in the screen (independant to Screen Dimensions :)
-				var translatedTransform2 = Transformation.createTransform(scaledTransform.matrix());
-				var mat2 = translatedTransform2.matrix();
-				translatedTransform2 = scaledTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
-				
-				console.log('final tranf: '+translatedTransform2);
-				
-				this.transform(canvas, translatedTransform2, options);
-				*/
 				}
 				} catch (e){
 					alert("errore: "+e.message);
@@ -359,7 +346,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       
       //if no duration is set, the default one will be used (see Canvas consctuctor)
       var duration = options.duration === undefined ? this.options.transformDuration : options.duration;
-
+      
       group.transform = transformation;
 
       if (duration <= 10) { // speed optimization here..

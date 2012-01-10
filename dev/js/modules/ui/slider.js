@@ -14,25 +14,35 @@ define(['sandbox'],  function (sandbox) {
 
     init: function () {
       var that = this;
-
+      
       // create a container for dizzy svg file
       var body = $('#container');
+      //alert(document.referrer);
       
-      var jqxhr = $.get('html/slider.html').success(function (d) {
-        body.prepend(d);
-        slider = body.find('#anteprime');
-        reopen = body.find('#apriAnteprime');
-        
-        sandbox.publish('dizzy.ui.slider.loaded', {
-          slider: slider
-        });
-      }).error(function (e) {
-        // TODO
-      }).complete(function () {
-        that.assignEventHandlers();
-        console.log('slider loaded.');
-      });
-
+      $.get('php/testPhp.php', function(data){
+		  console.log('Referrer:'+document.referrer+':');
+		  if((data.substring(0,5))=="<?php"){
+			console.warn('PHP is not enabled on this server -> slider can\'t be loaded');
+		  }
+		  else if(document.referrer == ""){
+		  }
+		  else {
+			  var jqxhr = $.get('html/slider.html').success(function (d) {
+				body.prepend(d);
+				slider = body.find('#anteprime');
+				reopen = body.find('#apriAnteprime');
+				
+				sandbox.publish('dizzy.ui.slider.loaded', {
+				  slider: slider
+				});
+			  }).error(function (e) {
+				// TODO
+			  }).complete(function () {
+				that.assignEventHandlers();
+				console.log('slider loaded.');
+			  });
+		  }
+	  });	  
     },
 
     assignEventHandlers: function () {

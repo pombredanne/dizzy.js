@@ -81,6 +81,14 @@ define(['sandbox'], function (sandbox) {
 		strokeWidthDown.bind('click.dizzy.zebra.toolbar.strokeWidth.down', function(){
 			return that.lowerStrokeWidth();
 		});
+		
+		/* Rect proportions management */
+		zebraNode.find('#zebra-toolbar-43').bind('click.dizzy.zebra.toolbar.43', function(){
+				return that.fitRectTo(4,3);
+		});
+		zebraNode.find('#zebra-toolbar-169').bind('click.dizzy.zebra.toolbar.169', function(){
+				return that.fitRectTo(16,9);
+		});
       }
     },
 
@@ -102,6 +110,8 @@ define(['sandbox'], function (sandbox) {
       zebraNode.find('#zebra-toolbar-down').unbind('click.dizzy.zebra.toolbar.down');
       zebraNode.find('#zebra-toolbar-border-weight-up').unbind('click.dizzy.zebra.toolbar.strokeWidth.up');
       zebraNode.find('#zebra-toolbar-border-weight-down').unbind('click.dizzy.zebra.toolbar.strokeWidth.down');
+      zebraNode.find('#zebra-toolbar-43').unbind('click.dizzy.zebra.toolbar.43');
+      zebraNode.find('#zebra-toolbar-169').unbind('click.dizzy.zebra.toolbar.169');
     },
 
     /*
@@ -300,7 +310,9 @@ define(['sandbox'], function (sandbox) {
 		
 		$children = node.children();
 		if ($children.length == 1) node = $children.first();
-		var sw = parseFloat(node.attr('stroke-width'));
+		var wid = node.attr('stroke-width');
+		if (isNaN(wid)){ sw = 3; }
+		else { var sw = parseFloat(wid); }
 		if(sw > 0)
 			if (sw > 1) node.attr('stroke-width', sw-1);
 			else node.attr('stroke-width', Math.round((sw*10)-1)/10);
@@ -312,9 +324,33 @@ define(['sandbox'], function (sandbox) {
 		
 		$children = node.children();
 		if ($children.length == 1) node = $children.first();
-		var sw = parseFloat(node.attr('stroke-width'));
+		var wid = node.attr('stroke-width');
+		if (isNaN(wid)){ sw = 3; }
+		else { var sw = parseFloat(wid); }
 		if(sw >= 1)  node.attr('stroke-width', sw+1);
 		else node.attr('stroke-width', Math.round((sw*10)+1)/10);
+	},
+	
+	/* Change proportions of the rect to fit the specified ones (eg. 4:3, 16:9) */
+	fitRectTo: function(width, height){
+		var node = $('.selected', canvas.svg.root());
+		$children = node.children();
+		if ($children.length == 1) node = $children.first();
+		
+		var w = node.attr('width');
+		var h = node.attr('height');
+		
+		var prop = w/h;
+		var desProp = width/height;
+		
+		if(prop > desProp){
+			h = w/width*height;
+			node.attr('height', h);
+		}
+		else if(prop < desProp){
+			w = h/height*width;
+			node.attr('width', w);
+		}
 	}
   }; //zebraMode ends here <-------
   

@@ -13,7 +13,7 @@ define(['sandbox'],  function (sandbox) {
     if (tracker == undefined) start();
     else {
 		count=0;
-		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Zoom</th><th>Go</th></tr>');
+		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Zoom</th><th>Speed</th><th>Go</th></tr>');
 		emptyList();
 		loadExistingGroups();
 	}
@@ -25,7 +25,7 @@ define(['sandbox'],  function (sandbox) {
 	  var id = g.attr('id');
 	  var type = g.children().prop('localName'); //gets the 'type' of the first child of the group created (eg. rect, line, circle, image, g...)
 	  list.push({type: type, id: id});
-	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -65,9 +65,12 @@ define(['sandbox'],  function (sandbox) {
 			var zoom = g.attr('zoom');
 			zoom = zoom ? zoom : 100;
 			
+			var speed = g.attr('speed');
+			speed = speed ? speed : 1;
+			
 			list.push({type: type, id: id});
 			
-			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -126,6 +129,16 @@ define(['sandbox'],  function (sandbox) {
 				group.dom().attr('zoom', $(this).val());
 			else
 				$(this).val(group.dom().attr('zoom') ? group.dom().attr('zoom') : "");
+		});
+		
+		$('#tracker-list').delegate('.tracker-speed', 'change', function(){
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			var group = canvas.groupList[index-1];
+			var val = $(this).val();
+			if (!isNaN(val) && val<=10 && val >= 0)
+				group.dom().attr('speed', $(this).val());
+			else
+				$(this).val(group.dom().attr('speed') ? group.dom().attr('speed') : "1");
 		});
 		
 		$('#tracker-list').delegate('.tracker-path-numbers','change',function(){
