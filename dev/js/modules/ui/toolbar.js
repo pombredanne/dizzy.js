@@ -26,14 +26,6 @@ define(['sandbox'],  function (sandbox) {
       // create a container for dizzy svg file
       var body = $('#container');
 	  
-	  /* loads data from 'html/toolbar.html' and calls:
-	   * 	- the success( function(d) if the request succeeds
-	   * 	- the error(function(e) if the request fails
-	   * 	- the complete(function() when the request finishes (after success and error callbacks are executed)
-	   * 
-	   * 'd' contains the data returned by the ajax call (the toolbar's html)
-	   * jqxhr: jQuery XMLHTTPRequest Object
-	   */
       var jqxhr = $.get('html/toolbar.html').success(function (d) {
         body.prepend(d); //prepend the toolbar's html to the body
         toolbar = body.find('#toolbar'); // get the toolbar (jquery object instance)
@@ -66,6 +58,7 @@ define(['sandbox'],  function (sandbox) {
 			this.selector.hash = true;
 			this.selector.fromString('#000000');
 			
+			
 			this.opened = false;
 			
 			this.open = function(){
@@ -84,6 +77,11 @@ define(['sandbox'],  function (sandbox) {
 	  
 	  var inputStroke = document.getElementById('tool-input-color-stroke');
 	  var colorStroke = new CPicker(inputStroke);
+	  
+	  sandbox.subscribe('dizzy.presentation.transform', function(){
+		  colorFill.close();
+		  colorStroke.close();  
+	  });
 	  
 	  $(inputFill).click(function(){
 		  if(colorFill.opened)

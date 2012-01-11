@@ -8,7 +8,7 @@ define(['sandbox'], function (sandbox) {
   var ready = false;
 
   var defaultMode = {
-    depends: ['zoom', 'pan', 'zebra'],
+    depends: ['zoom', 'pan', 'zebra', 'resizer'],
     start: function () {
       if (ready) {
 		//add the class 'editing' to the svg canvas

@@ -12,6 +12,12 @@ define(['sandbox'], function (sandbox) {
 	var presentMode = {
 		depends: ['zoom', 'pan'],
 		start: function () {
+			$(document).bind('keydown.dizzy.presentation', function (e) {
+				var keycode =  e.keyCode ? e.keyCode : e.which;
+				if (keycode == 39 || keycode == 38) sandbox.publish('dizzy.ui.toolbar.clicked.tool-next');
+				else if (keycode == 37 || keycode == 40) sandbox.publish('dizzy.ui.toolbar.clicked.tool-previous');
+			});
+			
 			$(canvas.svg.root()).removeClass('editing');
 			//buttons are binded in toolbar.control
 			
@@ -19,6 +25,7 @@ define(['sandbox'], function (sandbox) {
 		},
 	
 		stop: function () {
+			$(document).unbind('keydown.dizzy.presentation');
 		}
 	};
 	

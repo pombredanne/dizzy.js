@@ -17,15 +17,24 @@ define(['sandbox'],  function (sandbox) {
 		emptyList();
 		loadExistingGroups();
 	}
-    
   });
   
   sandbox.subscribe('dizzy.canvas.group.created',function(d){
+	  var invisible = '';
+	  
 	  var g = d.group.dom();
 	  var id = g.attr('id');
+	  
 	  var type = g.children().prop('localName'); //gets the 'type' of the first child of the group created (eg. rect, line, circle, image, g...)
+	  var icon = 'img/'+type+'.png';
+	  
 	  list.push({type: type, id: id});
-	  tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+	  
+	  if (type == 'line' || type == 'g' || type == undefined){
+		  invisible = 'class="hidden"';
+		  icon = '';
+	  }
+	  tracker.find("#tracker-list").append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -46,31 +55,39 @@ define(['sandbox'],  function (sandbox) {
 		for (var i=0; i<canvas.groupList.length; i++){
 			var g = canvas.groupList[i].dom();
 			var id = g.attr('id');
+			var invisible = '';
 			//if (id == 'canvas') continue; when i will remove the canvas, must set the number of indexes correctly
 			var name = g.attr('name')? g.attr('name'):(++count); //if the group has already a name will show it in the input
 			var type = g.children().prop('localName');
+			var icon = 'img/'+type+'.png';
 			
-			var groupNumberMatch = /group_(\d+)/gi;
-			var classes = (g.attr('class'));
-			if (classes != undefined) //if the group hasn't any class yet
-				classes = classes.match(groupNumberMatch);
-			
-			var pathNumbers="";
-			
-			if (classes != null) //if the group has some group_x class
-				for (var j=0; j<classes.length; j++){
-					pathNumbers += classes[j].substring(classes[j].length-1)+" ";
-				}
-			
-			var zoom = g.attr('zoom');
-			zoom = zoom ? zoom : 100;
-			
-			var speed = g.attr('speed');
-			speed = speed ? speed : 1;
-			
+			if (type == 'line' || type == 'g' || type == undefined){
+				invisible = 'class="hidden"';
+				icon = '';
+			}
+			else {
+				var image = 'img/'+type+'.png';
+				var groupNumberMatch = /group_(\d+)/gi;
+				var classes = (g.attr('class'));
+				if (classes != undefined) //if the group hasn't any class yet
+					classes = classes.match(groupNumberMatch);
+				
+				var pathNumbers="";
+				
+				if (classes != null) //if the group has some group_x class
+					for (var j=0; j<classes.length; j++){
+						pathNumbers += classes[j].substring(classes[j].length-1)+" ";
+					}
+				
+				var zoom = g.attr('zoom');
+				zoom = zoom ? zoom : 100;
+				
+				var speed = g.attr('speed');
+				speed = speed ? speed : 1;
+			}
 			list.push({type: type, id: id});
 			
-			tracker.find("#tracker-list").append('<tr><td>'+type+'</td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+			tracker.find("#tracker-list").append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -101,12 +118,15 @@ define(['sandbox'],  function (sandbox) {
 		var button = tracker.find('#tracker-expand');
 		button.toggle(function(){
 				tracker.find("#tracker-list").show();
+				sandbox.publish('dizzy.presentation.transform.tracker.open');
 			}, 
 			function(){
 					tracker.find("#tracker-list").hide()
+					sandbox.publish('dizzy.presentation.transform.tracker.open');
 		});
 		
 		$('#tracker-list').delegate('.tracker-go','click',function(){
+			sandbox.publish('dizzy.presentation.transform.tracker.go');
 			var index = $(this).parent('tr').prop('rowIndex'); //rowIndex starts from 1
 			canvas.visitGroup(list[index-1].id);
 		})

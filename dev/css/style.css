@@ -97,14 +97,12 @@ hr{
 #dizzy .editing .invisibleRect, #dizzy .path .invisibleRect{
 	opacity: 1;
 	fill-opacity: 0.2;
-	stroke-opacity: 0.5;
-	fill: green;
-	stoke: red;
+	stroke-opacity: 0.8;
+	fill: #C9E0E2;
 	stroke-width: 5;
 	stroke-miterlimit:4;
 	stroke-dasharray:9.9,29.7;
 	stroke-dashoffset:0;
-	stroke-opacity:1
 }
 
 #dizzy .editing.default .group:hover{
@@ -183,12 +181,12 @@ hr{
 
 
 #toolbar > .toolbutton {
-	width: 42px;
-	height: 42px;
+	width: 35px;
+	height: 35px;
 	
 	border: 1px solid black;
 	
-	line-height: 42px;
+	line-height: 35px;
 	
 	font-size: 13px;
 }
@@ -264,10 +262,11 @@ input[class="color"]{
  * Two buttons that are twice as wide as normal buttons.
  */
 #toolbar > .toolbutton.fullwidth {
-	width: 85px; /* +1 because all other buttons have a 1pxborder between them */
+	width: 71px; /* +1 because all other buttons have a 1pxborder between them */
 	
 	height: 34px;
 	line-height: 34px;
+	overflow: hidden;
 }
 /*
  * Top toolmenu button
@@ -356,7 +355,7 @@ input[class="color"]{
 #menu > #menu-left{
 	float: left;
 	
-	width: 60%;
+	width: 380px;
 	
 	padding: 0;
 	padding-right: 1%;
@@ -368,7 +367,7 @@ input[class="color"]{
 
 #menu > #menu-right{
 	float: left;
-	width: 25%;
+	width: 20%;
 	
 	box-sizing:inherit;
 	padding: 1%;
@@ -835,8 +834,12 @@ svg .invisible{
 	z-index: 10;
 }
 
+#tracker-list {
+	text-align:center;
+}
+
 #tracker #tracker-list {
-display:none;
+	display:none;
 }
 
 .toolbutton, #tracker {
@@ -854,13 +857,33 @@ display:none;
 
 #dizzy .hoveringElem{
 	opacity: 1 !important;
-	stoke: red !important;
+	stroke: red !important;
 	fill-opacity: 0.3 !important;
 	stroke-opacity: 1 !important;
-	fill: red !important;
+	fill: #F1A21A !important;
+	/*
 	stroke-width: 5;
 	stroke-miterlimit:4;
 	stroke-dasharray:9.9,29.7;
-	stroke-dashoffset:0;
-	stroke-opacity:1
+	stroke-dashoffset:0; 
+	stroke-opacity:1 */
+}
+
+#resizer{
+	opacity: 0.5;
+	border-radius: 50%;
+	border-color: black;
+	margin: black;
+	width: 40px;
+	height: 40px;
+	position: fixed;
+	top:50%;
+	left:50%;
+	z-index: 9;
+	background: red;
+	/*
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, yellow, orange);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+	*/
 }

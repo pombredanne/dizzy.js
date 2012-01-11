@@ -16,14 +16,14 @@ define(['sandbox'], function (sandbox) {
 		start: function () {
 			if(canvas){
 				$(canvas.svg.root()).bind('mousedown.dizzy.mode.line', function(e){ return editorLineStart(e); });
-				$(canvas.svg.root()).bind('mouseup.dizzy.mode.line', function(e){ return editorLineEnd(e); });
+				$(canvas.svg.root()).bind('mouseup.dizzy.mode.line mouseleave.dizzy.mode.line', function(e){ return editorLineEnd(e); });
 				$(canvas.svg.root()).addClass('editing drawing');
 			}
 		},
 	
 		stop: function () {
 			$(canvas.svg.root()).unbind('mousedown.dizzy.mode.line');
-			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.line');
+			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.line mouseleave.dizzy.mode.line');
 			$(canvas.svg.root()).removeClass('editing drawing');
 		}
 	};
@@ -49,8 +49,8 @@ define(['sandbox'], function (sandbox) {
         
         var color = canvas.getStrokeColor();
         
-        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {opacity:0}));
-        line.toggleClass("invisibleRect");
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {strokeWidth : 3, stroke: 'black', 'fill-opacity': 0, 'stroke-opacity':0}));
+        line.addClass("invisibleRect");
         x=svgOffset.x;
         y=svgOffset.y;
         

@@ -223,7 +223,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
-				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line'){
+				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype=='text'){
 					var ex, ey, ew, eh;
 					
 					switch (SVGtype){ //get dimensions and position of the element
@@ -255,6 +255,16 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 							ey = elem.attr('y1');
 							ew = Math.abs(ex-elem.attr('x2'));
 							eh = Math.abs(ey-elem.attr('y2'));
+							break;
+						case 'text':
+							elem.attr('id', 'tempTextId');
+							var ele = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
+							var bbox = document.getElementById('tempTextId').getBBox();
+							elem.removeAttr('id');
+							ex = bbox.x;
+							ey = bbox.y;
+							ew = bbox.width;
+							eh = bbox.height;
 							break;
 					}
 							

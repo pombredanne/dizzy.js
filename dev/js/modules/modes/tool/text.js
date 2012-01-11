@@ -71,13 +71,20 @@ define(['sandbox'],  function(sandbox){
           } else {
             hideTextbox();
           }
-        }
+        } else {
+			newText(e);
+		} 
         return false;
-      }),      
+      }),   
       
       // new text
       $(canvas.svg.root()).bind('click.dizzy.mode.text.new', function (e) {
-        if (clickOpensTextbox) {
+        newText(e);
+      });
+    }
+    
+    function newText(e){
+		if (clickOpensTextbox) {
           e.stopPropagation();
 
           var clickCoordinates = {
@@ -115,8 +122,7 @@ define(['sandbox'],  function(sandbox){
         } else {
           hideTextbox();
         }
-      });
-    }
+	}
 
     function removeEventHandler() {
       $(canvas.svg.root()).unbind('click.dizzy.mode.text.new');

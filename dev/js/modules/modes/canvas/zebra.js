@@ -30,7 +30,7 @@ define(['sandbox'], function (sandbox) {
 */
     assignEventHandlers: function () {
       var that = this;
-
+      
       if (canvas) {
 		  
 		zebraNode.disableTextSelect();
@@ -91,7 +91,6 @@ define(['sandbox'], function (sandbox) {
 		});
       }
     },
-
 
     removeEventHandlers: function () {
       var that = this;
@@ -170,7 +169,7 @@ define(['sandbox'], function (sandbox) {
           for (var i = 0; i < vendorprefixes.length; ++i) {
             r.css(vendorprefixes[i] + 'transform', 'rotate(' + rotationAngleSum + 'deg)');
           }
-
+		  sandbox.publish('dizzy.ui.zebra.start.rotate');
           canvas.transform(selectedGroup, nodeTransform, {
             duration: 0
           });
@@ -178,6 +177,7 @@ define(['sandbox'], function (sandbox) {
         $(document).bind('mouseup.dizzy.zebra.rotate mouseleave.dizzy.zebra.rotate', function (e) {
           $(document).unbind('mousemove.dizzy.zebra.rotate');
           $(document).unbind('mouseup.dizzy.zebra.rotate mouseleave.dizzy.zebra.rotate');
+          sandbox.publish('dizzy.ui.zebra.stop.rotate');
         });
 
       }
@@ -222,12 +222,14 @@ define(['sandbox'], function (sandbox) {
           nodeTransform = nodeTransform.multiply(matrix.inverse())
           // translation is used to scale group around center
           .translate(-svgOffset.x * (scaleFactor), -svgOffset.y * (scaleFactor)).scale(scaleFactor + 1).multiply(matrix);
-
+          
+          sandbox.publish('dizzy.ui.zebra.start.scale');
           //canvas.transform( selectedGroup, nodeTransform, { duration : 0 } );
         });
         $(document).bind('mouseup.dizzy.zebra.scale mouseleave.dizzy.zebra.scale', function (e) {
           $(document).unbind('mousemove.dizzy.zebra.scale');
           $(document).unbind('mouseup.dizzy.zebra.scale mouseleave.dizzy.zebra.scale');
+          sandbox.publish('dizzy.ui.zebra.stop.scale');
         });
       }
       return true;
@@ -242,6 +244,7 @@ define(['sandbox'], function (sandbox) {
         node = node[0];
       }
       e.preventDefault();
+      
       var group = canvas.findGroup(node);
       sandbox.publish('dizzy.presentation.group.selected', {
         event: e,
@@ -259,6 +262,7 @@ define(['sandbox'], function (sandbox) {
       };
       lastPosition = translate(lastPosition);
       var nodeTransform = group.transformation();
+      
       $(document).bind('mousemove.dizzy.zebra.translate', function (e) {
         e.preventDefault();
         var eventVector = {
@@ -266,7 +270,10 @@ define(['sandbox'], function (sandbox) {
           y: e.pageY
         };
         eventVector = translate(eventVector);
-        nodeTransform = nodeTransform.translate(eventVector.x - lastPosition.x, eventVector.y - lastPosition.y);
+        var xtransl = eventVector.x - lastPosition.x;
+        var ytransl = eventVector.y - lastPosition.y;
+        nodeTransform = nodeTransform.translate(xtransl, ytransl);
+        
         //lastPosition = eventVector;
         canvas.transform(group, nodeTransform, {
           duration: 0
@@ -275,9 +282,11 @@ define(['sandbox'], function (sandbox) {
           top: e.pageY - zebraNode.width() / 2,
           left: e.pageX - zebraNode.height() / 2
         });
+        sandbox.publish('dizzy.ui.zebra.start.translate');
       });
       $(document).bind('mouseup.dizzy.zebra.translate mouseleave.dizzy.zebra.translate', function (e) {
         $(document).unbind('mousemove.dizzy.zebra.translate');
+        sandbox.publish('dizzy.ui.zebra.stop.translate');
       });
       return false;
     },
@@ -337,21 +346,26 @@ define(['sandbox'], function (sandbox) {
 		$children = node.children();
 		if ($children.length == 1) node = $children.first();
 		
-		var w = node.attr('width');
-		var h = node.attr('height');
+		var w1 = node.attr('width');
+		var h1 = node.attr('height');
 		
-		var prop = w/h;
+		var prop = w1/h1;
 		var desProp = width/height;
 		
 		if(prop > desProp){
-			h = w/width*height;
-			node.attr('height', h);
+			var h2 = w1/width*height;
+			node.attr('height', h2);
+			var y = node.attr('y');
+			node.attr('y', y-(h2-h1)/2);
 		}
 		else if(prop < desProp){
-			w = h/height*width;
-			node.attr('width', w);
+			var w2 = h1/height*width;
+			node.attr('width', w2);
+			var x = node.attr('x');
+			node.attr('x', x-(w2-w1)/2);
 		}
 	}
+	
   }; //zebraMode ends here <-------
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
@@ -361,8 +375,8 @@ define(['sandbox'], function (sandbox) {
   function hideZebra(d) {
     if (zebraNode) {
       zebraNode.hide();
-      $('#zebra-toolbar').addClass('hidden');
-	  $('#zebra-expand-button').removeClass('mirrored');
+      zebraNode.find('#zebra-toolbar').addClass('hidden');
+	  zebraNode.find('#zebra-expand-button').removeClass('mirrored');
     }
   }
   
@@ -373,11 +387,25 @@ define(['sandbox'], function (sandbox) {
     if (zebraNode) {
       var event = d.event;
       selectedGroup = d.group;
-      zebraNode.css({ //check if width() and height() should be exchanged
-        top: event.pageY - zebraNode.width() / 2,
-        left: event.pageX - zebraNode.height() / 2
+      zebraNode.css({
+        top: event.pageY - zebraNode.height() / 2,
+        left: event.pageX - zebraNode.width()  / 2
       });
       zebraNode.show();
+      
+      zebraNode.find('.toolbutton').removeClass('hidden');
+      zebraNode.find('#Dots').addClass('hidden');
+      groupType = selectedGroup.dom().children().first().prop('localName');
+			
+		if(groupType && groupType != 'rect'){
+			zebraNode.find('#zebra-toolbar-43').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-169').addClass('hidden');
+			
+			if(groupType == 'image'){
+				zebraNode.find('#zebra-toolbar-border-weight-up').addClass('hidden');
+				zebraNode.find('#zebra-toolbar-border-weight-down').addClass('hidden');
+			}
+		}
     }
   });
   
