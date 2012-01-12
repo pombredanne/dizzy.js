@@ -6,6 +6,8 @@ define(['sandbox'], function (sandbox) {
 	var pt;
 	var dotDiv;
 	
+	var selectedRect;
+	
 	var resizerMode = {
 		start: function(){
 			$(dotDiv).bind('mousedown.dizzy.resizer', function(e){ resizeStart(e); });
@@ -42,7 +44,8 @@ define(['sandbox'], function (sandbox) {
 
 	var resizeStart = function(e){
 		e.stopPropagation(); e.preventDefault();
-		var rect = document.getElementsByClassName('selected')[0].children[0];
+		var rect = selectedRect;
+		if(!rect) return;
 
 		var mouseStart = { x:e.pageX, y:e.pageY };
 		
@@ -80,7 +83,7 @@ define(['sandbox'], function (sandbox) {
 	
 	sandbox.subscribe('dizzy.presentation.group.selected', function (d) {
 		var event = d.event;
-		selectedGroup = d.group;
+		var selectedGroup = d.group;
 		
 		var $rect = selectedGroup.dom().children().first();
 		$rect.addClass('tempClassRect');
@@ -88,6 +91,7 @@ define(['sandbox'], function (sandbox) {
 		$rect.removeClass('tempClassRect');
 		
 		if (rect.localName == 'rect'){		
+			selectedRect = rect;
 			moveResizerToRect(rect);
 			showResizer();
 		} else hideResizer();

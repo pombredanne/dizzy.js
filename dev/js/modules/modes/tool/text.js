@@ -45,7 +45,8 @@ define(['sandbox'],  function(sandbox){
 
     function assignEventHandler() {
       // edit text
-      $(canvas.svg.root()).delegate('.group', 'click.dizzy.mode.text.edit', function (e) {
+      //$(canvas.svg.root()).delegate('.group', 'click.dizzy.mode.text.edit', function (e) {
+	  $('.group').bind('click.dizzy.mode.text.edit', function(e){
         e.stopImmediatePropagation();
         var text = $(this).children('text');
         if (text.size() > 0) {
@@ -126,7 +127,8 @@ define(['sandbox'],  function(sandbox){
 
     function removeEventHandler() {
       $(canvas.svg.root()).unbind('click.dizzy.mode.text.new');
-      $(canvas.svg.root()).undelegate('g.group text', 'click.dizzy.mode.text.edit');
+      $('.group').unbind('click.dizzy.mode.text.edit');
+      //$(canvas.svg.root()).undelegate('g.group');
     }
 
 

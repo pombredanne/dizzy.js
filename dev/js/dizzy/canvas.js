@@ -267,10 +267,10 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 							eh = bbox.height;
 							break;
 					}
-							
+						
 				//get width and height of document and ViewBox
 				var svgWidth = $(document).width();
-				var svgHeight = $(document).height();			
+				var svgHeight = $(document).height();
 				var viewBox = $('svg').attr('viewBox');
 				var viewBoxParams = viewBox.split(" ", 4);
 				var viewWidth = viewBoxParams[2];
@@ -281,7 +281,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var wpixels, hpixels; 
 				
 				var ratio = svgWidth/svgHeight;
-				if(ratio >= 4/3) {
+				if(ratio >= viewWidth/viewHeight) {
 					hpixels = viewHeight;
 					wpixels = (viewHeight/svgHeight)*svgWidth;
 				} else {
@@ -318,7 +318,10 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 					duration: parseInt(speed*1000)
 				}, options);
 				
+				// use this.transformSVGanimation(...) to see animation by SVG instead of JQuery (alpha)
+				// for some reason it works only on Chrome ç_ç
 				this.transform(canvas, inverseTransform, options);
+				
 				}
 				} catch (e){
 					alert("errore: "+e.message);
@@ -367,7 +370,85 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
         }, options);
       }
     },
+    
+    /* Sperimenting alternative to this.transform using SVG animation instead of JQuery ones,
+     * some result visible on Chrome. To try add to <canvas> in the SVG the following:
+	 * <animateTransform id="canvTranslate" begin="indefinite" attributeName="transform" type="translate" to="" dur="1s" additive="sum" fill="freeze"/>
+	   <animateTransform id="canvRotate" begin="indefinite" attributeName="transform" type="rotate" to="" dur="1s" additive="sum" fill="freeze"/>
+	   <animateTransform id="canvScale" begin="indefinite" attributeName="transform" type="scale" to="" dur="1s" additive="sum" fill="freeze"/>
+	 * */
+    transformSVGanimation: function (group, transformation, options) {
+      options = $.extend({
+        complete: function () {},
+        duration: this.options.transformDuration
+      }, options);
+      
+      //if no duration is set, the default one will be used (see Canvas consctuctor)
+      var duration = options.duration === undefined ? this.options.transformDuration : options.duration;
+      
+		var tMatrix = transformation.matrix();
+		var cMatrix = group.transform.matrix();
+		
+		//getting the animations
+		var animTrans = document.getElementById('canvTranslate');
+		var animRotaz = document.getElementById('canvRotate');
+		var animScale = document.getElementById('canvScale');
+		
+		//setting duration
+		animTrans.setAttribute('dur', duration/1000+'s');
+		animRotaz.setAttribute('dur', duration/1000+'s');
+		animScale.setAttribute('dur', duration/1000+'s');
+		
+		//calculating the 'from' attribute
+		console.log(cMatrix);
+		var transX = cMatrix.e;
+		var transY = cMatrix.f;
+		var scaleX = Math.sqrt(Math.pow(cMatrix.a, 2)+Math.pow(cMatrix.b, 2));
+		var rotate = Math.atan(cMatrix.c/cMatrix.d);
 
+		console.log('canv transX: '+transX);
+		console.log('canv transY: '+transY);
+		console.log('canv scale: '+scaleX);
+		console.log('canv rotate: '+rotate);
+
+		animTrans.setAttribute('from', transX+','+transY);
+		animRotaz.setAttribute('from', -rotate*180/Math.PI);
+		animScale.setAttribute('from', scaleX);
+		//end 'from'
+		
+		//calculating the 'to' attribute to set
+		console.log(tMatrix);
+		var transX = tMatrix.e;
+		var transY = tMatrix.f;
+		var scaleX = Math.sqrt(Math.pow(tMatrix.a, 2)+Math.pow(tMatrix.b, 2));
+		var rotate = Math.atan(tMatrix.c/tMatrix.d);
+
+		console.log('transX: '+transX);
+		console.log('transY: '+transY);
+		console.log('scale: '+scaleX);
+		console.log('rotate: '+rotate);
+
+		animTrans.setAttribute('to', transX+','+transY);
+		animRotaz.setAttribute('to', -rotate*180/Math.PI);
+		animScale.setAttribute('to', scaleX);
+		//end 'to'
+		
+		animTrans.beginElement();
+		animRotaz.beginElement();
+		animScale.beginElement();
+		
+		group.transform = transformation;
+		
+		setTimeout(function(){
+			//$(group.dom(), this.svg.root()).attr('transform', transformation.toString());
+			//$(canvas.dom(), this.svg.root()).attr('transform', 'matrix('+tMatrix.a+','+tMatrix.b+','+tMatrix.c+','+tMatrix.d+','+tMatrix.e+','+tMatrix.f+')');
+			
+			//this is a problematic step. commenting it something works good on firefox and opera too
+			$("#canvas").attr('transform', 'matrix('+tMatrix.a+','+tMatrix.b+','+tMatrix.c+','+tMatrix.d+','+tMatrix.e+','+tMatrix.f+')');
+			//$(group.dom()).attr('transform', transformation.toString());
+		}, duration+100);
+    },
+    
     /*
      * Translates Viewport-Coordinates (Browser coordinates,
      * as returned by many events, like MouseEvent.pageX) to coordinates in the SVG viewbox.

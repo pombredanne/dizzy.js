@@ -6,13 +6,7 @@
      viewBox="0 0 2000 1500"
      preserveAspectRatio="xMinYMin"
      xml:space="preserve">
-   <!-- style type="text/css" id="dizzy-internal-style">
-      <![CDATA[
-text tspan{
-   font-size: 200px;
-}
-      ]]>
-   </style-->
+     
    <g  id="canvas">
       
       <g class="group group_1">
@@ -22,7 +16,5 @@ text tspan{
       </g>
       
    </g>
-
-
 
 </svg>

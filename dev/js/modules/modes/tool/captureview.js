@@ -52,7 +52,7 @@ define(['sandbox'], function (sandbox) {
 			hpixels = (viewWidth/svgWidth)*svgHeight;
 		}
         
-        line = $(canvas.svg.rect('0', '0', wpixels, hpixels, {opacity:0}));
+        line = $(canvas.svg.rect('0', '0', wpixels, hpixels, {strokeWidth : 3, stroke: 'black', 'fill-opacity': 0, 'stroke-opacity':0}));
         line.addClass("invisibleRect");
         
         newGroupDom.append(line);

@@ -1,20 +1,18 @@
-- ---> !!!Comment everything!!! <-----
+
+- toDo: old zebra was much more usable!! le't go back!
+
+- toDo: test SVG animation instead of JQuery ones (something done, see in js/dizzy/canvas.js -> this.transformSVGanimation() )
+
+- toDo: add the possibility to change the color of the canvas
+
+- toDo: simplified Path Tool
 
 - toFix: dialog-open.html incorrect dimensions for small-sized windows
 
-- toFix: the zebra is not visible on selected black elements
-
-- toAdd: text editing tools (at least color and size-up, size-down)
-
-- toAdd: Capture View (as in Prezi.com)
-
-- toAdd: Path Tool
+- toFix: the zebra is not visible on selected black elements (use a gradient or borders instead a single color)
 
 - to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
 	in css
 	#zebra-scale {
 	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
 	---> Browser on Linux fail to load the url (??? mistery)
-
-- (toFix) fixed somehow: (first start default tool problem) zebra unusable at first page load !!! it registers after being called :S
-	 it is called before -> XHR finished loading: "http://localhost/dizzy.js/dev/html/zebra.html".

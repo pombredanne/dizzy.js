@@ -39,15 +39,17 @@ define(['sandbox'],  function (sandbox) {
   });
   
   sandbox.subscribe('dizzy.canvas.group.removed',function(d){
+	  console.log(list.length);
 	  var id = d.id;
 	  for (var i=0; i<list.length; i++){
 		  if (id == list[i].id){
+			  tracker.find("#tracker-list").find('tr:nth-child('+(i+2)+')').remove(); //toCheck (i+2)
 			  list.splice(i, 1);
-			  tracker.find("#tracker-list").find('tr:nth-child('+(i+1)+')').remove();
 			  break;
 		  }
 	  }
 	  console.log("Group "+id+" removed from tracker");
+	  console.log(list.length);
   });
   
   var loadExistingGroups = function () {
