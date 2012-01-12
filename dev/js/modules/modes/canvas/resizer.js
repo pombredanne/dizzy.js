@@ -19,14 +19,19 @@ define(['sandbox'], function (sandbox) {
 		}
 	};
 	sandbox.subscribe('dizzy.ui.zebra.start', hideResizer);
-	/*
+	sandbox.subscribe('dizzy.ui.toolbar.clicked', hideResizer);
+	
 	sandbox.subscribe('dizzy.ui.zebra.stop', function(){
-		var rect = document.getElementsByClassName('selected')[0].children[0];
-		if(rect && rect.localName == 'rect'){
-			moveResizerToRect(rect);
-			showResizer();
+		var rect = document.getElementsByClassName('selected')[0]
+		if (rect) {
+			rect = rect.children[0];
+			//var rect = selectedRect;
+			if(rect.localName == 'rect'){
+				moveResizerToRect(rect);
+				showResizer();
+			}
 		}
-	});*/
+	});
 	
 	sandbox.subscribe('dizzy.presentation.transform', hideResizer);
 	
@@ -44,6 +49,7 @@ define(['sandbox'], function (sandbox) {
 
 	var resizeStart = function(e){
 		e.stopPropagation(); e.preventDefault();
+		sandbox.publish('dizzy.ui.resizer.start');
 		var rect = selectedRect;
 		if(!rect) return;
 
@@ -72,6 +78,7 @@ define(['sandbox'], function (sandbox) {
 		
 		$(document).bind('mouseup.dizzy.resizer mouseleave.dizzy.resizer', function (e) {
 			$(document).unbind('mousemove.dizzy.resizer');
+			sandbox.publish('dizzy.ui.resizer.stop');
 		});
 	};
 	

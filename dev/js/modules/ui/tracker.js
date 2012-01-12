@@ -39,7 +39,7 @@ define(['sandbox'],  function (sandbox) {
   });
   
   sandbox.subscribe('dizzy.canvas.group.removed',function(d){
-	  console.log(list.length);
+	  //console.log(list.length);
 	  var id = d.id;
 	  for (var i=0; i<list.length; i++){
 		  if (id == list[i].id){
@@ -49,7 +49,7 @@ define(['sandbox'],  function (sandbox) {
 		  }
 	  }
 	  console.log("Group "+id+" removed from tracker");
-	  console.log(list.length);
+	  //console.log(list.length);
   });
   
   var loadExistingGroups = function () {

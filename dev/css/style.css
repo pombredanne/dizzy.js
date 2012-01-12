@@ -208,7 +208,7 @@ hr{
 }
 
 input[class="color"]{
-	width: 30px;
+	width: 28px;
 	height: 20px;
 	cursor: pointer;
 	border: 1px solid black;
@@ -402,8 +402,8 @@ input[class="color"]{
 	top: 30%;
 	left: 50%;
 	
-	width: 90px;
-	height: 90px;
+	width: 130px; /* 90px for translate+scale and 2*20px for rotate */
+	height: 130px;
 	
 	opacity: 0.9;
 	
@@ -447,12 +447,9 @@ input[class="color"]{
 	*/
 	background-image: url('../img/zebra-background.svg');
 	overflow: visible;
-	
-	
-	
+	-moz-border-radius: 90px;
+	border-radius: 90px;
 }
-
-
 
 #zebra #zebra-rotate{
 	position: absolute;
@@ -467,14 +464,11 @@ input[class="color"]{
 	/*
 	   no dedicated controls for scaling and rotation anymore. The rotate element is still in, but not visible
 	*/
-	/*
+	
 	border: 20px dotted #AAAAAA;
 	
 	-moz-border-radius: 100px;
 	border-radius: 100px;
-	*/
-
-
 }
 
 #zebra #zebra-expand-button{
@@ -520,7 +514,7 @@ input[class="color"]{
 	position: absolute;
 	
 	top: 38px;
-	left: 108px;
+	left: 146px;
 	
 	width: 66px;
 

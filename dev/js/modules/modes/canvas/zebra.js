@@ -41,7 +41,6 @@ define(['sandbox'], function (sandbox) {
         var groups = jQuery(canvas.svg.root()).delegate('g.group', 'mousedown.dizzy.zebra.scale', function (e) {
           return groupTranslate(this, e);
         });
-		
 		var rotate = zebraNode.find('#zebra-rotate');
         rotate.bind('mousedown.dizzy.zebra.rotate', function (e) {
           return that.rotateStart(rotate, e);
@@ -189,6 +188,7 @@ define(['sandbox'], function (sandbox) {
      */
     scaleStart: function (s, e) {
       e.preventDefault();
+      e.stopPropagation();
       if (selectedGroup !== undefined) {
         var zebraOffset = zebraNode.offset();
         var info = {
@@ -224,7 +224,9 @@ define(['sandbox'], function (sandbox) {
           .translate(-svgOffset.x * (scaleFactor), -svgOffset.y * (scaleFactor)).scale(scaleFactor + 1).multiply(matrix);
           
           sandbox.publish('dizzy.ui.zebra.start.scale');
-          //canvas.transform( selectedGroup, nodeTransform, { duration : 0 } );
+          
+          //this should be removed if scale and rotate are started by the same div
+          canvas.transform( selectedGroup, nodeTransform, { duration : 0 } );
         });
         $(document).bind('mouseup.dizzy.zebra.scale mouseleave.dizzy.zebra.scale', function (e) {
           $(document).unbind('mousemove.dizzy.zebra.scale');
@@ -279,8 +281,8 @@ define(['sandbox'], function (sandbox) {
           duration: 0
         });
         zebraNode.css({
-          top: e.pageY - zebraNode.width() / 2,
-          left: e.pageX - zebraNode.height() / 2
+          top: e.pageY - zebraNode.height() / 2,
+          left: e.pageX - zebraNode.width() / 2
         });
         sandbox.publish('dizzy.ui.zebra.start.translate');
       });
@@ -323,7 +325,7 @@ define(['sandbox'], function (sandbox) {
 		if (isNaN(wid)){ sw = 3; }
 		else { var sw = parseFloat(wid); }
 		if(sw > 0)
-			if (sw > 1) node.attr('stroke-width', sw-1);
+			if (sw > 1) node.attr('stroke-width', sw-2);
 			else node.attr('stroke-width', Math.round((sw*10)-1)/10);
 	},
 	
@@ -336,7 +338,7 @@ define(['sandbox'], function (sandbox) {
 		var wid = node.attr('stroke-width');
 		if (isNaN(wid)){ sw = 3; }
 		else { var sw = parseFloat(wid); }
-		if(sw >= 1)  node.attr('stroke-width', sw+1);
+		if(sw >= 1)  node.attr('stroke-width', sw+2);
 		else node.attr('stroke-width', Math.round((sw*10)+1)/10);
 	},
 	
@@ -381,6 +383,7 @@ define(['sandbox'], function (sandbox) {
   }
   
   sandbox.subscribe('dizzy.presentation.transform', hideZebra);
+  sandbox.subscribe('dizzy.ui.resizer.start', hideZebra);
 
   var selectedGroup;
   sandbox.subscribe('dizzy.presentation.group.selected', function (d) {
@@ -394,7 +397,6 @@ define(['sandbox'], function (sandbox) {
       zebraNode.show();
       
       zebraNode.find('.toolbutton').removeClass('hidden');
-      zebraNode.find('#Dots').addClass('hidden');
       groupType = selectedGroup.dom().children().first().prop('localName');
 			
 		if(groupType && groupType != 'rect'){

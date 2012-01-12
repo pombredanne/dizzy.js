@@ -46,8 +46,6 @@ define(['sandbox'], function (sandbox) {
         var newGroup = canvas.createGroup();
         var newGroupDom = newGroup.dom();
         
-        newGroupDom.attr('name','cacca');
-        
         var color = canvas.getStrokeColor();
         
         // !!! Set color management

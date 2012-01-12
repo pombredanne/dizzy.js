@@ -43,10 +43,9 @@ define(['sandbox'],  function(sandbox){
       }
     };
 
-    function assignEventHandler() {
+    function assignEventHandler(){
       // edit text
-      //$(canvas.svg.root()).delegate('.group', 'click.dizzy.mode.text.edit', function (e) {
-	  $('.group').bind('click.dizzy.mode.text.edit', function(e){
+      $(canvas.svg.root()).delegate('.group', 'click.dizzy.mode.text.edit', function (e) {
         e.stopImmediatePropagation();
         var text = $(this).children('text');
         if (text.size() > 0) {
@@ -76,7 +75,7 @@ define(['sandbox'],  function(sandbox){
 			newText(e);
 		} 
         return false;
-      }),   
+      });
       
       // new text
       $(canvas.svg.root()).bind('click.dizzy.mode.text.new', function (e) {
@@ -126,9 +125,12 @@ define(['sandbox'],  function(sandbox){
 	}
 
     function removeEventHandler() {
-      $(canvas.svg.root()).unbind('click.dizzy.mode.text.new');
-      $('.group').unbind('click.dizzy.mode.text.edit');
-      //$(canvas.svg.root()).undelegate('g.group');
+		//for some reason the commented unbind didn't work
+	  $(canvas.svg.root()).unbind();
+      //$(canvas.svg.root()).unbind('click.dizzy.mode.text.new');
+      //$('.group').unbind('click.dizzy.mode.text.edit');
+      $(canvas.svg.root()).undelegate('g.group');
+      //$(canvas.svg.root()).undelegate('g.group', 'click.dizzy.mode.text.edit');
     }
 
 

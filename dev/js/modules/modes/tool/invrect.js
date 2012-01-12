@@ -16,14 +16,14 @@ define(['sandbox'], function (sandbox) {
 		start: function () {
 			if(canvas){
 				$(canvas.svg.root()).bind('mousedown.dizzy.mode.line', function(e){ return editorLineStart(e); });
-				$(canvas.svg.root()).bind('mouseup.dizzy.mode.line mouseleave.dizzy.mode.line', function(e){ return editorLineEnd(e); });
+				$(canvas.svg.root()).bind('mouseup.dizzy.mode.line', function(e){ return editorLineEnd(e); });
 				$(canvas.svg.root()).addClass('editing drawing');
 			}
 		},
 	
 		stop: function () {
 			$(canvas.svg.root()).unbind('mousedown.dizzy.mode.line');
-			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.line mouseleave.dizzy.mode.line');
+			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.line');
 			$(canvas.svg.root()).removeClass('editing drawing');
 		}
 	};
