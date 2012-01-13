@@ -168,15 +168,15 @@ define(['sandbox'], function (sandbox) {
           for (var i = 0; i < vendorprefixes.length; ++i) {
             r.css(vendorprefixes[i] + 'transform', 'rotate(' + rotationAngleSum + 'deg)');
           }
-		  sandbox.publish('dizzy.ui.zebra.start.rotate');
           canvas.transform(selectedGroup, nodeTransform, {
             duration: 0
           });
+          sandbox.publish('dizzy.ui.zebra.start.rotate');
         });
         $(document).bind('mouseup.dizzy.zebra.rotate mouseleave.dizzy.zebra.rotate', function (e) {
           $(document).unbind('mousemove.dizzy.zebra.rotate');
-          $(document).unbind('mouseup.dizzy.zebra.rotate mouseleave.dizzy.zebra.rotate');
-          sandbox.publish('dizzy.ui.zebra.stop.rotate');
+          //$(document).unbind('mouseup.dizzy.zebra.rotate mouseleave.dizzy.zebra.rotate');
+          //sandbox.publish('dizzy.ui.zebra.stop.rotate');
         });
 
       }
@@ -223,18 +223,19 @@ define(['sandbox'], function (sandbox) {
           // translation is used to scale group around center
           .translate(-svgOffset.x * (scaleFactor), -svgOffset.y * (scaleFactor)).scale(scaleFactor + 1).multiply(matrix);
           
-          sandbox.publish('dizzy.ui.zebra.start.scale');
+          
           
           //this should be removed if scale and rotate are started by the same div
           canvas.transform( selectedGroup, nodeTransform, { duration : 0 } );
+          sandbox.publish('dizzy.ui.zebra.start.scale');
         });
         $(document).bind('mouseup.dizzy.zebra.scale mouseleave.dizzy.zebra.scale', function (e) {
           $(document).unbind('mousemove.dizzy.zebra.scale');
           $(document).unbind('mouseup.dizzy.zebra.scale mouseleave.dizzy.zebra.scale');
-          sandbox.publish('dizzy.ui.zebra.stop.scale');
+          //sandbox.publish('dizzy.ui.zebra.stop.scale');
         });
       }
-      return true;
+      return false;
     },
 
     /*
@@ -288,7 +289,8 @@ define(['sandbox'], function (sandbox) {
       });
       $(document).bind('mouseup.dizzy.zebra.translate mouseleave.dizzy.zebra.translate', function (e) {
         $(document).unbind('mousemove.dizzy.zebra.translate');
-        sandbox.publish('dizzy.ui.zebra.stop.translate');
+        $(document).unbind('mouseup.dizzy.zebra.translate mouseleave.dizzy.zebra.translate');
+        //sandbox.publish('dizzy.ui.zebra.stop.translate');
       });
       return false;
     },

@@ -166,7 +166,7 @@ hr{
 }
 
 .toolbutton, #toolbar, #zebra-toolbar  {
-	background: #AAAAAA;
+	/*background: #AAAAAA;*/
 	
 }
 
@@ -424,10 +424,9 @@ input[class="color"]{
 	
 	width: 52%;
 	height: 52%;
-
+	-webkit-border-radius:52%;
 	-moz-border-radius: 52%;
 	border-radius: 52%;
-
 }
 
 #zebra #zebra-scale{
@@ -447,8 +446,9 @@ input[class="color"]{
 	*/
 	background-image: url('../img/zebra-background.svg');
 	overflow: visible;
-	-moz-border-radius: 90px;
-	border-radius: 90px;
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+	border-radius: 100px;
 }
 
 #zebra #zebra-rotate{
@@ -466,7 +466,7 @@ input[class="color"]{
 	*/
 	
 	border: 20px dotted #AAAAAA;
-	
+	-webkit-border-radius: 100px;
 	-moz-border-radius: 100px;
 	border-radius: 100px;
 }
@@ -513,13 +513,13 @@ input[class="color"]{
 #zebra #zebra-toolbar{
 	position: absolute;
 	
-	top: 38px;
-	left: 146px;
+	top: 42px;
+	left: 112px;
 	
 	width: 66px;
 
 	
-	border: 1px solid black;
+	border: 2px solid #0a82ad;
 }
 
 #zebra #zebra-toolbar  .toolbutton{
@@ -866,18 +866,77 @@ svg .invisible{
 #resizer{
 	opacity: 0.5;
 	border-radius: 50%;
-	border-color: black;
+	border: 2px solid black;
 	margin: black;
-	width: 40px;
-	height: 40px;
+	width: 36px;
+	height: 36px;
 	position: fixed;
 	top:50%;
 	left:50%;
 	z-index: 9;
-	background: red;
-	/*
-	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
-	background-image: -webkit-radial-gradient(45px 45px, circle cover, yellow, orange);
-	background-image: radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
-	*/
+	background: PowderBlue;
+	cursor: pointer;
+}
+
+/* NEW ZEBRA*/
+#zebra {
+	height: 112px;
+	width: 112px;
+}
+
+#zebra #zebra-translate {
+	background: none repeat scroll 0 0 #6db5cf;
+	left: 26%;
+	top: 26%;
+	width: 50%;
+	height: 50%;
+	opacity: 0.4;
+}
+
+#zebra #zebra-scale{
+	background: url('../img/zebra-scale.svg') repeat scroll 0 0 transparent;
+	height: 75px;
+	width: 75px;
+	top: 19px;
+	left: 19px;
+}
+#zebra #zebra-rotate{
+	background: url('../img/zebra-rotate.svg') repeat scroll 0 0 transparent;
+    border: 0px;
+    height: 112px;
+    width: 112px;
+}
+
+#zebra #zebra-expand-button{
+	right: 0;
+	top: 50px;
+	
+	width: 15px;
+	height: 15px;
+	font-size: 15px;
+
+	line-height: 12px;
+
+	border: 2px solid #0a82ad;
+	background: #0a82ad;
+	color: #FFFFFF;
+}
+#zebra #zebra-expand-button:hover{
+	background: #FFFFFF;
+	color: #0a82ad;
+}
+
+#zebra #zebra-expand-button.mirrored{
+	background: #FFFFFF;
+	color: #0a82ad;
+}
+
+#zebra-toolbar {
+	background: #FFFFFF;
+	opacity: 0.9;
+}
+
+#zebra-toolbar .toolbutton {
+	background: transparent;
+	
 }
