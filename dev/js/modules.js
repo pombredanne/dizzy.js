@@ -10,7 +10,7 @@ define(
     'modules/modes/canvas/pan', 'modules/modes/canvas/zoom', 'modules/modes/canvas/zebra',
     'modules/modes/tool/default', 'modules/modes/tool/image', 'modules/modes/tool/path', 
     'modules/modes/tool/line', 'modules/modes/tool/rect', 'modules/modes/tool/text',
-    /*'modules/ui/slider', 'modules/ui/slider.filler', 'modules/ui/image_drop',*/
+    'modules/ui/slider', 'modules/ui/slider.filler', 'modules/ui/image_drop',
     'modules/ui/tracker', 'modules/modes/tool/presentation', 'modules/modes/tool/invrect', 'modules/modes/tool/ellipse',
     'modules/modes/tool/captureview', 'modules/modes/canvas/resizer'
     

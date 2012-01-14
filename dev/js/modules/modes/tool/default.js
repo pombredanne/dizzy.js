@@ -83,6 +83,7 @@ define(['sandbox'], function (sandbox) {
   
   sandbox.subscribe('dizzy.ui.toolbar.color.stroke.changed', function(d){
 	  var selex = canvas.findGroup("g.selected");
+	  if (selex)
 	  selex.dom().children().first().attr('stroke', d.color);
   });
   

@@ -10,7 +10,7 @@ define(['sandbox'],  function (sandbox) {
   // subscribe to own and foreign events (o:
   // when a button of the toolbar is clicked:
   sandbox.subscribe('dizzy.ui.toolbar.clicked', function (d) {
-	  if(d.button != 'menu-button' && d.button != 'tool-color'){
+	  if(d.button != 'menu-button' && d.button != 'tool-color' && d.button != 'present-toggle-button'){
 		var button = toolbar.find('#' + d.button); // get the button (jquery object instance)
 		button.siblings().removeClass('pressed'); // make the siblings appear not pressed
 		button.addClass('pressed'); // make it appear pressed

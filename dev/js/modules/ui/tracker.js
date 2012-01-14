@@ -5,6 +5,7 @@ define(['sandbox'],  function (sandbox) {
   var canvas;
   var containerId = 'dizzy';
   var tracker;
+  var trackerList;
   var count=0; //to give groups a different name, just to help the user to distinguish them.
   var list = new Array();
   
@@ -13,7 +14,7 @@ define(['sandbox'],  function (sandbox) {
     if (tracker == undefined) start();
     else {
 		count=0;
-		$('#tracker-list').html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Zoom</th><th>Speed</th><th>Go</th></tr>');
+		trackerList.html('<tr><th>Type</th><th>Name</th><th>Path Num</th><th>Zoom</th><th>Speed</th><th>Go</th></tr>');
 		emptyList();
 		loadExistingGroups();
 	}
@@ -34,7 +35,7 @@ define(['sandbox'],  function (sandbox) {
 		  invisible = 'class="hidden"';
 		  icon = '';
 	  }
-	  tracker.find("#tracker-list").append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/>%</td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+	  trackerList.append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/></td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 	  console.log("Group "+id+" tracked");
   });
   
@@ -43,7 +44,7 @@ define(['sandbox'],  function (sandbox) {
 	  var id = d.id;
 	  for (var i=0; i<list.length; i++){
 		  if (id == list[i].id){
-			  tracker.find("#tracker-list").find('tr:nth-child('+(i+2)+')').remove(); //toCheck (i+2)
+			  trackerList.find('tr:nth-child('+(i+2)+')').remove(); //toCheck (i+2)
 			  list.splice(i, 1);
 			  break;
 		  }
@@ -89,7 +90,7 @@ define(['sandbox'],  function (sandbox) {
 			}
 			list.push({type: type, id: id});
 			
-			tracker.find("#tracker-list").append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/>%</td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
+			trackerList.append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/></td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
 			console.log("Group "+id+" tracked");
 		};		
 	}
@@ -118,22 +119,27 @@ define(['sandbox'],  function (sandbox) {
   var assignEventHandlers = function () {
 		
 		var button = tracker.find('#tracker-expand');
+		trackerList = tracker.find("#tracker-list");
 		button.toggle(function(){
-				tracker.find("#tracker-list").show();
+				trackerList.show();
 				sandbox.publish('dizzy.presentation.transform.tracker.open');
 			}, 
 			function(){
-					tracker.find("#tracker-list").hide()
+					trackerList.hide()
 					sandbox.publish('dizzy.presentation.transform.tracker.open');
 		});
 		
-		$('#tracker-list').delegate('.tracker-go','click',function(){
+		tracker.bind('mousewheel', function(e, delta){ // mousewheel support for scrolling in canvas
+           e.stopPropagation();
+        });
+		
+		trackerList.delegate('.tracker-go','click',function(){
 			sandbox.publish('dizzy.presentation.transform.tracker.go');
 			var index = $(this).parent('tr').prop('rowIndex'); //rowIndex starts from 1
 			canvas.visitGroup(list[index-1].id);
 		})
 		
-		$('#tracker-list').delegate('.tracker-name','change',function(){
+		trackerList.delegate('.tracker-name','change',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			
@@ -143,7 +149,7 @@ define(['sandbox'],  function (sandbox) {
 			group.dom().attr('name', $(this).val()); //'name' serves only to help the user to distinguish groups
 		});
 		
-		$('#tracker-list').delegate('.tracker-zoom', 'change', function(){
+		trackerList.delegate('.tracker-zoom', 'change', function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			var val = $(this).val();
@@ -153,7 +159,7 @@ define(['sandbox'],  function (sandbox) {
 				$(this).val(group.dom().attr('zoom') ? group.dom().attr('zoom') : "");
 		});
 		
-		$('#tracker-list').delegate('.tracker-speed', 'change', function(){
+		trackerList.delegate('.tracker-speed', 'change', function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			var val = $(this).val();
@@ -163,7 +169,7 @@ define(['sandbox'],  function (sandbox) {
 				$(this).val(group.dom().attr('speed') ? group.dom().attr('speed') : "1");
 		});
 		
-		$('#tracker-list').delegate('.tracker-path-numbers','change',function(){
+		trackerList.delegate('.tracker-path-numbers','change',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			
@@ -184,7 +190,7 @@ define(['sandbox'],  function (sandbox) {
 			}
 		});
 		
-		$('#tracker-list').delegate('tr','hover',function(e){
+		trackerList.delegate('tr','hover',function(e){
 				var index = $(this).prop('rowIndex'); //rowIndex starts from 1 - 0 is the th
 				if(index){
 					var group = canvas.groupList[index-1];
@@ -192,14 +198,15 @@ define(['sandbox'],  function (sandbox) {
 				}
 		});
 		
+		
 		/*
-		$('#tracker-list').delegate('.show-transf','click',function(){
+		trackerList.delegate('.show-transf','click',function(){
 			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
 			var group = canvas.groupList[index-1];
 			console.log("transf: "+group.transformation());
 		});*/
 		
-	  //tracker.disableTextSelect();
+	  //tracker.children().disableTextSelect();
     }
     
     var emptyList = function(){

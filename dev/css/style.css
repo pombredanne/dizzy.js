@@ -43,7 +43,6 @@ a, a:active, a:link{
 	font-size: 0.9em;
 }
 
-
 li li.selected{
 	background: #CFCFCF;
 }
@@ -66,12 +65,13 @@ hr{
 	border: 1px solid #9A9A9A;
 	border-bottom: 1px solid #EEEEEE;
 	border-right: 1px solid #EEEEEE;
-	
 }
 
 #menu fieldset{
 	border: 0;
 }
+
+/* #dizzy */
 
 #dizzy{
 	position: absolute;
@@ -81,18 +81,16 @@ hr{
 	width: 100%;
 	height: 100%;
 	
-
-	
 	z-index: -1;
 }
 
 #dizzy .editing.textmode{
 	cursor: text;
 }
-
+/* linuslabo
 #dizzy .editing g.group.selected{
 	opacity: 0.5;
-}
+}*/
 
 #dizzy .editing .invisibleRect, #dizzy .path .invisibleRect{
 	opacity: 1;
@@ -122,16 +120,15 @@ hr{
 	cursor: url(../img/cursor_path.png), pointer;
 }
 
+/* TOOLBAR */
 
 #tools-main{
 	position: absolute;
 	top: 5%;
 	left: 1%;
 
-	
 	box-sizing: border-box;
-	
-	
+		
 	overflow: visible;
 }
 
@@ -142,8 +139,13 @@ hr{
 .inactive{
 	opacity: 0.5;
 }
+
 #toolbar > .toolbutton.inactive:hover{
 	background: #AAAAAA;
+	/*border: 0px solid #0a82ad;*/
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 #toolbar{
@@ -158,49 +160,55 @@ hr{
 	
 	opacity: 1;
 	
-	z-index: 10;
+	z-index: 12;
+	border: 2px solid #0a82ad;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background: #FFFFFF;
 }
 
 #toolbar.invisible{
 	opacity: 0;
 }
-
+/*
 .toolbutton, #toolbar, #zebra-toolbar  {
-	/*background: #AAAAAA;*/
-	
-}
+}*/
 
 .toolbutton{
 	float: left;
 
-	
 	font-weight: bold;
 	text-align:center;
+	
+	background: white;
 }
-
-
 
 #toolbar > .toolbutton {
 	width: 35px;
 	height: 35px;
 	
-	border: 1px solid black;
-	
 	line-height: 35px;
 	
 	font-size: 13px;
 }
-.toolbutton.pressed, .toolbutton.pressed:hover{
-	background: #888888;
+
+#toolbar > .toolbutton.pressed, #toolbar > .toolbutton.pressed:hover{
+	background: rgba(109, 181, 207, 0.3);
+	width: 31px;
+	height: 31px;
+	border: 2px solid #0a82ad;
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+	border-radius: 40px;
 }
 
-
 .toolbutton:hover {
-	background: #BBBBBB;
-}
-
-.toolbutton:hover {
-	cursor: pointer;	
+	background: rgba(109, 181, 207, 0.3);
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+	border-radius: 40px;
+	cursor: pointer;
 }
 
 .toolbutton img{
@@ -228,45 +236,51 @@ input[class="color"]{
  * Remove double borders from two elements that are next to each other (horizontal or vertical)
  */
 #toolbar > .toolbutton:nth-child(n+2){
-	border-top: 0;
+	margin-left: 1px;
+	margin-top: 1px;
 }
 #toolbar > .toolbutton:nth-child(2n+3){
-	border-left: 0;
+	margin-left: 1px;
+	margin-right: 1px;
+	margin-top: 1px;
 }
-
+/*
 #toolbar > .toolbutton:last-child{
 	border-left: 1px solid black;
-}
+}*/
 
 /*
  * Round first and last borders to make it a little nicer to look at (:
  */
  #toolbar > .toolbutton:first-child{
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-top-left-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-topleft: 3px;
-	border-top-right-radius: 3px;
-	border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 7px;
+	-webkit-border-top-left-radius: 7px;
+	-moz-border-radius-topright: 7px;
+	-moz-border-radius-topleft: 7px;
+	border-top-right-radius: 7px;
+	border-top-left-radius: 7px;
 }
 #toolbar > .toolbutton:last-child{
-	-webkit-border-bottom-right-radius: 3px;
-	-webkit-border-bottom-left-radius: 3px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
+	-webkit-border-bottom-right-radius: 7px;
+	-webkit-border-bottom-left-radius: 7px;
+	-moz-border-radius-bottomright: 7px;
+	-moz-border-radius-bottomleft: 7px;
+	border-bottom-right-radius: 7px;
+	border-bottom-left-radius: 7px
 }
 
 /*
  * Two buttons that are twice as wide as normal buttons.
  */
 #toolbar > .toolbutton.fullwidth {
-	width: 71px; /* +1 because all other buttons have a 1pxborder between them */
+	width: 73px;
 	
 	height: 34px;
 	line-height: 34px;
 	overflow: hidden;
+	
+	margin-right: 0;
+	margin-left: 0;
 }
 /*
  * Top toolmenu button
@@ -274,34 +288,47 @@ input[class="color"]{
 #toolbar > #menu-button{
 	overflow: visible;
 	
-	color: #FFFFFF;
+	color: #FFF;
 	
-	background-color: #990000;
+	background-color: #0a82ad;
     /* Firefox 3.6+ */
-    background: -moz-linear-gradient(5% 80% 90deg, #770000, #BB0000);
+    background: -moz-linear-gradient(5% 80% 90deg, #6db5cf, #0a82ad);
     /* Safari 4+, Chrome 1+ */
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BB0000), to(#770000));
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0a82ad), to(#6db5cf));
     /* Safari 5.1+, Chrome 10+ */
-    background: -webkit-linear-gradient(#BB0000, #770000); 
+    background: -webkit-linear-gradient(#0a82ad, #6db5cf); 
     /* Opera 11.10+ */
-    background: -o-linear-gradient(top, #BB0000, #770000);
+    background: -o-linear-gradient(top, #0a82ad, #6db5cf);
+    
+    margin-bottom: 2px;
+	border-bottom: 2px solid #0a82ad;
 }
 #toolbar > #menu-button:hover{
 	overflow: visible;
 	
 	color: #FFFFF;
 	
-	background-color: #AA0000;
+	background-color: #0a82ad;
     /* Firefox 3.6+ */
-    background-image: -moz-linear-gradient(5% 80% 90deg, #880000, #CC0000);
+    background-image: -moz-linear-gradient(5% 80% 90deg, #143985, #0a82ad);
     /* Safari 4+, Chrome 1+ */
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CC0000), to(#880000));
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0a82ad), to(#143985));
     /* Safari 5.1+, Chrome 10+ */
-    background-image: -webkit-linear-gradient(#CC0000, #880000); 
+    background-image: -webkit-linear-gradient(#0a82ad, #143985); 
     /* Opera 11.10+ */
-    background-image: -o-linear-gradient(top, #CC0000, #880000);
+    background-image: -o-linear-gradient(top, #0a82ad, #143985);
+    
+    -webkit-border-bottom-right-radius: 0px;
+	-webkit-border-bottom-left-radius: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px
 }
 
+#toolbar > #tool-color:hover{
+	background: #FFFFFF;
+}
 
 /*
  * bottom toolmenu button
@@ -316,6 +343,9 @@ input[class="color"]{
     background: -webkit-linear-gradient(#CCCCCC, #999999); 
     /* Opera 11.10+ */
     background: -o-linear-gradient(top, #CCCCCC, #999999);
+    
+    margin-top: 2px;
+	border-top: 2px solid #0a82ad;
 }
 /*
  * bottom toolmenu button
@@ -330,8 +360,14 @@ input[class="color"]{
     background-image: -webkit-linear-gradient(#DDDDDD, #AAAAAA); 
     /* Opera 11.10+ */
     background-image: -o-linear-gradient(top, #DDDDDD, #AAAAAA);
+    
+    -webkit-border-top-right-radius: 0px;
+	-webkit-border-top-left-radius: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-topleft: 0px;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
 }
-
 
 #menu{
 	float: left;
@@ -340,14 +376,11 @@ input[class="color"]{
 	width: 90%;
 }
 
-
-
 #menu > * {
-	border: 1px solid black;
-	border-left: 0;
-	
-	border-radius: 2px;
-	-moz-border-radius: 2px;
+	border: 2px solid #0a82ad;
+	margin-left: 1px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
 	
 	background: #FFF;
 }
@@ -359,8 +392,6 @@ input[class="color"]{
 	
 	padding: 0;
 	padding-right: 1%;
-	
-
 	
 	box-sizing:inherit;	
 }
@@ -393,7 +424,6 @@ input[class="color"]{
 	width: 98%;
 }
 
-
 /*
  * Zebra styling.
  */
@@ -415,7 +445,7 @@ input[class="color"]{
 	top: 0;
 	left: 0;
 }
-/* not visible, just there to catch the mousedown event, making it look like the user clicked the group */
+
 #zebra #zebra-translate{
 	position: absolute;
 	
@@ -434,16 +464,10 @@ input[class="color"]{
 	
 	top: 0px;
 	left: 0px;
-	width: 90px; /* 100px - (3 [margins] + 12 [border])*2 */
+	width: 90px;
 	height: 90px;
 	background: transparent;
-	/*
-	border: 20px dashed #CCC;
 	
-
-	-moz-border-radius: 80px;
-	border-radius: 80px;
-	*/
 	background-image: url('../img/zebra-background.svg');
 	overflow: visible;
 	-webkit-border-radius: 100px;
@@ -460,10 +484,6 @@ input[class="color"]{
 	width: 90px;
 	height: 90px;
 	background: transparent;
-	
-	/*
-	   no dedicated controls for scaling and rotation anymore. The rotate element is still in, but not visible
-	*/
 	
 	border: 20px dotted #AAAAAA;
 	-webkit-border-radius: 100px;
@@ -516,13 +536,17 @@ input[class="color"]{
 	top: 42px;
 	left: 112px;
 	
-	width: 66px;
+	width: 64px;
 
-	
 	border: 2px solid #0a82ad;
+	z-index: 6;
+	
+	background: #FFFFFF;
+	opacity: 1;
+	z-index: 6;
 }
 
-#zebra #zebra-toolbar  .toolbutton{
+#zebra #zebra-toolbar .toolbutton{
 	width: 32px;
 	height: 32px;
 	
@@ -534,13 +558,12 @@ input[class="color"]{
 	height: 32px;
 }
 
-
 #zebra #zebra-toolbar{
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
-
+/*
 #zebra #zebra-toolbar .zebra-toolbar-row:first-child{
 	border-bottom: 1px solid black;
 }
@@ -556,7 +579,7 @@ input[class="color"]{
 
 #zebra #zebra-toolbar .zebra-toolbar-row .toolbutton:first-child{
 	border-left: 0;
-}
+} /*
 
 #dialog-overlay{
 	position: absolute;
@@ -611,10 +634,6 @@ input[class="color"]{
 	float: right;
 }
 
-
-
-
-
 /*
  * jscolor colorpicker
  */
@@ -630,21 +649,40 @@ div.jscolor{
 }
 
 #textMode-overlay .toolbutton{
-    height: 23px;
+    height: 20px;
     margin-right: 3px;
     padding: 5px;
-	-webkit-border-bottom-right-radius: 7px;
-	-webkit-border-bottom-left-radius: 7px;
-	-moz-border-radius-bottomright: 7px;
-	-moz-border-radius-bottomleft: 7px;
-	border-bottom-right-radius: 7px;
-	border-bottom-left-radius: 7px;
+    /*background: rgba(109, 181, 207, 0.3);*/
+    border: 2px solid #0a82ad;
+    /*border-top: 0px;*/
+    margin-top: -2px;
+	-webkit-border-bottom-right-radius: 14px;
+	-webkit-border-bottom-left-radius: 14px;
+	-moz-border-radius-bottomright: 14px;
+	-moz-border-radius-bottomleft: 14px;
+	border-bottom-right-radius: 14px;
+	border-bottom-left-radius: 14px;
+}
+
+#textMode-overlay .toolbutton:hover{
+	-webkit-border-top-right-radius: 0px;
+	-webkit-border-top-left-radius: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-topleft: 0px;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+#textMode-overlay select{
+	cursor: pointer;
+	position: relative;
+	top: -3px;
 }
 
 textarea.textMode-input{
 	/*background: transparent;*/
 	background-color: rgba(255,255,255,0.9); /* 0.9 is opacity */
-	border: 1px solid black;
+	border: 2px solid #0a82ad;
 	line-height: 1em;
 	padding-left: 0;
 	padding-bottom: 5px;
@@ -652,12 +690,10 @@ textarea.textMode-input{
 	margin: 0;
 }
 
-
 svg .invisible{
 	fill: none !important;
 	stroke: none !important;
 }
-
 
 #debugrect{
 	border: 1px solid red;
@@ -676,7 +712,7 @@ svg .invisible{
 	left: 1%;
 	right: 1%;
 	z-index:3;
-	border: 2px solid #000;
+	border: 2px solid #0a82ad;
 	height: 150px;
 	width: 98%;
 	background-color: white;
@@ -700,13 +736,33 @@ svg .invisible{
 	display: none;
 	position: absolute;
 	bottom:0;
-	left: 1%;
-	border: 2px solid #000;
+	left: 10px;
+	width: 56px;
+	border: 2px solid #0a82ad;
+	border-bottom: 0;
 	font-weight: bold;
-	cursor: pointer;
 	z-index:6;
-	background-color: white;
-	color: black;
+	color: #FFF;
+	text-align: center;
+	
+	-webkit-border-top-right-radius: 14px;
+	-webkit-border-top-left-radius: 14px;
+	-moz-border-radius-topright: 14px;
+	-moz-border-radius-topleft: 14px;
+	border-top-right-radius: 14px;
+	border-top-left-radius: 14px;
+	
+	cursor: pointer;
+	
+	background-color: #0a82ad;
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(5% 80% 90deg, #6db5cf, #0a82ad);
+    /* Safari 4+, Chrome 1+ */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0a82ad), to(#6db5cf));
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#0a82ad, #6db5cf); 
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #0a82ad, #6db5cf);
 }
 #preview{
 	position:absolute;
@@ -801,10 +857,9 @@ svg .invisible{
 
 #tracker{
 	position: absolute;
-	right:2%;
+	right:10px;
 	top:0;
-	/*width: 230px; */
-	
+	text-align: center;	
 	
 	-ms-transition: 0.8s opacity ease-in-out;
 	-o-transition: 0.8s opacity ease-in-out;
@@ -821,40 +876,55 @@ svg .invisible{
 	position: relative;
 	right: 0;
 	top: 0;
-	max-height: 300px;
+	max-height: 385px;
+	width: 361px;
+	background: white;
+	border-left: 2px solid #0a82ad;
+	border-right: 2px solid #0a82ad;
 	overflow-y: auto;
 	overflow-x: hidden;
 	opacity: 1;
 	z-index: 10;
 }
 
-#tracker-list {
-	text-align:center;
-}
-
 #tracker #tracker-list {
 	display:none;
 }
 
-.toolbutton, #tracker {
-	background: #AAAAAA;
-	
-}
-
-#tracker > .toolbutton {
-	width: 100%;
+#tracker > #tracker-expand {
+	width: 361px
 	height: 15px;
-	border: 1px solid black;
-	line-height: 15px;
-	font-size: 13px;
+	border: 2px solid #0a82ad;
+	line-height: 17px;
+	font-weight: bold;
+	color: #FFF;
+	
+	-webkit-border-bottom-right-radius: 14px;
+	-webkit-border-bottom-left-radius: 14px;
+	-moz-border-radius-bottomright: 14px;
+	-moz-border-radius-bottomleft: 14px;
+	border-bottom-right-radius: 14px;
+	border-bottom-left-radius: 14px;
+	
+	cursor: pointer;
+	
+	background-color: #6db5cf;
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(5% 80% 90deg, #6db5cf, #0a82ad);
+    /* Safari 4+, Chrome 1+ */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#6db5cf), to(#0a82ad));
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#6db5cf, #0a82ad); 
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #6db5cf, #0a82ad);
 }
 
 #dizzy .hoveringElem{
 	opacity: 1 !important;
-	stroke: red !important;
+	stroke: #0a82ad !important;
 	fill-opacity: 0.3 !important;
 	stroke-opacity: 1 !important;
-	fill: #F1A21A !important;
+	fill: #6db5cf !important;
 	/*
 	stroke-width: 5;
 	stroke-miterlimit:4;
@@ -873,7 +943,7 @@ svg .invisible{
 	position: fixed;
 	top:50%;
 	left:50%;
-	z-index: 9;
+	z-index: 5;
 	background: PowderBlue;
 	cursor: pointer;
 }
@@ -886,22 +956,22 @@ svg .invisible{
 
 #zebra #zebra-translate {
 	background: none repeat scroll 0 0 #6db5cf;
-	left: 26%;
-	top: 26%;
-	width: 50%;
-	height: 50%;
+	left: 19px;
+	top: 19px;
+	width: 36px;
+	height: 36px;
 	opacity: 0.4;
 }
 
 #zebra #zebra-scale{
-	background: url('../img/zebra-scale.svg') repeat scroll 0 0 transparent;
-	height: 75px;
-	width: 75px;
+	background: url('../img/zebra-scale.svg') no-repeat scroll 0 0 transparent;
+	height: 74px;
+	width: 74px;
 	top: 19px;
 	left: 19px;
 }
 #zebra #zebra-rotate{
-	background: url('../img/zebra-rotate.svg') repeat scroll 0 0 transparent;
+	background: url('../img/zebra-rotate.svg') no-repeat scroll 0 0 transparent;
     border: 0px;
     height: 112px;
     width: 112px;
@@ -931,12 +1001,12 @@ svg .invisible{
 	color: #0a82ad;
 }
 
-#zebra-toolbar {
-	background: #FFFFFF;
-	opacity: 0.9;
-}
-
-#zebra-toolbar .toolbutton {
-	background: transparent;
-	
+#toolbar > .toolbutton.pressed{
+	background: rgba(109, 181, 207, 0.3);
+	width: 31px;
+	height: 31px;
+	border: 2px solid #0a82ad;
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+	border-radius: 100px;
 }
