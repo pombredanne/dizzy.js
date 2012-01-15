@@ -78,6 +78,8 @@ define(['sandbox'],  function (sandbox) {
 	  var inputStroke = document.getElementById('tool-input-color-stroke');
 	  var colorStroke = new CPicker(inputStroke);
 	  
+	  toolbar.find('.color').css({'font-size': '0'});
+	  
 	  sandbox.subscribe('dizzy.presentation.transform', function(){
 		  colorFill.close();
 		  colorStroke.close();  

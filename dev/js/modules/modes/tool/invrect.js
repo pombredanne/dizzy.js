@@ -49,7 +49,7 @@ define(['sandbox'], function (sandbox) {
         
         var color = canvas.getStrokeColor();
         
-        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {strokeWidth : 3, stroke: 'black', 'fill-opacity': 0, 'stroke-opacity':0}));
+        line = $(canvas.svg.rect(svgOffset.x, svgOffset.y, 0, 0, {width: 20, height: 20, strokeWidth : 3, stroke: 'black', 'fill-opacity': 0, 'stroke-opacity':0}));
         line.addClass("invisibleRect");
         x=svgOffset.x;
         y=svgOffset.y;
@@ -70,8 +70,8 @@ define(['sandbox'], function (sandbox) {
 			y: evt.pageY
 		});
 		
-		var w = Math.abs(svgOffset.x-x);
-		var h = Math.abs(svgOffset.y-y);
+		var w = Math.max(20, Math.abs(svgOffset.x-x));
+		var h = Math.max(20, Math.abs(svgOffset.y-y));
         
         /* If it grows to the left */
         if(svgOffset.x-x<0)

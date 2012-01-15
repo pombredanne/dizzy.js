@@ -31,6 +31,8 @@ define(['sandbox'], function (sandbox) {
 	function captureView() {
         var newGroup = canvas.createGroup();
         var newGroupDom = newGroup.dom();
+        
+		newGroupDom.prependTo(newGroupDom.parent());
 		
 		var docW = $(document).width();
 		var docH = $(document).height();

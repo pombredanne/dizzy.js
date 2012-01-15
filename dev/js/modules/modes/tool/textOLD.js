@@ -7,37 +7,21 @@ define(['sandbox'],  function(sandbox){
     var canvas;
     var textBox;
     var textOverlay;
+    // 
     var clickOpensTextbox = false;
-    var selectedTextGroup;
-        
+    
     /*
      * Subscribtions
      */
     sandbox.subscribe('dizzy.presentation.loaded', function (c) {
       canvas = c.canvas;
     });
-    
     // if canvas was panned, don't open up a textbox
     sandbox.subscribe('dizzy.presentation.transform.do', function (data, name) {
       //if( name.indexOf('.end') < 0 ){
       clickOpensTextbox = false;
       //}
     });
-    
-    sandbox.subscribe('dizzy.io.mouse.wheel', hideTextbox);
-    //sandbox.subscribe('dizzy.canvas.io.mouse.click', hideTextbox);
-    //sandbox.subscribe('dizzy.canvas.io.mouse.down', hideTextbox);
-    sandbox.subscribe('dizzy.presentation.transform.tracker.go', hideTextbox);
-    
-    sandbox.subscribe('dizzy.ui.toolbar.color.fill.changed', function(d){
-	  if(selectedTextGroup)
-	  selectedTextGroup.dom().children().first().attr('fill', d.color);
-	});
-  
-	sandbox.subscribe('dizzy.ui.toolbar.color.stroke.changed', function(d){
-	  if (selectedTextGroup)
-	  selectedTextGroup.dom().children().first().attr('stroke', d.color);
-	});
 
     var textMode = {
       depends: ['zoom', 'pan'],
@@ -60,26 +44,20 @@ define(['sandbox'],  function(sandbox){
     };
     
     var screenCoordsForText = function(text){
-		var Coords = {};
+		var dotCoord;
 		var matrix  = text.getScreenCTM();
 		var svg = document.getElementsByTagName('svg')[0];
 		var pt = svg.createSVGPoint();
-		
 		bbox = text.getBBox();
 		pt.x = bbox.x;
 		pt.y = bbox.y;
-		Coords.nw = pt.matrixTransform(matrix);
-		pt.x += bbox.width;
-		Coords.ne = pt.matrixTransform(matrix);
 		pt.y += bbox.height;
-		Coords.se = pt.matrixTransform(matrix);
-		pt.x -= bbox.width;
-		Coords.sw = pt.matrixTransform(matrix);
+		dotCoord = pt.matrixTransform(matrix);
 		
-		return Coords;
+		return dotCoord;
 	};
 
-    function assignEventHandler(){		
+    function assignEventHandler(){
       // edit text
       $(canvas.svg.root()).delegate('.group', 'click.dizzy.mode.text.edit', function (e) {
         e.stopImmediatePropagation();
@@ -89,15 +67,27 @@ define(['sandbox'],  function(sandbox){
           if (clickOpensTextbox) {
             var group = canvas.getGroup(this);
             
-            canvas.centerGroup(group, {
+            text.attr('id', 'tempTextId');
+			var textjs = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
+			text.removeAttr('id');
+			
+			//var viewportCoordinates = screenCoordsForText(textjs);
+            
+            
+            var textCoordinates = {
+              x: text.attr('x'),
+              y: text.attr('y')
+            };
+            var viewportCoordinates = canvas.toViewboxCoordinates(textCoordinates, true);
+            
+			/*
+            canvas.gotoGroup(group, { // usefull !!!
               duration: 100,
               complete: function () {
-				var viewportCoordinates = updateSizeForText(text);
-				
-				selectedTextGroup = group;
-				showTextbox(group, viewportCoordinates);
+                showTextbox(group, viewportCoordinates);
               }
-            });
+            });*/
+            showTextbox(group, viewportCoordinates);
             
           } else {
             hideTextbox();
@@ -130,10 +120,10 @@ define(['sandbox'],  function(sandbox){
           var newTextSpan = $(canvas.svg.other(newText, 'tspan'));
 
           var svgOffset = canvas.toViewboxCoordinates(clickCoordinates);
-		  var fontSize = 200; 
+
           newText.attr({
 			'font-family' : 'serif',
-			'font-size': fontSize+'px',
+			'font-size': '200px',
             x: svgOffset.x,
             y: svgOffset.y,
             stroke: canvas.getStrokeColor(),
@@ -141,12 +131,10 @@ define(['sandbox'],  function(sandbox){
           });
           newText.append(newTextSpan);
           newGroupDom.append(newText);
-          
-          selectedTextGroup = newGroup;
 
           showTextbox(newGroup, {
             x: e.pageX,
-            y: e.pageY-45 //textBox height for 200px text
+            y: e.pageY
           });
           
           sandbox.publish('dizzy.canvas.group.created.text', {
@@ -165,96 +153,83 @@ define(['sandbox'],  function(sandbox){
       $(canvas.svg.root()).undelegate('g.group');
       //$(canvas.svg.root()).undelegate('g.group', 'click.dizzy.mode.text.edit');
     }
-    
-    /* Update the size (and position) of the TextBox for the text 'text' and returns the north-west corner screen coordinates */
-    function updateSizeForText(text){
-		
-		if(text == undefined) return;
-		
-		text.attr('id', 'tempTextId');
-		var textjs = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
-		text.removeAttr('id');
-		
-		var bboxCoords = screenCoordsForText(textjs);
-				
-		var screenCoordinates = {x: bboxCoords.nw.x, y: bboxCoords.nw.y};
-		
-		if (screenCoordinates.x || screenCoordinates.y){
-				
-			var bbWidth = (bboxCoords.ne.x-bboxCoords.nw.x);
-			var bbHeight = (bboxCoords.sw.y-bboxCoords.nw.y);
-			textBox.width(bbWidth);
-			textBox.height(bbHeight);
-			
-			textOverlay.css({
-			top: screenCoordinates.y,
-			left: screenCoordinates.x
-			})
-		}
-		return screenCoordinates;
-	}
-    
-    function keyPressed(ev, node){
-		ev.preventDefault();
-		var text = node;
-		node = node.children().last();
-		var oldText = node.text();
-		if( ev.which !== 0 && ev.which !== 8 ){ // backspace
-			node.text(oldText+String.fromCharCode(ev.which));
-		}
-		updateSizeForText(text);
-		return true;
-		
-	}
-	
-	function keyDown(ev, node){
-		//ev.preventDefault();
-		if( node.size() !== 0 ){
-			if(ev.which === 13 ){ // enter (multiline text)
-				var textSpan = $(canvas.svg.other(node, 'tspan'));
-				var precSpan = textSpan.closest();
-				textSpan.attr('x', node.attr('x')).attr('dy', window.getComputedStyle(textSpan[0], null).getPropertyValue('font-size'));
-				return false;
-				
-			}else if(ev.which === 46 || (ev.which === 0 && ev.keyCode === 46) ){ // delete key -> remove group
-				return false;
-				
-			}else if( ev.which === 8 ){ // backspace
-				var spanNode = node.children('tspan').last();
-				
-				//var group = node;
-				var oldText = spanNode.text();
-				
-				if( oldText.length !== 0 ){ // delete last char
-					spanNode.text(oldText.substr(0, oldText.length-1));
-					updateSizeForText(node);
-				}
-				if( oldText.length === 0){ // remove tspan
-					if(node.children('tspan').length > 1)
-					spanNode.remove();
-				}
-				/*if( node.children().size() === 0 ){ // remove group
-					canvas.remove(node);
-				}*/
-				
-				return false;
-			}
-		}
-		return true;
-	}
 
 
     function showTextbox(group, viewportCoordinates) {
+      var svgCoordinates = canvas.toViewboxCoordinates(viewportCoordinates);
       var groupDom = group.dom();
+      groupDom.addClass('invisible');
 
       var text = groupDom.find('text');
       var spans = text.children('tspan');
       
-      $(document).bind('keypress.dizzy.editor', function(event){ return keyPressed(event, text); });
-      $(document).bind('keydown.dizzy.editor',  function(event){ return keyDown(event, text); });
+      // update textbox text
+      textBox.val('');
+      var spanWidth = 0;
+      spans.each(function (index) {
+        var v = $(this).text();
+        if (index < spans.size() - 1) {
+          v += '\r\n';
+        }
+        textBox.val(textBox.val() + v);
+      });
+
+      // try to match font size in svg (svg coordinates) to viewport font-size
+      var fontSize = parseInt(spans.css('font-size') || text.css('font-size'), 10);
+      fontSize *= ($(document).height() / canvas.HEIGHT);
+
+      textBox.bind('change', function (e) {
+        text.children().remove();
+
+        var txt = textBox.val();
+        if (txt) { // if empty -> removegroup
+          var textSpans = text.children('tspan');
+          // First convert "\n\n" to "\n \n" (so blank lines are not lost when splitting), then split to array.
+          txt = txt.replace(/\r?\n\r?\n/, '\n \n').split('\n');
+
+          var spanYOffset = 0;
+          for (var i = 0; i < txt.length; ++i) {
+            var linespan = textSpans.eq(i);
+            if (linespan.size() === 0) { // there is no textspan for this line
+              var newSpan = $(canvas.svg.other(text, 'tspan'));
+              text.append(newSpan);
+              linespan = newSpan;
+            } else {
+
+            }
+            linespan.text(txt[i]);
+			
+            linespan.attr({
+              'dy': spanYOffset,
+              'x': svgCoordinates.x
+            }); // move font in next line
+            spanYOffset = linespan.css('font-size');
+          }
+        } else {
+          canvas.removeGroup(group);
+        }
+      });
+
+      // resizes the textbox when 
+      textBox.bind('input', function (e) {
+        var txt = textBox.val();
+        // First convert "\n\n" to "\n \n" (so blank lines are not lost when splitting), then split to array.
+        txt = txt.replace(/\r?\n\r?\n/, '\n \n').split('\n');
+
+        var maxText = 1;
+        for (var i = 0; i < txt.length; ++i) {
+          if (txt[i].length > maxText) {
+            maxText = txt[i].length;
+          }
+        }
+        textBox.attr({
+          'cols': maxText,
+          'rows': txt.length || 1
+        });
+      });
       
       $('#tool-textMode-bigger').bind('click', function(){
-		  //console.log(text);
+		  console.log(text);
 		  var fontSize = text.attr('font-size');
 		  fontSize = parseFloat(fontSize.substring(0, fontSize.length-2));
 		  if (fontSize > 100)
@@ -263,9 +238,9 @@ define(['sandbox'],  function(sandbox){
 			  fontSize += 3;
 		  else fontSize += 1;
 		  
-		  text.attr('font-size', fontSize+'px');		  
-		  text.children('tspan').not(':first-child').attr('dy', fontSize+'px');
-		  updateSizeForText(text);
+		  text.attr('font-size', fontSize+"px");
+		  fontSize *= ($(document).height() / canvas.HEIGHT);
+		  textBox.css('font-size', fontSize+"px");
 	  });
 	  
 	  $('#tool-textMode-smaller').bind('click', function(){
@@ -278,53 +253,62 @@ define(['sandbox'],  function(sandbox){
 		  else fontSize -= 1;
 		  
 		  text.attr('font-size', fontSize+"px");
-		  text.children('tspan').not(':first-child').attr('dy', fontSize+'px');
-		  updateSizeForText(text);
+		  fontSize *= ($(document).height() / canvas.HEIGHT);
+		  textBox.css('font-size', fontSize+"px");
 	  });
 	  
 	  $('#tool-textMode-family').bind('change', function(){
 		  var fontFam = $("#tool-textMode-family option:selected").val();
 		  text.attr('font-family', fontFam);
-		  updateSizeForText(text);
+		  textBox.css('font-family', fontFam);
 	  });
 	  
 	  $('#tool-textMode-italic').bind('click', function(){
 		  var fontStyle = text.attr('font-style');
 		  if(fontStyle == 'italic'){
 			  text.removeAttr('font-style');
+			  textBox.css('font-style', 'normal');
 		  }
 		  else {
 			  text.attr('font-style', 'italic');
+			  textBox.css('font-style', 'italic');
 		  }
-		  updateSizeForText(text);
 	  });
 	  
 	  $('#tool-textMode-bold').bind('click', function(){
 		  var fontStyle = text.attr('font-weight');
 		  if(fontStyle == 'bold'){
 			  text.removeAttr('font-weight');
+			  textBox.css('font-weight', 'normal');
 		  }
 		  else {
 			  text.attr('font-weight', 'bold');
+			  textBox.css('font-weight', 'bold');
 		  }
-		  updateSizeForText(text);
 	  });
 	  
 	  $('#tool-textMode-underline').bind('click', function(){
 		  var fontStyle = text.attr('text-decoration');
 		  if(fontStyle == 'underline'){
 			  text.removeAttr('text-decoration');
+			  textBox.css('text-decoration', 'none');
 		  }
 		  else {
 			  text.attr('text-decoration', 'underline');
+			  textBox.css('text-decoration', 'underline');
 		  }
-		  updateSizeForText(text);
 	  });
 
       textOverlay.show();
       textOverlay.css({
-        top: viewportCoordinates.y,
+        top: viewportCoordinates.y - fontSize,
         left: viewportCoordinates.x
+      });
+      textBox.css({
+        'font-family': spans.css('font-family'),
+        'font-size': fontSize,
+        'font-weight': spans.css('font-weight'),
+        'font-style': spans.css('font-style')
       });
       textBox.trigger('input');
       textBox.trigger('focus');
@@ -332,26 +316,10 @@ define(['sandbox'],  function(sandbox){
     }
 
     function hideTextbox() {
-		if(selectedTextGroup){
-			//console.log('hiding textbox');
-			var text = selectedTextGroup.dom().children().first();
-			//console.log(text.children('tspan').length);
-			var spans = text.children('tspan');
-			if(spans.length == 1){
-				var cont = spans.text();
-				var regexp = /^[ ]+$/; //remove empty texts or space only texts
-				if (cont == '' || regexp.test(cont))
-				canvas.removeGroup(selectedTextGroup);
-			} else if(spans.length == 0) canvas.removeGroup(selectedTextGroup);
-			selectedTextGroup = undefined;
-		}
-		
-	  $(document).unbind('keypress.dizzy.editor');
-      $(document).unbind('keydown.dizzy.editor');
-		
-      //textBox.change();
+      textBox.change();
       $('.invisible').removeClass('invisible');
-      //textBox.unbind();
+      textBox.val('');
+      textBox.unbind();
       textOverlay.hide();
       $('#tool-textMode-bigger').unbind();
       $('#tool-textMode-smaller').unbind();
@@ -359,23 +327,15 @@ define(['sandbox'],  function(sandbox){
       $('#tool-textMode-italic').unbind();
       $('#tool-textMode-bold').unbind();
       $('#tool-textMode-underline').unbind();
-      
-      textBox.width(271);
-	  textBox.height(65.43600463867188);
 
       clickOpensTextbox = true;
     }
 
     return {
       init: function () {
-        var jqxhr = $.get('html/textBBox.html').success(function (d) {
+        var jqxhr = $.get('html/textBox.html').success(function (d) {
           textOverlay = $(d);
-          textOverlay.css({
-			  'MozUserSelect' : 'none'
-			}).bind('selectstart select', function() {
-			  return false;
-			});
-          textBox = textOverlay.find('#text-wrapper');
+          textBox = textOverlay.find('textarea');
           textOverlay.hide();
 
           $('#container').append(textOverlay);

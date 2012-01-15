@@ -33,7 +33,7 @@ define(['sandbox'], function (sandbox) {
       
       if (canvas) {
 		  
-		zebraNode.disableTextSelect();
+		zebraNode.children('div').not('div input').disableTextSelect();
 		
         var groupTranslate = function (node, e) {
             return that.translateStart(node, e);
@@ -88,6 +88,14 @@ define(['sandbox'], function (sandbox) {
 		zebraNode.find('#zebra-toolbar-169').bind('click.dizzy.zebra.toolbar.169', function(){
 				return that.fitRectTo(16,9);
 		});
+		
+		/* Fill opacity management */
+		zebraNode.find('#zebra-toolbar-fill').bind('click.dizzy.zebra.toolbar.fill', function(){
+				return that.raiseFillOpacity(0.2);
+		});
+		zebraNode.find('#zebra-toolbar-nofill').bind('click.dizzy.zebra.toolbar.nofill', function(){
+				return that.raiseFillOpacity(-0.2);
+		});
       }
     },
 
@@ -110,6 +118,8 @@ define(['sandbox'], function (sandbox) {
       zebraNode.find('#zebra-toolbar-border-weight-down').unbind('click.dizzy.zebra.toolbar.strokeWidth.down');
       zebraNode.find('#zebra-toolbar-43').unbind('click.dizzy.zebra.toolbar.43');
       zebraNode.find('#zebra-toolbar-169').unbind('click.dizzy.zebra.toolbar.169');
+      zebraNode.find('#zebra-toolbar-fill').unbind('click.dizzy.zebra.toolbar.fill');
+      zebraNode.find('#zebra-toolbar-nofill').unbind('click.dizzy.zebra.toolbar.nofill');
     },
 
     /*
@@ -368,6 +378,21 @@ define(['sandbox'], function (sandbox) {
 			var x = node.attr('x');
 			node.attr('x', x-(w2-w1)/2);
 		}
+	},
+	
+	raiseFillOpacity: function(val){
+		var node = $('.selected', canvas.svg.root());
+		$children = node.children();
+		if ($children.length == 1) node = $children.first();
+		
+		var fillOpacity = parseFloat(node.attr('fill-opacity'));
+		console.log(fillOpacity);
+		if (isNaN(fillOpacity)) fillOpacity = 1;
+		fillOpacity += val;
+		if (fillOpacity < 0) fillOpacity = 0;
+		else if (fillOpacity > 1) fillOpacity = 1;
+		console.log(fillOpacity);
+		node.attr('fill-opacity', Math.round((fillOpacity*10))/10);
 	}
 	
   }; //zebraMode ends here <-------
@@ -396,6 +421,7 @@ define(['sandbox'], function (sandbox) {
         top: event.pageY - zebraNode.height() / 2,
         left: event.pageX - zebraNode.width()  / 2
       });
+      zebraNode.hide();
       zebraNode.show();
       
       zebraNode.find('.toolbutton').removeClass('hidden');

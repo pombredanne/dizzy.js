@@ -182,6 +182,7 @@ hr{
 	text-align:center;
 	
 	background: white;
+	background: transparent;
 }
 
 #toolbar > .toolbutton {
@@ -326,8 +327,12 @@ input[class="color"]{
 	border-bottom-left-radius: 0px
 }
 
-#toolbar > #tool-color:hover{
+#toolbar > #tool-color{
 	background: #FFFFFF;
+	line-height: 26px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
 }
 
 /*
@@ -435,7 +440,7 @@ input[class="color"]{
 	width: 130px; /* 90px for translate+scale and 2*20px for rotate */
 	height: 130px;
 	
-	opacity: 0.9;
+	opacity: 1;
 	
 	display: none;
 }
@@ -532,8 +537,8 @@ input[class="color"]{
 
 #zebra #zebra-toolbar{
 	position: absolute;
-	
-	top: 42px;
+	font-size: 10px;
+	top: 28px;
 	left: 112px;
 	
 	width: 64px;
@@ -543,7 +548,10 @@ input[class="color"]{
 	
 	background: #FFFFFF;
 	opacity: 1;
-	z-index: 6;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 #zebra #zebra-toolbar .toolbutton{
@@ -558,11 +566,6 @@ input[class="color"]{
 	height: 32px;
 }
 
-#zebra #zebra-toolbar{
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-}
 /*
 #zebra #zebra-toolbar .zebra-toolbar-row:first-child{
 	border-bottom: 1px solid black;
@@ -579,7 +582,7 @@ input[class="color"]{
 
 #zebra #zebra-toolbar .zebra-toolbar-row .toolbutton:first-child{
 	border-left: 0;
-} /*
+} 
 
 #dialog-overlay{
 	position: absolute;
@@ -595,12 +598,11 @@ input[class="color"]{
 	z-index: 2;
 }
 
-
 .dialog{
 	position: absolute;
 	
 	background: #FFFFFF;
-	border: 1px solid black;
+	border: 2px solid #0a82ad;
 	
 	padding: 1%;
 
@@ -608,8 +610,13 @@ input[class="color"]{
 	left: 35%;
 	
 	width: 30%;
+	min-width: 300px;
 	
 	z-index: 3;
+	
+	-webkit-border-radius: 14px;
+	-moz-border-radius: 14px;
+	border-radius: 14px;
 }
 
 .dialog .dialog-cancel:hover{
@@ -656,6 +663,7 @@ div.jscolor{
     border: 2px solid #0a82ad;
     /*border-top: 0px;*/
     margin-top: -2px;
+    background: white;
 	-webkit-border-bottom-right-radius: 14px;
 	-webkit-border-bottom-left-radius: 14px;
 	-moz-border-radius-bottomright: 14px;
@@ -718,6 +726,13 @@ svg .invisible{
 	background-color: white;
 	color: black;
 	overflow: hidden;
+	
+	-webkit-border-top-right-radius: 14px;
+	-webkit-border-top-left-radius: 14px;
+	-moz-border-radius-topright: 14px;
+	-moz-border-radius-topleft: 14px;
+	border-top-right-radius: 14px;
+	border-top-left-radius: 14px;
 }
 #loader{
 	position: relative;
@@ -893,9 +908,8 @@ svg .invisible{
 
 #tracker > #tracker-expand {
 	width: 361px
-	height: 15px;
 	border: 2px solid #0a82ad;
-	line-height: 17px;
+	line-height: 16px;
 	font-weight: bold;
 	color: #FFF;
 	
@@ -960,7 +974,7 @@ svg .invisible{
 	top: 19px;
 	width: 36px;
 	height: 36px;
-	opacity: 0.4;
+	opacity: 0.7;
 }
 
 #zebra #zebra-scale{
@@ -1009,4 +1023,16 @@ svg .invisible{
 	-webkit-border-radius: 100px;
 	-moz-border-radius: 100px;
 	border-radius: 100px;
+}
+
+#text-wrapper {
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 7;
+	background: transparent/*rgba(109, 181, 207, 0.1)*/;
+	min-width: 271px;
+	min-height: 50px;
+	height: 65.43600463867188px;
+	border: 2px solid #0a82ad;
 }

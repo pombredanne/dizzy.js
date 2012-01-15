@@ -159,6 +159,20 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       this.activeGroupNumber = numberOrGroup;
       this.current(options);
     },
+    
+    centerGroup: function (numberOrGroup, options) {
+		if (typeof numberOrGroup !== 'number') {
+			numberOrGroup = this.getGroup(numberOrGroup);
+		}
+		//this.activeGroupNumber = numberOrGroup;
+		
+		options = $.extend({
+			scale: 1,
+			translate: false
+		}, options);
+		
+		this.transformCanvasTo(numberOrGroup, options);
+	},
 
     /*
      * Increments the internal counter by one, going one step further in the path. Returns new active pathnumber
@@ -295,6 +309,10 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				//get the scale value to make the rect fit the viewbox area
 				var scaleVal = Math.min(wpixels*zoomPercentage/ew, hpixels*zoomPercentage/eh);
 				
+				if(options!=undefined && options.scale!=undefined){ //if with the option.scale value the element would be bigger than the window, make it fit the screen (a bit smaller) instead
+					scaleVal = scaleVal < options.scale ? scaleVal-0.06 : options.scale;
+				}
+				
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();
 				inverseTransform.multiply(mat.inverse()).translate(-ex,-ey).multiply(mat); //IT WORKS!!!!!
@@ -309,6 +327,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				//Center the group in the screen (independant to Screen Dimensions :)
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
+				
 				console.log("final transform: "+inverseTransform);
 				
 				//Get the animation speed

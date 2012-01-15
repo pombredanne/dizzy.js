@@ -48,8 +48,7 @@ define(['sandbox'], function (sandbox) {
         
         var color = canvas.getStrokeColor();
         
-        // !!! Set color management
-        line = $(canvas.svg.line(svgOffset.x, svgOffset.y, svgOffset.x, svgOffset.y, {stroke: canvas.getStrokeColor(), strokeWidth : 3}));
+        line = $(canvas.svg.line(svgOffset.x, svgOffset.y, svgOffset.x, svgOffset.y, {stroke: canvas.getStrokeColor(), strokeWidth : 5}));
         
         newGroupDom.append(line);
         

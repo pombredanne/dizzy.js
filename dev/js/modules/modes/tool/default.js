@@ -67,8 +67,6 @@ define(['sandbox'], function (sandbox) {
 	unbindKeyboardlistener: function() {
 		$(document).unbind('keydown.dizzy.default');
 	}
-
-
   };
 
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
@@ -78,6 +76,7 @@ define(['sandbox'], function (sandbox) {
   
   sandbox.subscribe('dizzy.ui.toolbar.color.fill.changed', function(d){
 	  var selex = canvas.findGroup("g.selected");
+	  if(selex)
 	  selex.dom().children().first().attr('fill', d.color);
   });
   
