@@ -63,10 +63,12 @@ define(['sandbox'], function (sandbox) {
 			break;
 			
 		case 'menu-about':
+			$("#menu-bugs-extended").addClass('hidden');
 			$("#menu-about-extended").toggleClass('hidden');
 			break;
 		
 		case 'menu-bugs':
+			$("#menu-about-extended").addClass('hidden');
 			$("#menu-bugs-extended").toggleClass('hidden');
 			break;
 				
