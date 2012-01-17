@@ -4,7 +4,7 @@
 define(['sandbox'], function (sandbox) {
   var canvas;
   var enabled = false;
-  
+  /*
   var canvasDrop = {
     start: function () {
       enabled = true;
@@ -13,7 +13,7 @@ define(['sandbox'], function (sandbox) {
     stop: function () {
       enabled = false;
     }
-  };
+  };*/
   
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     //canvas = c.canvas;

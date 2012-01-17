@@ -17,8 +17,13 @@ define(['sandbox'], function (sandbox) {
     //loads the divs needed by this slider
 	slider.find("#loader").append('<div class="infiniteCarousel"><div class="wrapper" id="wrapper"><ul id="ulid"></ul></div></div>');
     //loads the images
-    slider.find("#ulid").load("php/images_loader.php", function(){
-		infiniteCarousel();
+    slider.find("#ulid").load("php/images_loader.php", function(d){
+		if (d.substring(0, 3) == 'Not'){
+			console.log('No project opened, slider will close');
+			sandbox.publish('dizzy.ui.slider.close');
+		}
+		else
+			infiniteCarousel();
 	});
   });
   

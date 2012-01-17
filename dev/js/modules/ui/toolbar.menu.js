@@ -4,6 +4,7 @@
 define(['sandbox'], function (sandbox) {
   var canvas;
   var toolbar;
+  var menuRight;
   /*
    * Subcriptions:
    * 	dizzy.presentation.loaded
@@ -16,7 +17,7 @@ define(['sandbox'], function (sandbox) {
   sandbox.subscribe('dizzy.ui.toolbar.loaded', function (tool) {
     toolbar = tool.toolbar; // get the toolbar
     var menu = $('#menu');	// get the (hidden) expandable menu
-    
+    var menuRight = menu.find('#menu-right');
     menu.disableTextSelect();
 	
 	//when the Menu button is clicked:
@@ -59,10 +60,23 @@ define(['sandbox'], function (sandbox) {
 			$.post('php/downloadSVG.php', {svg:svgText}, function(url){
 			  window.open("php/"+url, 'Download');
 			});
-		break;
+			break;
+			
+		case 'menu-about':
+			$("#menu-about-extended").toggleClass('hidden');
+			break;
+		
+		case 'menu-bugs':
+			$("#menu-bugs-extended").toggleClass('hidden');
+			break;
 				
       };
     });
+    
+    menu.delegate('.menu-option', 'hover', function (evt) {
+		var p = $(this).attr('data-description');
+		if (p) menuRight.text(p);
+	});
     
     $('#menu-open-input').bind('change', function(evt){
       var file = evt.target.files; // FileList object

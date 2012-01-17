@@ -1,5 +1,4 @@
 <?php
-	/*
 	session_start();
 	if (isset($_SESSION['user_id']) && isset($_SESSION['user_project'])){
 		$id = $_SESSION['user_id'];
@@ -7,12 +6,14 @@
 	} else {
 		$id = 'sessionVariables';
 		$project = 'AreNotSet';
-	}*/
+	}
 	
-	//$dir = '../../../slide/'.$id.$project.'/';
-	$dir = '../../../alessandroOutline/';
-	
+	$dir = '../../slide/'.$id.$project.'/';
 	$dlist = getDirs($dir);
+	if ($dlist < 0){
+		echo 'Not found directory: '.$dir;
+		return;
+	}
 	for ($i=0, $indice=0; $i<count($dlist); $i++){
 		$flist = getFiles($dlist[$i]);
 		for ($j=0; $j<count($flist); $j++){
@@ -24,7 +25,7 @@
 	/* @return: all the subdirectories paths of $dir */
 	function getDirs($dir){
 		if(!is_dir($dir))
-			return 'Directory not found: '.$dir;
+			return -1;
 		else {
 			$dh = opendir($dir);
 			
@@ -37,10 +38,30 @@
 				}
 			}
 			
-			if (is_array($dlist)) sort($dlist);
+			if (is_array($dlist)){
+				sort($dlist);
+				$dlist = numberSort($dlist, '/', -2);
+			}
 			
 			return ($dlist);
 		}
+	}
+	
+	function numberSort($list, $prefix, $dist){
+		$listL = array();
+		$listTmp = array();
+		$c = count($list);
+		
+		for($i=0; $i<$c; $i++){
+			$tmp = substr($list[$i], $dist);
+			if($tmp[0]==$prefix[0]) array_push($listL, $list[$i]);
+			else array_push($listTmp, $list[$i]);
+		}
+		
+		$c = count($listTmp);
+		for($i=0; $i<$c; $i++)
+			array_push($listL, $listTmp[$i]);
+		return $listL;
 	}
 	
 	/* @return: all the file paths of $dir */
@@ -62,9 +83,9 @@
 			}
 			
 			if (is_array($flist)) sort($flist);
+			$flist = numberSort($flist, '_', -6);
 			
 			return ($flist);
 		}
-		
 	}
 ?>
