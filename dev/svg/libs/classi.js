@@ -1,66 +1,59 @@
-define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Transformation, sandbox) {
-
-  var Canvas = function (c, opt) {
-      this.container = $(c);
-      this.groupList = [];
-      this.activeGroupNumber = 0;
-      this.options = opt || {
-        transformDuration: 1000
-      };
+	this.container = $('svg');
+    this.groupList = [];
+    this.activeGroupNumber = 0;
+    this.options = {
+       transformDuration: 1000
     };
+    this.WIDTH= 2000;
+    this.HEIGHT= 1500;
+    this.canvas;
+    this.$svg;
+    
+	load();
+	printGroupList();
 
-  Canvas.prototype = {
-    WIDTH: 2000,
-    HEIGHT: 1500,
-
-    /**
-     * Loads file into the container via XmlHttpRequest.
-     * @param url URL of SVG file to load.
-     * @param options Optional object that holds options and callbacks fileloading. Default options are as follows:
-     * {
-     *    success : function(){},
-     *    failure : function(){}
-     * }
-     */
-    load: function (url, options) {
-      var that = this;
-
-      options = options || {};
-      
-      //it is already in js/modules/canvas.js !!! and doesn't work anyway
-      //maybe useless here
-      this.container.children().disableTextSelect();
-      this.container.empty().removeClass('hasSVG').svg({
-        loadURL: url,
-        onLoad: (function (svgw) {
-          that.svg = that.container.svg('get'); //canvas.svg
-          that.canvas = $('g#canvas');
-          var groups = that.canvas.find('.group');
-          groups.each(function () {
-            that.getGroup($(this));
+	$(document).bind('keydown.presentation.navigation', function(e){ 
+		if( e.which === 32 || e.which === 39 ){
+			console.log("premuta freccia avanti");
+         next();
+      }else if( e.which === 37 ){
+		  console.log("premuta freccia indietro");
+        previous();
+      } 
+    });
+    
+    
+    
+    function load(options) {
+		var that = this;
+		options = options || {};
+		this.canvas = $('#canvas'); //OK
+		var groups = this.canvas.find('g');
+		//alert(groups.length);
+		groups.each(function () {
+			that.getGroup($(this));
+		});
+		
+		console.log('caricati i gruppi esistenti');
+		
+		$(window).bind('resize', function () {
+            this.$svg = $('svg');
+            this.$svg.attr({
+				'width': window.innerWidth,
+				'height': window.innerHeight
+			});
+            this.$svg.attr('style','width="'+window.innerWidth+'" height="'+window.innerHeight+'"');
           });
+          $(window).resize();
+          
+          console.log('impostate le corrette dimensioni dello schermo');
+    }
+    
+    function printGroupList(){
+		console.log(this.groupList);
+	}
 
-          if (typeof options.success === 'function') { // ???
-            options.success();
-          }
-        })
-      });
-    },
-
-    /*
-     * Converts dom to string representation
-     */
-    serialize: function () {
-      // Fixes Chrome. I really have no clue why chrome leaves that out otherwise...
-      $(this.svg.root()).attr('xmlns', 'http://www.w3.org/2000/svg');
-      // clean up, remove all empty groups
-      $('.group:empty', this.svg.root()).remove();
-
-      return this.svg.toSVG();
-    },
-
-
-    createGroup: function () {
+    function createGroup() {
       var canvas = this.getGroup(0);
       var newGroup = $(this.svg.group(canvas.dom())); //add this as a new group, son of canvas
 
@@ -71,19 +64,11 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       var newDizzyGroup = new Group(newGroup);
       newDizzyGroup.transformation(newTransform);
       this.groupList.push(newDizzyGroup);
-      
-      /*
-      sandbox.publish('dizzy.canvas.group.created', {
-		  group: newDizzyGroup
-	  });
-	  console.log("Created new group, list-size: "+this.groupList.length);
-	  console.log("new group created, id: "+newDizzyGroup.dom().attr('id'));
-	  */
 	  
       return newDizzyGroup;
-    },
+    }
 
-    removeGroup: function (g) {
+    function removeGroup(g) {
       var removed;
       var idToRemove = g.dom().attr('id');
       for (var i=0; i<this.groupList.length; i++)
@@ -92,117 +77,114 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 			removed = this.groupList.splice(i,1);
 			console.log("Group "+idToRemove+" removed!");
 			
-			sandbox.publish('dizzy.canvas.group.removed', {
-					id: idToRemove
-			});
-			
 			break;
 		}
-    },
+    }
 
     /*
      * Finds a group by it's node representation. <g id="..." ...></g>
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
-    findGroup: function (node) {
+    function findGroup(node) {
+		console.log('sono in findGroup');
       for (var i = 0; i < this.groupList.length; ++i) {
         if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(node).attr('id')) {
+			console.log("fondgroup trovato al "+i+" posto della lista");
           return this.groupList[i];
         }
       }
       var g;
       node = jQuery(node);
-      if (node.size() > 0) { // ???
+      if (node.size() > 0) {
         g = new Group(node[0]);
         this.groupList.push(g);
-        //console.log('created and pushed group id: '+g.dom().attr('id'));
       }
+      console.log('esco da findGroup');
       return g;
-    },
+    }
     
-    findGroupById : function (id) {
+    function findGroupById(id) {
 		for (var i = 0; i < this.groupList.length; ++i) {
 			if (this.groupList[i] && this.groupList[i].dom().attr('id') === id) {
 				return this.groupList[i];
 			}
 		}
 		return undefined;
-	},
+	}
 
     /*
      * Returns an instance of Dizzy.Group with all the information about a group.
      * Group 0 is the canvas (the "root element"), groups 1 - Inf are the normal groups
      * @param number the number of the group to get
      */
-    getGroup: function (number) {
+    function getGroup(number) {
+		console.log('sono in getGroup');
       // passed in element is already a group, dummy (o:
       if (number.dom && number.transformation) {
+		  console.log('esco da getGroup: è già un gruppo!');
         return number;
       }
       var groupNode;
       if (number > 0) {
         groupNode = this.canvas.find('.group_' + number);
+        console.log("cercando per .group_ ho trovato:");
+        console.log(groupNode);
       } else if (number === 0) {
         groupNode = this.canvas;
       }
       var g = this.findGroup(groupNode || number); // there should only be one group with that number
+      console.log('esco da getGroup');
       return g;
-    },
+    }
 
     /*
      * Set the internal counter to number and transforms the canvas accordingly
      */
-    gotoGroup: function (numberOrGroup, options) {
+    function gotoGroup(numberOrGroup, options) {
       if (typeof numberOrGroup !== 'number') {
         numberOrGroup = this.getGroup(numberOrGroup);
       }
       this.activeGroupNumber = numberOrGroup;
       this.current(options);
-    },
-    
-    centerGroup: function (numberOrGroup, options) {
-		if (typeof numberOrGroup !== 'number') {
-			numberOrGroup = this.getGroup(numberOrGroup);
-		}
-		//this.activeGroupNumber = numberOrGroup;
-		
-		options = $.extend({
-			scale: 1,
-			translate: false
-		}, options);
-		
-		this.transformCanvasTo(numberOrGroup, options);
-	},
+    }
 
     /*
      * Increments the internal counter by one, going one step further in the path. Returns new active pathnumber
      */
-    next: function () {
-      return this.step(1);
-    },
+    function next() {
+		//console.log('sono in next');
+      //return this.step(1);
+      this.step(1);
+    }
     /*
      * Opposite of next()
      */
-    previous: function () {
-	  if(this.activeGroupNumber == 0) return;
-      return this.step(-1);
-    },
+    function previous() {
+		//console.log('sono in previous');
+      //return this.step(-1);
+      if(this.activeGroupNumber == 0) return;
+      this.step(-1);
+    }
 
-    step: function (dir) {
+    function step(dir) {
+		//console.log('sono in step con dir: '+dir);
+		//console.log("pre aGN :"+this.activeGroupNumber);
       this.activeGroupNumber += dir;
       try {
         var cur = this.current();
       } catch (e) {
         this.activeGroupNumber -= dir;
       }
-      return this.activeGroupNumber;
-    },
+      
+      //console.log("post aGN :"+this.activeGroupNumber);
+      //return this.activeGroupNumber;
+    }
 	
 	/* 
 	 * Goes to group specified by id => groupId
 	 * doesn't alter the activeGroupNumber and can be used to reach any group with a RECT
 	 */ 
-	visitGroup: function(groupId, options) {
+	function visitGroup(groupId, options) {
 		var group;
 		
 		for (var i = 0; i < this.groupList.length; ++i) {
@@ -212,32 +194,43 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 			}
 		}
 		
-		this.transformCanvasTo(group, options);
-	},
+		this.transformCanvasTo(group);
+	}
 	
 	/* Transfrorm the canvas to the target group with a RECT
 	 * show the rect centered and biggest possible to fit the screen area
 	 * (the svg document MUST have the attributes --viewBox="0 0 someWidth someHeight"-- and --preserveAspectRatio="xMinYMin"-- )
 	 * it would be much better to calibrate it using preserveAspectRatio="xMidYMid", but for some reason this attribute doesn't work properly atm*/
-	transformCanvasTo: function(group, options) {
+	function transformCanvasTo(group, options) {
+		console.log('sono in transformCanvasTo, il canvas è:');
 		var canvas = this.getGroup(0);
+		console.log(canvas);
 		
 		if (group !== undefined) {
-			var groupTransform = group.transformation();
+			try {
+			console.log("il gruppo scelto è definito");
+			//var groupTransform = group.transformation();
+			var groupTransform = group.transform;
+			console.log("La trasformazione del gruppo:");
+			if(groupTransform == undefined) console.log("è undefined");
+			console.log(groupTransform);
 			var inverseTransform = Transformation.createTransform(groupTransform.matrix());
+			console.log("la trasformazione equivalente a quella del gruppo:");
+			console.log(inverseTransform);
 			
 			//var mt = inverseTransform.matrix();
 			inverseTransform.inverse(); //inversion is here
 			
-			//console.log("group transf: "+groupTransform);
-			//console.log("inver transf: "+inverseTransform);
+			console.log("group transf: "+groupTransform);
+			console.log("inver transf: "+inverseTransform);
 			
 			if(group.dom().attr('id')!='canvas') {
-				try {
+				console.log("il gruppo scelto non è il canvas");
+				//get the rect
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
-				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype=='text'){
+				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype == 'text'){
 					var ex, ey, ew, eh;
 					
 					switch (SVGtype){ //get dimensions and position of the element
@@ -282,12 +275,11 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 							ew = bbox.width;
 							eh = bbox.height;
 							break;
-							//maybe I can use bbox for them all
 					}
-						
+							
 				//get width and height of document and ViewBox
-				var svgWidth = $(document).width();
-				var svgHeight = $(document).height();
+				var svgWidth = window.innerWidth;//$(document).width();
+				var svgHeight = window.innerHeight;//$(document).height();			
 				var viewBox = $('svg').attr('viewBox');
 				var viewBoxParams = viewBox.split(" ", 4);
 				var viewWidth = viewBoxParams[2];
@@ -298,7 +290,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var wpixels, hpixels; 
 				
 				var ratio = svgWidth/svgHeight;
-				if(ratio >= viewWidth/viewHeight) {
+				if(ratio >= 4/3) {
 					hpixels = viewHeight;
 					wpixels = (viewHeight/svgHeight)*svgWidth;
 				} else {
@@ -311,10 +303,6 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				zoomPercentage /= 100;
 				//get the scale value to make the rect fit the viewbox area
 				var scaleVal = Math.min(wpixels*zoomPercentage/ew, hpixels*zoomPercentage/eh);
-				
-				if(options!=undefined && options.scale!=undefined){ //if with the option.scale value the element would be bigger than the window, make it fit the screen (a bit smaller) instead
-					scaleVal = scaleVal < options.scale ? scaleVal-0.06 : options.scale;
-				}
 				
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();
@@ -330,50 +318,56 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				//Center the group in the screen (independant to Screen Dimensions :)
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
-				
 				console.log("final transform: "+inverseTransform);
 				
-				//Get the animation speed
 				var speed = elem.parent().attr('speed');
 				speed = speed ? speed : 1;
 				options = $.extend({
 					duration: parseInt(speed*1000)
 				}, options);
 				
-				// use this.transformSVGanimation(...) to see animation by SVG instead of JQuery (alpha)
-				// for some reason it works only on Chrome ç_ç
 				this.transform(canvas, inverseTransform, options);
+				console.log("trasformazione e animazione effettuate");
+				}
 				
-				}
-				} catch (e){
-					alert("errore: "+e.message);
-				}
 				
 			} else {
+				console.log('il gruppo scelto è il canvas!');
 				this.transform(canvas, inverseTransform, options);
 			}
+			} catch (e){
+					console.log("errore tranformCanvasTo: "+e.message);
+			}
       } else {
+		  console.log("group is undefined D:");
         throw "Ops! This should not have happened! (o:"
       }
 		
-	},
+	}
 	
     /*
      * Goes to the group specified by the internal counter (useful, if panning/zooming is allowed).
      * Returns currently active pathnumber.
      */
-    current: function (options) {
+    function current(options) {
+		console.log('sono in current');
       var canvas = this.getGroup(0);
+      console.log("Canvas:");
+      console.log(canvas);
       var group = this.getGroup(this.activeGroupNumber);
+      console.log("Gruppo trovato:");
+      console.log(group);
       
       this.transformCanvasTo(group, options);
-      return this.activeGroupNumber;
-    },
+      console.log('ho trasformato il canvas');
+      //return this.activeGroupNumber;
+    }
 
     /*
      * Set the transformation of the group to the transformation object.
      */
-    transform: function (group, transformation, options) {
+    function transform(group, transformation, options) {
+      try {
       options = $.extend({
         complete: function () {},
         duration: this.options.transformDuration
@@ -381,101 +375,32 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       
       //if no duration is set, the default one will be used (see Canvas consctuctor)
       var duration = options.duration === undefined ? this.options.transformDuration : options.duration;
-      
-      group.transform = transformation;
 
+      group.transform = transformation;
       if (duration <= 10) { // speed optimization here..
-        $(group.dom(), this.svg.root()).attr('transform', transformation.toString());
+        $(group.dom(), this.$svg).attr('transform', transformation.toString());
       } else {
-        $(group.dom(), this.svg.root()).animate({ // <-- Animation is here
+		  $(group.dom(), this.$svg).animate({ // <-- Animation is here
           svgTransform: transformation.toString()
         }, options);
+		  /*
+        $(group.dom(), this.$svg).animate({ // <-- Animation is here
+          svgTransform: transformation.toString()
+        }, options);
+        */
+        
       }
-    },
-    
-    /* Sperimenting alternative to this.transform using SVG animation instead of JQuery ones,
-     * some result visible on Chrome. To try add to <canvas> in the SVG the following:
-	 * <animateTransform id="canvTranslate" begin="indefinite" attributeName="transform" type="translate" to="" dur="1s" additive="sum" fill="freeze"/>
-	   <animateTransform id="canvRotate" begin="indefinite" attributeName="transform" type="rotate" to="" dur="1s" additive="sum" fill="freeze"/>
-	   <animateTransform id="canvScale" begin="indefinite" attributeName="transform" type="scale" to="" dur="1s" additive="sum" fill="freeze"/>
-	 * */
-    transformSVGanimation: function (group, transformation, options) {
-      options = $.extend({
-        complete: function () {},
-        duration: this.options.transformDuration
-      }, options);
-      
-      //if no duration is set, the default one will be used (see Canvas consctuctor)
-      var duration = options.duration === undefined ? this.options.transformDuration : options.duration;
-      
-		var tMatrix = transformation.matrix();
-		var cMatrix = group.transform.matrix();
-		
-		//getting the animations
-		var animTrans = document.getElementById('canvTranslate');
-		var animRotaz = document.getElementById('canvRotate');
-		var animScale = document.getElementById('canvScale');
-		
-		//setting duration
-		animTrans.setAttribute('dur', duration/1000+'s');
-		animRotaz.setAttribute('dur', duration/1000+'s');
-		animScale.setAttribute('dur', duration/1000+'s');
-		
-		//calculating the 'from' attribute
-		console.log(cMatrix);
-		var transX = cMatrix.e;
-		var transY = cMatrix.f;
-		var scaleX = Math.sqrt(Math.pow(cMatrix.a, 2)+Math.pow(cMatrix.b, 2));
-		var rotate = Math.atan(cMatrix.c/cMatrix.d);
+      console.log("animazione effettuata");
+		} catch(e){
+			console.log("errore transform: "+e.message);
+		}	
+    }
 
-		console.log('canv transX: '+transX);
-		console.log('canv transY: '+transY);
-		console.log('canv scale: '+scaleX);
-		console.log('canv rotate: '+rotate);
-
-		animTrans.setAttribute('from', transX+','+transY);
-		animRotaz.setAttribute('from', -rotate*180/Math.PI);
-		animScale.setAttribute('from', scaleX);
-		//end 'from'
-		
-		//calculating the 'to' attribute to set
-		console.log(tMatrix);
-		var transX = tMatrix.e;
-		var transY = tMatrix.f;
-		var scaleX = Math.sqrt(Math.pow(tMatrix.a, 2)+Math.pow(tMatrix.b, 2));
-		var rotate = Math.atan(tMatrix.c/tMatrix.d);
-
-		console.log('transX: '+transX);
-		console.log('transY: '+transY);
-		console.log('scale: '+scaleX);
-		console.log('rotate: '+rotate);
-
-		animTrans.setAttribute('to', transX+','+transY);
-		animRotaz.setAttribute('to', -rotate*180/Math.PI);
-		animScale.setAttribute('to', scaleX);
-		//end 'to'
-		
-		animTrans.beginElement();
-		animRotaz.beginElement();
-		animScale.beginElement();
-		
-		group.transform = transformation;
-		
-		setTimeout(function(){
-			//$(group.dom(), this.svg.root()).attr('transform', transformation.toString());
-			//$(canvas.dom(), this.svg.root()).attr('transform', 'matrix('+tMatrix.a+','+tMatrix.b+','+tMatrix.c+','+tMatrix.d+','+tMatrix.e+','+tMatrix.f+')');
-			
-			//this is a problematic step. commenting it something works good on firefox and opera too
-			$("#canvas").attr('transform', 'matrix('+tMatrix.a+','+tMatrix.b+','+tMatrix.c+','+tMatrix.d+','+tMatrix.e+','+tMatrix.f+')');
-			//$(group.dom()).attr('transform', transformation.toString());
-		}, duration+100);
-    },
-    
     /*
      * Translates Viewport-Coordinates (Browser coordinates,
      * as returned by many events, like MouseEvent.pageX) to coordinates in the SVG viewbox.
      */
-    toViewboxCoordinates: function (xy, reverse) {
+    function toViewboxCoordinates(xy, reverse) {
       var svgPoint = this.svg.root().createSVGPoint();
       svgPoint.x = xy.x;
       svgPoint.y = xy.y;
@@ -488,11 +413,12 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       svgPoint = svgPoint.matrixTransform(m1);
 
       return svgPoint;
-    },
+    }
+    
     /*
      * Translates Viewport-Coordinates to Coordinates on the Canvas (a subgroup of the viewBox of the svg).
      */
-    toCanvasCoordinates: function (xy, reverse) {
+    function toCanvasCoordinates(xy, reverse) {
       var svgPoint = this.svg.root().createSVGPoint();
       svgPoint.x = xy.x;
       svgPoint.y = xy.y;
@@ -509,13 +435,13 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       svgPoint = svgPoint.matrixTransform(m1);
 
       return svgPoint;
-    },
+    }
 
     /*
      * Transforms an XY-vector with the matrix of the canvas.
      * !! mainly deprecated, use toCanvasCoordinates or toViewboxCoordinates when possible. 
      */
-    vectorTranslate: function (xy, options) {
+    function vectorTranslate(xy, options) {
       options = options || {};
 
       options = $.extend({
@@ -556,48 +482,166 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
         x: svgPoint.x,
         y: svgPoint.y
       };
-    },
+    }
 
-    pathCounter: 0, //it's not managed properly
-    /**
-     * @param g Group object that the path number is assigned to
-     * @param n optional. number that is assigned.
-     */
-    addPathNumber: function (group, n) {
-      if (n === undefined) {
-        n = ++pathCounter; //maybe ++this.pathCounter
-      }
-      group.dom().addClass('group_' + n);
-      //group.numbers().push(n);
-    },
 
-    removePathNumber: function (group, n) {
-      if (n === undefined) {
-        n = [];
-      }
-      if (typeof n === 'number') {
-        n = [n];
-      }
-      for (var i = 0; i < n.length; ++i) {
-        group.dom().removeClass('group_' + n[i]);
-        // delete from internal array.
-        /*var numbers = group.numbers();
-        var pos = numbers.indexOf(n[i]);
-        if (pos >= 0) {
-          numbers.splice(pos, 1);
-        } */
-      }
-    },
-    
-    //Maybe these two function must be moved somewhere else !!!
-    getFillColor: function(){
-		return $("#tool-input-color-fill").val();
-	},
+	//GROUP
 	
-	getStrokeColor: function(){
-		return $("#tool-input-color-stroke").val();
-	}
-  };
 
-  return Canvas;
-});
+	function Group(nodeOrTransform, optionalNumbers) {
+		
+		this.dom = function(optionalDom) {
+			//console.log('sono in group.dom()');
+			if (optionalDom === undefined) { //if the parameter is not set (getter)
+				//console.log('esco da group.dom() restituendo: ');
+				//console.log(this.domContent);
+				return this.domContent;
+			  } else { //(setter)
+				this.domContent = $(optionalDom);
+				//console.log('ho impostato un nuovo dom:');
+				//console.log(this.domContent);
+				return this;
+			  }
+		}
+		
+		this.numbers = function() {
+		  return this.numbers;
+		}
+		
+		this.transformation = function(setTransform) {
+			console.log("sono in group.transformation, la trasf da settare è:");
+			console.log(setTransform);
+		  if (setTransform === undefined) { //if the parameter is not set (getter)
+			console.log('la trasformazione da settare è undefined, quindi restituisco la corrente, che è:');
+			console.log(this.transform);
+			return this.transform;
+		  } else { //(setter)
+			this.transform = setTransform;
+			$(this.dom()).attr('transform', setTransform.toString());
+			return this;
+		  }
+		}
+		
+		var that = this;
+		var groupNumberMatch = /group_(\d+)/g; //reg.ex. /g = repeat substitution
+		
+		if (nodeOrTransform.inverse && nodeOrTransform.multiply) { // passed argument is transform
+		  // set transform
+		  this.transformation(nodeOrTransform);
+		  if (optionalNumbers !== undefined) {
+			this.numbers = optionalNumbers;
+		  }
+		  this.dom($('<g class="group" transform="' + this.transformation() + '" />'));
+
+		} else { // passed argument is a node
+		  var node = nodeOrTransform[0] || nodeOrTransform; // in case argument was jQuery object
+		  var $node = $(node);
+		  this.numbers = optionalNumbers || [];
+		  var classes = $node.attr('class');
+		  // match list of classNumbers with regex above. Gets the numbers only (???).
+		  var groupNumber;
+		  while ((groupNumber = groupNumberMatch.exec(classes)) !== null) {
+			this.numbers.push(parseInt(groupNumber[1])); // !!!
+		  }
+		  // get transformation matrix
+		  var transformMatrix = node.parentNode.getTransformToElement(node);
+		  this.dom(node);
+		  this.transform = new Transformation(transformMatrix);
+		  this.transform.inverse(); //this gives the group its not inverted matrix :)
+		}
+		
+		if (this.dom().attr('id') === undefined) {
+		  this.dom().attr('id', 'g' + Math.random());
+		}
+		
+	}
+    /*
+    Group.prototype.dom = function(optionalDom){
+		if (optionalDom === undefined) { //if the parameter is not set (getter)
+				return this.domContent;
+			  } else { //(setter)
+				this.domContent = $(optionalDom);
+				return this;
+			  }
+	}*/
+
+
+	//TRANSFORMATION
+	function Transformation (matrix) {
+		this.transformationMatrix = matrix;
+		
+		this.matrix = function (optionalMatrix) {
+		  if (optionalMatrix !== undefined) { //setter
+			this.transformationMatrix = optionalMatrix;
+		  } else { //getter
+			return this.transformationMatrix;
+		  }
+		}
+		
+		 this.rotate = function(d, x, y) {
+		  if (arguments.length < 3) { // no rotation point specified
+			x = 0;
+			y = 0;
+		  }
+		  this.matrix(this.matrix().translate(x, y).rotate(d).translate(-x, -y));
+
+		  return this;
+		}
+		
+		this.scale = function(d) {
+		  this.matrix(this.matrix().scale(d));
+		  return this;
+		}
+		
+		this.translate = function(x, y) {
+		  this.matrix(this.matrix().translate(x, y));
+		  return this;
+		}
+
+		this.inverse = function() {
+		  this.matrix(this.matrix().inverse());
+		  return this;
+		}
+
+		this.multiply = function(m) {
+		  m = m.transformationMatrix || m; // Dizzy.Transformation or CTM (current trans. matrix)?
+		  this.matrix(this.matrix().multiply(m));
+		  return this;
+		}
+		
+		this.toString = function() {
+		  var m = 'matrix';
+		  var values = this.toArray().join(', ');
+
+		  return m + '(' + values + ')';
+		}
+
+		this.toArray = function() {
+		  var matrix = this.matrix();
+		  return [matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f];
+		}
+	};
+	
+	Transformation.createTransform = function(obj) {
+	  
+			// obj is Dizzy.Group ?
+			if (obj.dom && obj.transformation) {
+			  obj = obj.transformation();
+			}
+			
+			// obj is Dizzy.Transformation ?
+			if (obj.transformationMatrix) {
+			  obj = obj.transformationMatrix;
+			}
+
+			// obj is SVG-Element ?
+			if (obj.getCTM) {
+			  obj = obj.getCTM();
+			}
+
+			// obj is an SVGMatrix ?
+			if (obj.toString().indexOf('SVGMatrix') >= 0) {
+			  return new Transformation(obj);
+			}
+
+		};

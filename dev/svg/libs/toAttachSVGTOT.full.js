@@ -11243,7 +11243,8 @@ jQuery.fn.enableTextSelect = function() {
   });
 };
 
-		this.container = $('svg');
+
+	this.container = $('svg');
     this.groupList = [];
     this.activeGroupNumber = 0;
     this.options = {
@@ -11447,24 +11448,35 @@ jQuery.fn.enableTextSelect = function() {
 	 * (the svg document MUST have the attributes --viewBox="0 0 someWidth someHeight"-- and --preserveAspectRatio="xMinYMin"-- )
 	 * it would be much better to calibrate it using preserveAspectRatio="xMidYMid", but for some reason this attribute doesn't work properly atm*/
 	function transformCanvasTo(group, options) {
+		console.log('sono in transformCanvasTo, il canvas è:');
 		var canvas = this.getGroup(0);
+		console.log(canvas);
 		
 		if (group !== undefined) {
-			var groupTransform = group.transformation();
+			try {
+			console.log("il gruppo scelto è definito");
+			//var groupTransform = group.transformation();
+			var groupTransform = group.transform;
+			console.log("La trasformazione del gruppo:");
+			if(groupTransform == undefined) console.log("è undefined");
+			console.log(groupTransform);
 			var inverseTransform = Transformation.createTransform(groupTransform.matrix());
+			console.log("la trasformazione equivalente a quella del gruppo:");
+			console.log(inverseTransform);
 			
 			//var mt = inverseTransform.matrix();
 			inverseTransform.inverse(); //inversion is here
 			
-			//console.log("group transf: "+groupTransform);
-			//console.log("inver transf: "+inverseTransform);
+			console.log("group transf: "+groupTransform);
+			console.log("inver transf: "+inverseTransform);
 			
 			if(group.dom().attr('id')!='canvas') {
-				try {
+				console.log("il gruppo scelto non è il canvas");
+				//get the rect
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
-				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype=='text'){
+				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype == 'text'){
 					var ex, ey, ew, eh;
 					
 					switch (SVGtype){ //get dimensions and position of the element
@@ -11497,21 +11509,23 @@ jQuery.fn.enableTextSelect = function() {
 							ew = Math.abs(ex-elem.attr('x2'));
 							eh = Math.abs(ey-elem.attr('y2'));
 							break;
+							
 						case 'text':
-							elem.attr('id', 'tempTextId');
-							var ele = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
-							var bbox = document.getElementById('tempTextId').getBBox();
-							elem.removeAttr('id');
+							//elem.attr('id', 'tempTextId');
+							//var ele = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
+							var ele = elem[0];
+							var bbox = ele.getBBox();
+							//elem.removeAttr('id');
 							ex = bbox.x;
 							ey = bbox.y;
 							ew = bbox.width;
 							eh = bbox.height;
 							break;
 					}
-						
+							
 				//get width and height of document and ViewBox
-				var svgWidth = $(document).width();
-				var svgHeight = $(document).height();
+				var svgWidth = window.innerWidth;//$(document).width();
+				var svgHeight = window.innerHeight;//$(document).height();			
 				var viewBox = $('svg').attr('viewBox');
 				var viewBoxParams = viewBox.split(" ", 4);
 				var viewWidth = viewBoxParams[2];
@@ -11522,7 +11536,7 @@ jQuery.fn.enableTextSelect = function() {
 				var wpixels, hpixels; 
 				
 				var ratio = svgWidth/svgHeight;
-				if(ratio >= viewWidth/viewHeight) {
+				if(ratio >= 4/3) {
 					hpixels = viewHeight;
 					wpixels = (viewHeight/svgHeight)*svgWidth;
 				} else {
@@ -11535,10 +11549,6 @@ jQuery.fn.enableTextSelect = function() {
 				zoomPercentage /= 100;
 				//get the scale value to make the rect fit the viewbox area
 				var scaleVal = Math.min(wpixels*zoomPercentage/ew, hpixels*zoomPercentage/eh);
-				
-				if(options!=undefined && options.scale!=undefined){ //if with the option.scale value the element would be bigger than the window, make it fit the screen (a bit smaller) instead
-					scaleVal = scaleVal < options.scale ? scaleVal-0.06 : options.scale;
-				}
 				
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();
@@ -11554,29 +11564,28 @@ jQuery.fn.enableTextSelect = function() {
 				//Center the group in the screen (independant to Screen Dimensions :)
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
-				
 				console.log("final transform: "+inverseTransform);
 				
-				//Get the animation speed
 				var speed = elem.parent().attr('speed');
 				speed = speed ? speed : 1;
 				options = $.extend({
 					duration: parseInt(speed*1000)
 				}, options);
 				
-				// use this.transformSVGanimation(...) to see animation by SVG instead of JQuery (alpha)
-				// for some reason it works only on Chrome ç_ç
 				this.transform(canvas, inverseTransform, options);
+				console.log("trasformazione e animazione effettuate");
+				}
 				
-				}
-				} catch (e){
-					alert("errore: "+e.message);
-				}
 				
 			} else {
+				console.log('il gruppo scelto è il canvas!');
 				this.transform(canvas, inverseTransform, options);
 			}
+			} catch (e){
+					console.log("errore tranformCanvasTo: "+e.message);
+			}
       } else {
+		  console.log("group is undefined D:");
         throw "Ops! This should not have happened! (o:"
       }
 		

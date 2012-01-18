@@ -11342,6 +11342,8 @@ jQuery.fn.enableTextSelect = function() {
       node = jQuery(node);
       if (node.size() > 0) {
         g = new Group(node[0]);
+        console.log('creato un nuovo gruppo:');
+        console.log(g);
         this.groupList.push(g);
       }
       console.log('esco da findGroup');

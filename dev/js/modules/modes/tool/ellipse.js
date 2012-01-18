@@ -47,7 +47,7 @@ define(['sandbox'], function (sandbox) {
         var newGroupDom = newGroup.dom();
         
         // !!! Set color and opacity management
-        ellipse = $(canvas.svg.ellipse(svgOffset.x, svgOffset.y, 0, 0, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 3, fillOpacity:0}));
+        ellipse = $(canvas.svg.ellipse(svgOffset.x, svgOffset.y, 10, 10, {stroke: canvas.getStrokeColor(), fill: canvas.getFillColor() , strokeWidth : 3, fillOpacity:0}));
         cx=svgOffset.x;
         cy=svgOffset.y;
         
@@ -70,10 +70,13 @@ define(['sandbox'], function (sandbox) {
 		var w = Math.abs(svgOffset.x-cx);
 		var h = Math.abs(svgOffset.y-cy);
 		
+		if (w > 10) ellipse.attr('rx',w);
+		if (h > 10) ellipse.attr('ry', h);
+		/*
 		ellipse.attr({
 			rx: w,
 			ry: h
-		});
+		});*/
 		
     }
     

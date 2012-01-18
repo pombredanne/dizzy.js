@@ -9,6 +9,8 @@ define(['sandbox'],  function(sandbox){
     var textOverlay;
     var clickOpensTextbox = false;
     var selectedTextGroup;
+    var textAnchor='';
+    var textX;
         
     /*
      * Subscribtions
@@ -128,7 +130,7 @@ define(['sandbox'],  function(sandbox){
 
           var newText = $(canvas.svg.other(newGroupDom, 'text'));
           var newTextSpan = $(canvas.svg.other(newText, 'tspan'));
-
+		  newText.attr('text-anchor', textAnchor);
           var svgOffset = canvas.toViewboxCoordinates(clickCoordinates);
 		  var fontSize = 200; 
           newText.attr({
@@ -140,6 +142,7 @@ define(['sandbox'],  function(sandbox){
             fill: canvas.getFillColor()
           });
           newText.append(newTextSpan);
+          
           newGroupDom.append(newText);
           
           selectedTextGroup = newGroup;
@@ -171,11 +174,11 @@ define(['sandbox'],  function(sandbox){
 		
 		if(text == undefined) return;
 		
-		text.attr('id', 'tempTextId');
+		/*text.attr('id', 'tempTextId');
 		var textjs = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
-		text.removeAttr('id');
+		text.removeAttr('id');*/
 		
-		var bboxCoords = screenCoordsForText(textjs);
+		var bboxCoords = screenCoordsForText(text[0]);
 				
 		var screenCoordinates = {x: bboxCoords.nw.x, y: bboxCoords.nw.y};
 		
@@ -204,7 +207,6 @@ define(['sandbox'],  function(sandbox){
 		}
 		updateSizeForText(text);
 		return true;
-		
 	}
 	
 	function keyDown(ev, node){
@@ -320,6 +322,23 @@ define(['sandbox'],  function(sandbox){
 		  }
 		  updateSizeForText(text);
 	  });
+	  
+	  $('#tool-textMode-center').bind('click', function(){
+			var anchor = text.attr('text-anchor');
+			var diff = parseInt(text.attr('x'));
+			var firstSpanLength = text.children().first()[0].getComputedTextLength();
+			console.log(firstSpanLength);
+			if (anchor == 'middle'){
+				text.removeAttr('text-anchor');
+				textAnchor = '';
+			}
+			else{
+				text.attr('text-anchor', 'middle');
+				text.children().attr('x', diff+firstSpanLength/2)
+				textAnchor = 'middle';
+			}
+			updateSizeForText(text);
+	  });
 
       textOverlay.show();
       textOverlay.css({
@@ -359,6 +378,7 @@ define(['sandbox'],  function(sandbox){
       $('#tool-textMode-italic').unbind();
       $('#tool-textMode-bold').unbind();
       $('#tool-textMode-underline').unbind();
+      $('#tool-textMode-center').unbind();
       
       textBox.width(271);
 	  textBox.height(65.43600463867188);
