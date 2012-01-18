@@ -110,7 +110,7 @@ define(['sandbox'],  function (sandbox) {
      */
     assignEventHandlers: function () {
 		
-	  toolbar.children(":not(#tool-color)").disableTextSelect();
+	  toolbar.children(":not(#tool-color):not(#tool-goto-input)").disableTextSelect();
 	  
       // event delegation, "this" referrs to .toolbutton that has been clicked
       toolbar.delegate('.toolbutton', 'click', function (e) {

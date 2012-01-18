@@ -204,7 +204,7 @@ hr{
 	border-radius: 40px;
 }
 
-.toolbutton:hover {
+.toolbutton:hover, #toolbar > .toolbutton.present:hover {
 	background: rgba(109, 181, 207, 0.3);
 	-webkit-border-radius: 40px;
 	-moz-border-radius: 40px;
@@ -1025,6 +1025,12 @@ svg .invisible{
 	border-radius: 100px;
 }
 
+#toolbar > .toolbutton.present, #toolbar > .toolbutton.present.pressed {
+	background: transparent;
+	border:0;
+	border-radius: 0;
+}
+
 #text-wrapper {
 	position: relative;
 	top: 0;
@@ -1035,4 +1041,9 @@ svg .invisible{
 	min-height: 50px;
 	height: 65.43600463867188px;
 	border: 2px solid #0a82ad;
+}
+
+#toolbar > #tool-goto-input:hover {
+	background: transparent;
+	border: 0;
 }

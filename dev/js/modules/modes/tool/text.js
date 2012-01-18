@@ -10,7 +10,7 @@ define(['sandbox'],  function(sandbox){
     var clickOpensTextbox = false;
     var selectedTextGroup;
     var textAnchor='';
-    var textX;
+    var textX = undefined;
         
     /*
      * Subscribtions
@@ -130,7 +130,7 @@ define(['sandbox'],  function(sandbox){
 
           var newText = $(canvas.svg.other(newGroupDom, 'text'));
           var newTextSpan = $(canvas.svg.other(newText, 'tspan'));
-		  newText.attr('text-anchor', textAnchor);
+		  //newText.attr('text-anchor', textAnchor);
           var svgOffset = canvas.toViewboxCoordinates(clickCoordinates);
 		  var fontSize = 200; 
           newText.attr({
@@ -215,7 +215,8 @@ define(['sandbox'],  function(sandbox){
 			if(ev.which === 13 ){ // enter (multiline text)
 				var textSpan = $(canvas.svg.other(node, 'tspan'));
 				var precSpan = textSpan.closest();
-				textSpan.attr('x', node.attr('x')).attr('dy', window.getComputedStyle(textSpan[0], null).getPropertyValue('font-size'));
+				var xVal = textX ? textX : node.attr('x');
+				textSpan.attr('x', xVal).attr('dy', window.getComputedStyle(textSpan[0], null).getPropertyValue('font-size'));
 				return false;
 				
 			}else if(ev.which === 46 || (ev.which === 0 && ev.keyCode === 46) ){ // delete key -> remove group
@@ -327,14 +328,16 @@ define(['sandbox'],  function(sandbox){
 			var anchor = text.attr('text-anchor');
 			var diff = parseInt(text.attr('x'));
 			var firstSpanLength = text.children().first()[0].getComputedTextLength();
-			console.log(firstSpanLength);
 			if (anchor == 'middle'){
 				text.removeAttr('text-anchor');
+				text.children().attr('x', diff);
+				textX = diff;
 				textAnchor = '';
 			}
 			else{
 				text.attr('text-anchor', 'middle');
-				text.children().attr('x', diff+firstSpanLength/2)
+				textX = diff+firstSpanLength/2; //it's a global value to apply the change to rows written after the button pressed
+				text.children().attr('x', textX);
 				textAnchor = 'middle';
 			}
 			updateSizeForText(text);
@@ -363,6 +366,8 @@ define(['sandbox'],  function(sandbox){
 				canvas.removeGroup(selectedTextGroup);
 			} else if(spans.length == 0) canvas.removeGroup(selectedTextGroup);
 			selectedTextGroup = undefined;
+			textX = undefined;
+			textAnchor = '';
 		}
 		
 	  $(document).unbind('keypress.dizzy.editor');
