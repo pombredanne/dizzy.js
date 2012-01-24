@@ -9,8 +9,12 @@ define(['sandbox'],  function(sandbox){
     var textOverlay;
     var clickOpensTextbox = false;
     var selectedTextGroup;
+    
     var textAnchor='';
     var textX = undefined;
+    
+    var textFont;
+    var textSize;
         
     /*
      * Subscribtions
@@ -132,9 +136,9 @@ define(['sandbox'],  function(sandbox){
           var newTextSpan = $(canvas.svg.other(newText, 'tspan'));
 		  //newText.attr('text-anchor', textAnchor);
           var svgOffset = canvas.toViewboxCoordinates(clickCoordinates);
-		  var fontSize = 200; 
+		  var fontSize = textSize ? textSize : 200;
           newText.attr({
-			'font-family' : 'serif',
+			'font-family' : textFont ? textFont : 'serif',
 			'font-size': fontSize+'px',
             x: svgOffset.x,
             y: svgOffset.y,
@@ -268,6 +272,7 @@ define(['sandbox'],  function(sandbox){
 		  
 		  text.attr('font-size', fontSize+'px');		  
 		  text.children('tspan').not(':first-child').attr('dy', fontSize+'px');
+		  textSize = fontSize;
 		  updateSizeForText(text);
 	  });
 	  
@@ -282,12 +287,14 @@ define(['sandbox'],  function(sandbox){
 		  
 		  text.attr('font-size', fontSize+"px");
 		  text.children('tspan').not(':first-child').attr('dy', fontSize+'px');
+		  textSize = fontSize;
 		  updateSizeForText(text);
 	  });
 	  
 	  $('#tool-textMode-family').bind('change', function(){
 		  var fontFam = $("#tool-textMode-family option:selected").val();
 		  text.attr('font-family', fontFam);
+		  textFont = fontFam;
 		  updateSizeForText(text);
 	  });
 	  
@@ -348,8 +355,8 @@ define(['sandbox'],  function(sandbox){
         top: viewportCoordinates.y,
         left: viewportCoordinates.x
       });
-      textBox.trigger('input');
-      textBox.trigger('focus');
+      //textBox.trigger('input');
+      //textBox.trigger('focus');
       clickOpensTextbox = false;
     }
 
