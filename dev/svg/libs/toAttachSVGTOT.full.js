@@ -11270,9 +11270,9 @@ jQuery.fn.enableTextSelect = function() {
     
     
     
-    function load(options) {
+    function load(/*options*/) {
 		var that = this;
-		options = options || {};
+		//options = options || {};
 		this.canvas = $('#canvas'); //OK
 		var groups = this.canvas.find('g');
 		//alert(groups.length);

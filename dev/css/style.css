@@ -171,6 +171,10 @@ hr{
 #toolbar.invisible{
 	opacity: 0;
 }
+
+#tracker.invisible{
+	opacity: 0;
+}
 /*
 .toolbutton, #toolbar, #zebra-toolbar  {
 }*/

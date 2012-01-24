@@ -156,8 +156,15 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
       if (typeof numberOrGroup !== 'number') {
         numberOrGroup = this.getGroup(numberOrGroup);
       }
+      var numBackup = this.activeGroupNumber;
       this.activeGroupNumber = numberOrGroup;
-      this.current(options);
+      try {
+        var cur = this.current(options);
+      } catch (e) {
+        this.activeGroupNumber == numBackup;
+      }
+      //sandbox.publish('dizzy.canvas.group.visited');
+      //this.current(options);
     },
     
     centerGroup: function (numberOrGroup, options) {
@@ -343,6 +350,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				// use this.transformSVGanimation(...) to see animation by SVG instead of JQuery (alpha)
 				// for some reason it works only on Chrome ç_ç
 				this.transform(canvas, inverseTransform, options);
+				sandbox.publish('dizzy.canvas.group.visited');
 				
 				}
 				} catch (e){
@@ -350,7 +358,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				}
 				
 			} else {
-				this.transform(canvas, inverseTransform, options);
+				//this.transform(canvas, inverseTransform, options);
 			}
       } else {
         throw "Ops! This should not have happened! (o:"

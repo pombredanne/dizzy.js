@@ -54,10 +54,9 @@ define(['sandbox'], function (sandbox) {
 			break;
 			
 		case 'menu-download':
-			//var svgText = canvas.serialize();
+			var svgText = canvas.serialize();
 			//var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,' + $.base64Encode(svgText);
-			var svgText2 = $('#dizzy').html(); //alternative way :) to check!
-			$.post('php/downloadSVG.php', {svg:svgText2}, function(url){
+			$.post('php/downloadSVG.php', {svg:svgText}, function(url){
 			  window.open("php/"+url, 'Download');
 			});
 			break;

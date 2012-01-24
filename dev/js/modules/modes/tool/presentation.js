@@ -5,6 +5,7 @@
 define(['sandbox'], function (sandbox) {
 	
 	var canvas;
+	var mMove;
 	
 	/*
 	 * Mode to register
@@ -22,16 +23,36 @@ define(['sandbox'], function (sandbox) {
 			//buttons are binded in toolbar.control
 			
 			canvas.activeGroupNumber=0;
+			
+			//make toolbar and tracker invisible while presenting
+			$('#toolbar, #tracker').addClass('invisible');			
+			$(document).bind('mousemove.dizzy.presentation', function(){
+				if (mMove) clearTimeout(mMove);
+				$('#toolbar, #tracker').removeClass('invisible');
+				mMove = setTimeout(function(){$('#toolbar, #tracker').addClass('invisible');}, 1000);
+			} );
 		},
 	
 		stop: function () {
+			if (mMove) clearTimeout(mMove);
 			$(document).unbind('keydown.dizzy.presentation');
+			$(document).unbind('mousemove.dizzy.presentation');
 		}
 	};
 	
 	sandbox.subscribe('dizzy.presentation.loaded', function (c) {
 		canvas = c.canvas;
 	});
+	
+	function checkMouseMove(){
+      if( mouseMoved === true ){
+         mouseMoved = false;
+         $('#toolbar').removeClass('invisible');
+      }else{
+         $('#toolbar').addClass('invisible');
+      }
+      mouseMovedTimeout = setTimeout( checkMouseMove, mouseInterval );
+   }
 	
 	
 	return {

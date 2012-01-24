@@ -12,6 +12,7 @@ define(['sandbox'], function (sandbox) {
    * Toolbar is loaded, bind Present items.
    */
    
+   
   //when Toolbar is loaded -> get the toolbar
   sandbox.subscribe('dizzy.ui.toolbar.loaded', function (tool) {
     toolbar = tool.toolbar;
@@ -41,6 +42,19 @@ define(['sandbox'], function (sandbox) {
     toolbar.find('.toolbutton').not(':first-child, :last-child').toggle();
     
     sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});
+  });
+  
+	sandbox.subscribe('dizzy.canvas.group.visited', function(){
+		if (toolbar){
+			$('#tool-goto-inp').val(canvas.activeGroupNumber);
+			console.log('visited group: '+canvas.activeGroupNumber);
+		}
+   });
+   
+   sandbox.subscribe('dizzy.ui.toolbar.clicked.tool-goto-go', function () {
+	var num = parseInt($('#tool-goto-inp').val());
+	if (!isNaN(num) && num>0) canvas.gotoGroup(num);
+	else $('#tool-goto-inp').val(canvas.activeGroupNumber);
   });
 
   return {
