@@ -5,7 +5,9 @@ There is an old version of the "online editor":http://dizzy.metafnord.org for pr
 
 h2. Browser support
 
-See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki.
+All modern browsers are supported (no ideas about Internet Explorer), but:
+- Chrome has some problems in saving presentations with images
+- Opera selects the text on the canvas simply moving the mouse (it's annoying but everything works anyway)
 
 h2. Contribute
 

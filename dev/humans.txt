@@ -3,10 +3,9 @@
 
 
 /* TEAM */
-  Author: Murphy
+  Author: Linuslabo forking Murphy
   Site: http://murphy.metafnord.org
-  Twitter: @MrMoerphy
-  Location: Germany
+  Location: Italy, Germany
   
 
 /* SITE */

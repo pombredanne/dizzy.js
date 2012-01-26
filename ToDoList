@@ -5,6 +5,10 @@
 
 - toDo: simplified Path Tool
 
+- toDo: group real support
+
+- toDo: avoid the use of the 'Transformation' class
+
 - to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
 	in css
 	#zebra-scale {

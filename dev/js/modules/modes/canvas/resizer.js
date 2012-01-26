@@ -93,13 +93,13 @@ define(['sandbox'], function (sandbox) {
 		var selectedGroup = d.group;
 		
 		var $rect = selectedGroup.dom().children().first();
-		$rect.addClass('tempClassRect');
-		var rect = document.getElementsByClassName('tempClassRect')[0];
-		$rect.removeClass('tempClassRect');
+		//$rect.addClass('tempClassRect');
+		//var rect = document.getElementsByClassName('tempClassRect')[0];
+		//$rect.removeClass('tempClassRect');
 		
-		if (rect.localName == 'rect'){		
-			selectedRect = rect;
-			moveResizerToRect(rect);
+		if ($rect[0].localName == 'rect'){		
+			selectedRect = $rect[0];
+			moveResizerToRect($rect[0]);
 			showResizer();
 		} else hideResizer();
 	});
