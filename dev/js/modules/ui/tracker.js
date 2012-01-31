@@ -56,6 +56,7 @@ define(['sandbox'],  function (sandbox) {
   var loadExistingGroups = function () {
 		if(canvas)
 		for (var i=0; i<canvas.groupList.length; i++){
+			
 			var g = canvas.groupList[i].dom();
 			var id = g.attr('id');
 			var invisible = '';
@@ -79,7 +80,7 @@ define(['sandbox'],  function (sandbox) {
 				
 				if (classes != null) //if the group has some group_x class
 					for (var j=0; j<classes.length; j++){
-						pathNumbers += classes[j].substring(classes[j].length-1)+" ";
+						pathNumbers += classes[j].substring(6)+" ";
 					}
 				
 				var zoom = g.attr('zoom');
@@ -170,7 +171,8 @@ define(['sandbox'],  function (sandbox) {
 		});
 		
 		trackerList.delegate('.tracker-path-numbers','change',function(){
-			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1	
+			
+			var index = $(this).parents('tr').prop('rowIndex'); //rowIndex starts from 1
 			var group = canvas.groupList[index-1];
 			
 			var separators = /[ -.,;:+]/;
@@ -179,11 +181,13 @@ define(['sandbox'],  function (sandbox) {
 			var groupNumberMatch = /group_(\d+)/gi;
 			var classes = (group.dom().attr('class')).match(groupNumberMatch);
 			
+			//remove the existing pathnumbers
 			if (classes != null)
 			for (var i=0; i<classes.length; i++){
-				canvas.removePathNumber(group, classes[i].substring(classes[i].length-1));
+				canvas.removePathNumber(group, parseInt(classes[i].substring(6)));
 			}
 			
+			//and set the new ones
 			for (i=0; i<numbers.length; i++){
 				if(numbers[i]=="") continue;
 				canvas.addPathNumber(group, numbers[i]);

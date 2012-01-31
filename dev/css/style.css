@@ -982,14 +982,14 @@ svg .invisible{
 }
 
 #zebra #zebra-scale{
-	background: url('../img/zebra-scale.svg') no-repeat scroll 0 0 transparent;
+	background: url('../img/zebra-scale.png') no-repeat scroll 0 0 transparent;
 	height: 74px;
 	width: 74px;
 	top: 19px;
 	left: 19px;
 }
 #zebra #zebra-rotate{
-	background: url('../img/zebra-rotate.svg') no-repeat scroll 0 0 transparent;
+	background: url('../img/zebra-rotate.png') no-repeat scroll 0 0 transparent;
     border: 0px;
     height: 112px;
     width: 112px;
