@@ -49,37 +49,25 @@ define(['sandbox'], function (sandbox) {
         scale.bind('mousedown.dizzy.zebra.scale', function (e) {
           return that.scaleStart(scale, e);
         });
-        var translate = zebraNode.find('#zebra-translate');
-        translate.bind('mousedown.dizzy.zebra.translate', function (e) {
+        zebraNode.find('#zebra-translate').bind('mousedown.dizzy.zebra.translate', function (e) {
           return groupTranslate(selectedGroup.dom(), e);
         });
         
         /* Bind the expand-menu-button to open the zebra-menu */
-        var expand = zebraNode.find("#zebra-expand-button");
-        expand.bind('click.dizzy.zebra.expand', function() {
+        zebraNode.find("#zebra-expand-button").bind('click.dizzy.zebra.expand', function() {
 			$('#zebra-toolbar').toggleClass('hidden');
 			$(this).toggleClass('mirrored');
 		});
 		
 		/* Levels management */
-		var up = zebraNode.find('#zebra-toolbar-up');
-		up.bind('click.dizzy.zebra.toolbar.up', function(){
-			return that.raiseLayer();
-		});
-		var down = zebraNode.find('#zebra-toolbar-down');
-		down.bind('click.dizzy.zebra.toolbar.down', function(){
-			return that.lowerLayer();
-		});
+		zebraNode.find('#zebra-toolbar-up').bind('click.dizzy.zebra.toolbar.up', that.raiseLayer);
+		zebraNode.find('#zebra-toolbar-down').bind('click.dizzy.zebra.toolbar.down', that.lowerLayer);
+		zebraNode.find('#zebra-toolbar-downest').bind('click.dizzy.zebra.toolbar.downest', that.lowerLayerMax);
+		zebraNode.find('#zebra-toolbar-uppest').bind('click.dizzy.zebra.toolbar.uppest', that.raiseLayerMax);
 		
 		/* Border weight management */
-		var strokeWidthUp = zebraNode.find('#zebra-toolbar-border-weight-up');
-		strokeWidthUp.bind('click.dizzy.zebra.toolbar.strokeWidth.up', function(){
-			return that.raiseStrokeWidth();
-		});
-		var strokeWidthDown = zebraNode.find('#zebra-toolbar-border-weight-down');
-		strokeWidthDown.bind('click.dizzy.zebra.toolbar.strokeWidth.down', function(){
-			return that.lowerStrokeWidth();
-		});
+		zebraNode.find('#zebra-toolbar-border-weight-up').bind('click.dizzy.zebra.toolbar.strokeWidth.up', that.raiseStrokeWidth);
+		zebraNode.find('#zebra-toolbar-border-weight-down').bind('click.dizzy.zebra.toolbar.strokeWidth.down', that.lowerStrokeWidth);
 		
 		/* Rect proportions management */
 		zebraNode.find('#zebra-toolbar-43').bind('click.dizzy.zebra.toolbar.43', function(){
@@ -87,6 +75,9 @@ define(['sandbox'], function (sandbox) {
 		});
 		zebraNode.find('#zebra-toolbar-169').bind('click.dizzy.zebra.toolbar.169', function(){
 				return that.fitRectTo(16,9);
+		});
+		zebraNode.find('#zebra-toolbar-1610').bind('click.dizzy.zebra.toolbar.1610', function(){
+				return that.fitRectTo(16,10);
 		});
 		
 		/* Fill opacity management */
@@ -96,6 +87,9 @@ define(['sandbox'], function (sandbox) {
 		zebraNode.find('#zebra-toolbar-nofill').bind('click.dizzy.zebra.toolbar.nofill', function(){
 				return that.raiseFillOpacity(-0.2);
 		});
+		
+		/* Round corners */
+		zebraNode.find('#zebra-toolbar-border-round').bind('click.dizzy.zebra.toolbar.round', that.roundCorners);
       }
     },
 
@@ -104,22 +98,22 @@ define(['sandbox'], function (sandbox) {
       if (canvas) {
         var groups = jQuery(canvas.svg.root()).undelegate('g.group', 'mousedown.dizzy.zebra.scale');
       }
-      var rotate = zebraNode.find('#zebra-rotate');
-      rotate.unbind('mousedown.dizzy.zebra.rotate');
-      var scale = zebraNode.find('#zebra-scale');
-      scale.unbind('mousedown.dizzy.zebra.scale');
-      var translate = zebraNode.find('#zebra-translate');
-      translate.unbind('mousedown.dizzy.zebra.translate');
-      var expand = zebraNode.find("#zebra-expand-button");
-      expand.unbind('click.dizzy.zebra.expand');
+      zebraNode.find('#zebra-rotate').unbind('mousedown.dizzy.zebra.rotate');
+      zebraNode.find('#zebra-scale').unbind('mousedown.dizzy.zebra.scale');
+      zebraNode.find('#zebra-translate').unbind('mousedown.dizzy.zebra.translate');
+      zebraNode.find("#zebra-expand-button").unbind('click.dizzy.zebra.expand');
       zebraNode.find('#zebra-toolbar-up').unbind('click.dizzy.zebra.toolbar.up');
       zebraNode.find('#zebra-toolbar-down').unbind('click.dizzy.zebra.toolbar.down');
+      zebraNode.find('#zebra-toolbar-uppest').unbind('click.dizzy.zebra.toolbar.uppest');
+      zebraNode.find('#zebra-toolbar-downest').unbind('click.dizzy.zebra.toolbar.downest');
       zebraNode.find('#zebra-toolbar-border-weight-up').unbind('click.dizzy.zebra.toolbar.strokeWidth.up');
       zebraNode.find('#zebra-toolbar-border-weight-down').unbind('click.dizzy.zebra.toolbar.strokeWidth.down');
       zebraNode.find('#zebra-toolbar-43').unbind('click.dizzy.zebra.toolbar.43');
       zebraNode.find('#zebra-toolbar-169').unbind('click.dizzy.zebra.toolbar.169');
+      zebraNode.find('#zebra-toolbar-1610').unbind('click.dizzy.zebra.toolbar.1610');
       zebraNode.find('#zebra-toolbar-fill').unbind('click.dizzy.zebra.toolbar.fill');
       zebraNode.find('#zebra-toolbar-nofill').unbind('click.dizzy.zebra.toolbar.nofill');
+      zebraNode.find('#zebra-toolbar-border-round').unbind('click.dizzy.zebra.toolbar.round');
     },
 
     /*
@@ -326,6 +320,22 @@ define(['sandbox'], function (sandbox) {
       node.insertAfter(node.next('g.group'));
     },
     
+    lowerLayerMax: function(){
+		var node = $('.selected', canvas.svg.root());
+		if(!node.hasClass('group')){
+		 node = node.parents('g.group').first();
+		}
+		node.prependTo('#canvas');
+	},
+	
+	raiseLayerMax: function(){
+		var node = $('.selected', canvas.svg.root());
+		if( !node.hasClass('group') ){
+		 node = node.parents('g.group').first();
+		}
+		node.appendTo('#canvas');
+    },
+    
     //TODO: use a function to raise the width proportionally to the current size (eg. if it's 15 should grow by 3)
     lowerStrokeWidth: function(){
 		var node = $('.selected', canvas.svg.root());
@@ -386,13 +396,33 @@ define(['sandbox'], function (sandbox) {
 		if ($children.length == 1) node = $children.first();
 		
 		var fillOpacity = parseFloat(node.attr('fill-opacity'));
-		console.log(fillOpacity);
+		//console.log(fillOpacity);
 		if (isNaN(fillOpacity)) fillOpacity = 1;
 		fillOpacity += val;
 		if (fillOpacity < 0) fillOpacity = 0;
 		else if (fillOpacity > 1) fillOpacity = 1;
-		console.log(fillOpacity);
+		//console.log(fillOpacity);
 		node.attr('fill-opacity', Math.round((fillOpacity*10))/10);
+	},
+    
+    /* Round rect corners */
+    roundCorners: function(){
+		var node = $('.selected', canvas.svg.root());
+		$children = node.children();
+		if ($children.length == 1) node = $children.first();
+		var rxv = node.attr('rx');
+		var rxv1 = Math.round(Math.min(node.attr('width'), node.attr('height'))/10);
+		
+		if (!rxv || isNaN(rxv) || rxv==0){
+			rxv = rxv1;
+		}
+		else {
+			if (rxv == rxv1)
+				rxv = Math.round(Math.min(node.attr('width'), node.attr('height'))/4);
+			else
+				rxv=0;
+		}
+		node.attr('rx', rxv);
 	}
 	
   }; //zebraMode ends here <-------
@@ -430,6 +460,8 @@ define(['sandbox'], function (sandbox) {
 		if(groupType && groupType != 'rect'){
 			zebraNode.find('#zebra-toolbar-43').addClass('hidden');
 			zebraNode.find('#zebra-toolbar-169').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-1610').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-border-round').addClass('hidden');
 			
 			if(groupType == 'image'){
 				zebraNode.find('#zebra-toolbar-border-weight-up').addClass('hidden');

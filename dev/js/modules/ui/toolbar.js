@@ -85,6 +85,11 @@ define(['sandbox'],  function (sandbox) {
 		  colorStroke.close();  
 	  });
 	  
+	  sandbox.subscribe('dizzy.ui.toolbar.clicked.mode', function(){
+		  colorFill.close();
+		  colorStroke.close(); 
+	  });
+	  
 	  $(inputFill).click(function(){
 		  if(colorFill.opened)
 			  colorFill.close();
@@ -109,10 +114,10 @@ define(['sandbox'],  function (sandbox) {
      * A click on the button triggers a publish to the above function (that does the 
      */
     assignEventHandlers: function () {
-		
-	  toolbar.children(":not(#tool-color):not(#tool-goto-input)").disableTextSelect();
+	  toolbar.css({'MozUserSelect' : 'none'}).bind('selectstart select', function() {return false;
+		}).mousedown(function(e) {e.stoppropagation(); return false;});
+	  toolbar.children(":not(#tool-goto-input)").disableTextSelect();
 	  
-      // event delegation, "this" referrs to .toolbutton that has been clicked
       toolbar.delegate('.toolbutton', 'click', function (e) {
         var $target = $(this);
 

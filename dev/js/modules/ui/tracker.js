@@ -53,6 +53,21 @@ define(['sandbox'],  function (sandbox) {
 	  //console.log(list.length);
   });
   
+  sandbox.subscribe('dizzy.canvas.group.text.edited', function(d){
+	  var re=/ /g;
+	  var tg = d.textGroup.dom();
+	  var txt = (tg.children().first().children('tspan').first().text()).replace(re, '').substring(0, 6);
+	  tg.attr('name', txt);
+	  var id = tg.attr('id');
+	  for (var i=0; i<list.length; i++){
+		  if (id == list[i].id){
+			  var row = trackerList.find('tr:nth-child('+(i+2)+')');
+			  row.find('.tracker-name').val(txt);
+			  break;
+		  }
+	  }
+  });
+  
   var loadExistingGroups = function () {
 		if(canvas)
 		for (var i=0; i<canvas.groupList.length; i++){

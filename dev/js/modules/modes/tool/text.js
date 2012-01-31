@@ -203,6 +203,7 @@ define(['sandbox'],  function(sandbox){
     
     function keyPressed(ev, node){
 		ev.preventDefault();
+		if(ev.which == 13) return true;
 		var text = node;
 		node = node.children().last();
 		var oldText = node.text();
@@ -214,11 +215,25 @@ define(['sandbox'],  function(sandbox){
 	}
 	
 	function keyDown(ev, node){
-		//ev.preventDefault();
 		if( node.size() !== 0 ){
+			var spanNode = node.children('tspan').last();
 			if(ev.which === 13 ){ // enter (multiline text)
+				
+				//the following block avoid to start a text with 'Enter'
+				var empty=true;
+				var regexp = /^[\s]+$/;
+				node.children('tspan').each(function(){
+					if ($(this).text() != '' && !regexp.test($(this).text()))
+						empty = false;
+				});
+				if(empty) return false; //
+				
+				//the following block allows visual empty rows
+				var spanNode = node.children('tspan').last();
+				if (spanNode.text() == '') spanNode.text(' '); //
+				
 				var textSpan = $(canvas.svg.other(node, 'tspan'));
-				var precSpan = textSpan.closest();
+				//var precSpan = textSpan.closest();
 				var xVal = textX ? textX : node.attr('x');
 				textSpan.attr('x', xVal).attr('dy', window.getComputedStyle(textSpan[0], null).getPropertyValue('font-size'));
 				return false;
@@ -227,8 +242,6 @@ define(['sandbox'],  function(sandbox){
 				return false;
 				
 			}else if( ev.which === 8 ){ // backspace
-				var spanNode = node.children('tspan').last();
-				
 				//var group = node;
 				var oldText = spanNode.text();
 				
@@ -240,9 +253,6 @@ define(['sandbox'],  function(sandbox){
 					if(node.children('tspan').length > 1)
 					spanNode.remove();
 				}
-				/*if( node.children().size() === 0 ){ // remove group
-					canvas.remove(node);
-				}*/
 				
 				return false;
 			}
@@ -366,12 +376,18 @@ define(['sandbox'],  function(sandbox){
 			var text = selectedTextGroup.dom().children().first();
 			//console.log(text.children('tspan').length);
 			var spans = text.children('tspan');
-			if(spans.length == 1){
-				var cont = spans.text();
-				var regexp = /^[ ]+$/; //remove empty texts or space only texts
-				if (cont == '' || regexp.test(cont))
-				canvas.removeGroup(selectedTextGroup);
-			} else if(spans.length == 0) canvas.removeGroup(selectedTextGroup);
+			if(spans.length == 0) canvas.removeGroup(selectedTextGroup);
+			else {
+				if(spans.length == 1){
+					var cont = spans.text();
+					var regexp = /^[\s]+$/; //remove empty texts or space only texts
+					if (cont == '' || regexp.test(cont))
+						canvas.removeGroup(selectedTextGroup);
+					else sandbox.publish('dizzy.canvas.group.text.edited', {textGroup: selectedTextGroup });
+				}
+				//if a text has > 1 spans, the first cannot be empty by construction
+				else sandbox.publish('dizzy.canvas.group.text.edited', {textGroup: selectedTextGroup });
+			}
 			selectedTextGroup = undefined;
 			textX = undefined;
 			textAnchor = '';
