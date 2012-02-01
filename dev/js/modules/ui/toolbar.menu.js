@@ -90,7 +90,7 @@ define(['sandbox'], function (sandbox) {
          var reader = new FileReader();
          var openSVGFile = file[0];
          reader.onload = function(e){
-			 console.log("loaded svg: "+e.target.result);
+			 //.log("loaded svg: "+e.target.result);
 			 
 			 sandbox.publish('dizzy.presentation.loadSVG', {
 				 svgDoc: e.target.result

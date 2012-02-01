@@ -12,10 +12,12 @@
 		*/
 		$zip = new ZipArchive();
 		$file = $nome.".zip";
-
+		
+		$svg = preg_replace('/NS1:/', '', $svg, 1); //fixes Opera Namespace
+		
 		if ($zip->open($file, ZIPARCHIVE::CREATE)===TRUE) {
 			$zip->addFromString("presentation.svg", $svg);
-			//$zip->addFromString("file2.txt", "questo pure!");
+			//$zip->addFromString("aggiornato.txt", "oK");
 			//$zip->addFile('fileName.txt', 'fileNameInTheArchive.txt');
 			$zip->close();
 		}else echo "Errore nella creazione del'archivio";

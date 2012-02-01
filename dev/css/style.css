@@ -115,7 +115,8 @@ border-radius:10px;
 }
 
 #toolbar {
-position:absolute;
+position:relative;
+float: left;
 overflow:visible;
 -ms-transition:.8s opacity ease-in-out;
 -o-transition:.8s opacity ease-in-out;
