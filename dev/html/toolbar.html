@@ -26,10 +26,10 @@
    <div class="toolbutton present hidden" id="tool-goto-go" title="Skip to group.."><img src="./img/tool_skip.png" alt="Transition to the specified group" /></div>
 
    <div id="tool-color" class="toolbutton fullwidth" title="Choose fill and stroke colors">
-      <img src="./img/zebra_tool_color.png" alt="color icon" class="hidden" />
-      <input class="color" value="#FFFFFF" id="tool-input-color-fill" title="Fill color" />
-      <input class="color" value="#000000" id="tool-input-color-stroke" title="Stroke color" />
-      <!-- since type="color" is supported only by Opera I choose to use jscolor for all browsers -->
+      <!--img src="./img/zebra_tool_color.png" alt="color icon" class="hidden" /-->
+      <input class="color" id="tool-input-color-fill" title="Fill color" />
+      <input class="color" id="tool-input-color-stroke" title="Stroke color" />
+      <!-- since type="color" is supported only by Opera atm I choose to use jscolor for all browsers -->
    </div>
 
    <div id="present-toggle-button" class="toolbutton mode fullwidth" title="Start presentation" >
@@ -62,17 +62,7 @@
                <li title="Download dizzy presentation" 
                      id="menu-download" class="menu-option"
                      data-description="Download Dizzy presentation. It will be a zipped .svg file openable in browsers. You may advance the slideshow using arrows or click.">
-                  <img src="./img/menu_save.png" alt="Download file" /> Download this SVG 
-                  <div id="menu-save-extended" class="hidden">
-                     <hr />
-                     <form>
-                        <fieldset>
-                           <label for="menu-save-input">Choose a name:</label>
-                           <input type="text" id="menu-save-input" />
-                           <button id="menu-save-ok">Ok</button>
-                        </fieldset>
-                     </form>  
-                  </div>
+                  <img src="./img/menu_save.png" alt="Download file" /> Download this SVG
                </li>
                <!-- li title="Import Prezi .pez file (not implemented yet)" class="hidden menu-option"><img src="./img/menu_import.png" alt="Import file" /> Import Prezi
                   <div id="menu-import-extended" class="hidden">
@@ -100,6 +90,14 @@
                </li>
             </ul>
          </li -->
+         <li><h2>Options</h2>
+			<ul>
+				<li title="Change canvas color" id="menu-background" class="menu-option" data-description="The background color of presentation. It may change not instantly on some browsers.">
+					<img src="./img/zebra_tool_color.png" alt="background icon" /> Presentation Background Color
+					<input class="color" id="tool-input-color-background" title="Background color" />
+				</li>
+			</ul>
+         </li>
          <li><h2>Help</h2>
             <ul>
                <li title="Report bugs found."  id="menu-bugs" class="menu-option" data-description="Where to report bugs and quirks."><img src="./img/menu_bugs.png" alt="report bugs" /> Report bugs
@@ -123,7 +121,7 @@
                      Icons by <a href="http://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a><br />
                      <br />
                      Author: <a href="https://github.com/linuslabo">Linuslabo</a> who forked
-                     <a href="https://github.com/Moerphy/dizzy.js">Murphy</a>
+                     <a href="https://github.com/Moerphy">Murphy</a>
                   </div>
                </li>
             </ul>

@@ -1,16 +1,12 @@
 
 - toDo: test SVG animation instead of JQuery ones (something done, see in js/dizzy/canvas.js -> this.transformSVGanimation() )
 
-- toDo: add the possibility to change the color of the canvas
-
 - toDo: simplified Path Tool
 
 - toDo: group real support
 
 - toDo: avoid the use of the 'Transformation' class
 
-- to Remember: the zebra is not visible on Gnu/Linux browser using XAMPP:
-	in css
-	#zebra-scale {
-	url("../img/zebra-background.svg") repeat scroll 0 0 transparent;
-	---> Browser on Linux fail to load the url (??? mistery)
+- toDo: avoiding TextSelection in Opera (default mode)
+
+- to Remember: some svg images used in css are not visible using XAMPP for Linux (LAMPP) as Server.

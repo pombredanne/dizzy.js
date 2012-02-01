@@ -50,13 +50,13 @@ define(['sandbox'],  function (sandbox) {
     
     setColorPickers: function() {
 		
-	  function CPicker(inputId){
+	  function CPicker(inputId, from){
 			
 			this.selector = new jscolor.color(inputId, {});
 			this.selector.pickerOnfocus = false;
 			this.selector.pickerFace = 2;
 			this.selector.hash = true;
-			this.selector.fromString('#000000');
+			this.selector.fromString(from);
 			
 			
 			this.opened = false;
@@ -73,22 +73,37 @@ define(['sandbox'],  function (sandbox) {
 	  }
 	  
 	  var inputFill = document.getElementById('tool-input-color-fill');
-	  var colorFill = new CPicker(inputFill);
+	  var colorFill = new CPicker(inputFill, '#000000');
 	  
 	  var inputStroke = document.getElementById('tool-input-color-stroke');
-	  var colorStroke = new CPicker(inputStroke);
+	  var colorStroke = new CPicker(inputStroke, '#000000');
+	  
+	  /*This  and '\/' should be in toolbar.menu.js, here for simplicity*/
+	  var inputBack = document.getElementById('tool-input-color-background');
+	  var colorBack = new CPicker(inputBack, '#FFFFFF');
 	  
 	  toolbar.find('.color').css({'font-size': '0'});
 	  
 	  sandbox.subscribe('dizzy.presentation.transform', function(){
 		  colorFill.close();
-		  colorStroke.close();  
+		  colorStroke.close();
+		  colorBack.close();
 	  });
 	  
-	  sandbox.subscribe('dizzy.ui.toolbar.clicked.mode', function(){
-		  colorFill.close();
-		  colorStroke.close(); 
+	  sandbox.subscribe('dizzy.ui.toolbar.clicked', function(d){
+		if(d.button != 'tool-color'){
+			colorFill.close();
+			colorStroke.close();
+			colorBack.close();
+		}
 	  });
+		// '\/'
+		$(inputBack).click(function(e){
+			e.stopPropagation();
+			if(colorBack.opened)
+				colorBack.close();
+			else colorBack.open();  
+		});
 	  
 	  $(inputFill).click(function(){
 		  if(colorFill.opened)

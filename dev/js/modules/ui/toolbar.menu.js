@@ -9,6 +9,7 @@ define(['sandbox'], function (sandbox) {
    * Subcriptions:
    * 	dizzy.presentation.loaded
    * 	dizzy.ui.toolbar.loaded
+   * 	dizzy.ui.toolbar.clicked.menu-button
    */
 
   /*
@@ -77,6 +78,10 @@ define(['sandbox'], function (sandbox) {
     menu.delegate('.menu-option', 'hover', function (evt) {
 		var p = $(this).attr('data-description');
 		if (p) menuRight.text(p);
+	});
+	
+	menu.delegate('#tool-input-color-background', 'change', function(){
+		$('svg').first().css('background-color', $(this).val());
 	});
     
     $('#menu-open-input').bind('change', function(evt){

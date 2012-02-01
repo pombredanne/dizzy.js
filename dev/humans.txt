@@ -3,8 +3,9 @@
 
 
 /* TEAM */
-  Author: Linuslabo forking Murphy
-  Site: http://murphy.metafnord.org
+  Author: Linuslabo (forked Murphy)
+  Site: http://www.dizzypresentation.tk (http://dizzy.x10.bz)
+  Murphy's Site: http://murphy.metafnord.org
   Location: Italy, Germany
   
 

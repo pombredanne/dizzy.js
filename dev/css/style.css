@@ -225,6 +225,7 @@ input[class="color"]{
 	height: 20px;
 	cursor: pointer;
 	border: 1px solid black;
+	border-radius: 5px;
 }
 
 .textHidden{
@@ -1050,4 +1051,8 @@ svg .invisible{
 #toolbar > #tool-goto-input:hover {
 	background: transparent;
 	border: 0;
+}
+
+#tool-input-color-background{
+	width:54px;
 }

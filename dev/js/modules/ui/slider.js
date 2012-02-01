@@ -1,5 +1,15 @@
 /*
  * The  module loads a slider div upon the canvas
+ * 
+ * Note: this module (and slider.filler.js) are thought for a specific use of mine.
+ * You may adapt it (I will post a how-to sooner or later) to your needs or just remove:
+ * 	js/modules/ui/slider.js
+ *  js/modules/ui/slider.filler.js
+ * 	php/images_loader.php
+ * 	php/testPhp.php
+ * 
+ * and delete the corresponding element in the list in js/modules.js
+ * anyway it won't do anything bad even if you decide to let it stay here.
  */
 define(['sandbox'],  function (sandbox) {
   var canvas;
@@ -33,7 +43,7 @@ define(['sandbox'],  function (sandbox) {
 			console.warn('PHP is not enabled on this server -> slider can\'t be loaded');
 		  }
 		  // open slider only if dizzy is called by CloudBeamer
-		  else if(document.referrer == 'http://172.16.15.37/home.php'){
+		  else if(document.referrer == 'http://172.16.15.73/home.php'){
 			  var jqxhr = $.get('html/slider.html').success(function (d) {
 				body.prepend(d);
 				slider = body.find('#anteprime');
@@ -44,7 +54,7 @@ define(['sandbox'],  function (sandbox) {
 				});
 				
 				//shows slider images preview
-				$(document).delegate('a[class="preview"] > img', "click", function(e){
+				$(document).delegate('a[class="preview"] > img, #preview', "click", function(e){
 				  e.preventDefault();
 				  
 				  if($("#preview").length > 0) $("#preview").remove();
