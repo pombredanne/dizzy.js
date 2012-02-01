@@ -455,7 +455,8 @@ define(['sandbox'], function (sandbox) {
       zebraNode.show();
       
       zebraNode.find('.toolbutton').removeClass('hidden');
-      groupType = selectedGroup.dom().children().first().prop('localName');
+      var firstChild = selectedGroup.dom().children().first();
+      var groupType = firstChild.prop('localName');
 			
 		if(groupType && groupType != 'rect'){
 			zebraNode.find('#zebra-toolbar-43').addClass('hidden');
@@ -463,10 +464,20 @@ define(['sandbox'], function (sandbox) {
 			zebraNode.find('#zebra-toolbar-1610').addClass('hidden');
 			zebraNode.find('#zebra-toolbar-border-round').addClass('hidden');
 			
-			if(groupType == 'image'){
-				zebraNode.find('#zebra-toolbar-border-weight-up').addClass('hidden');
-				zebraNode.find('#zebra-toolbar-border-weight-down').addClass('hidden');
+			if(groupType == 'image' || groupType == 'line'){
+				if (groupType == 'image'){
+					zebraNode.find('#zebra-toolbar-border-weight-up').addClass('hidden');
+					zebraNode.find('#zebra-toolbar-border-weight-down').addClass('hidden');
+				}
+				zebraNode.find('#zebra-toolbar-fill').addClass('hidden');
+				zebraNode.find('#zebra-toolbar-nofill').addClass('hidden');
 			}
+		} else if (firstChild.hasClass('invisibleRect')){
+			zebraNode.find('#zebra-toolbar-border-round').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-border-weight-up').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-border-weight-down').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-fill').addClass('hidden');
+			zebraNode.find('#zebra-toolbar-nofill').addClass('hidden');
 		}
     }
   });

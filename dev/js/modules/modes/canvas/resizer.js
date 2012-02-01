@@ -64,8 +64,8 @@ define(['sandbox'], function (sandbox) {
 			
 			var rectXY = dotFromScreenToRect(rect,current.x,current.y);
 			
-			var w = Math.max( rectXY.x-rect.x.animVal.value, 1 );
-			var h = Math.max( rectXY.y-rect.y.animVal.value, 1 );
+			var w = Math.max( rectXY.x-rect.x.animVal.value, 20);
+			var h = Math.max( rectXY.y-rect.y.animVal.value, 20);
 			if(rect.localName != 'image'){
 				rect.setAttribute('width', w);
 				rect.setAttribute('height',h);
