@@ -42,11 +42,19 @@ define(['sandbox'], function (sandbox) {
 
         return false;
       });
+      
+      // right click does nothing
+      $(document).bind('contextmenu', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+	  });
     },
 
     unbindMouselistener: function () {
       var svg = canvas.svg.root();
       $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace (???)
+      $(document).unbind('contextmenu');
     },
     
     //as soon as I can, I'll change this function somehow
@@ -58,7 +66,7 @@ define(['sandbox'], function (sandbox) {
 				var sel = canvas.findGroup("g.selected");
 				if (sel){
 					canvas.removeGroup(sel);
-					sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'}); //toChange: just need to close the zebra (how?)
+					sandbox.publish('dizzy.presentation.transform'); //just to close zebra and resizer
 				}
 			}
       });

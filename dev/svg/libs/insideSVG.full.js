@@ -1,5 +1,6 @@
-/** Script to add to a dizzy svg presentation.
-	I modified two rows because created some problems (search 'linuslabo' to find them)
+/** Script to add to a dizzy svg presentation to make it able to self animate using click or arrows
+	I modified two rows of JQuery because created some problems (search 'linuslabo' to find them)
+	* see the insideSVG.full.min.js to a much smaller version (recommended)
 */
 	
 	
@@ -11243,7 +11244,8 @@ jQuery.fn.enableTextSelect = function() {
   });
 };
 
-		this.container = $('svg');
+if(!document.getElementById('dizzy')){
+	this.container = $('svg');
     this.groupList = [];
     this.activeGroupNumber = 0;
     this.options = {
@@ -11255,23 +11257,26 @@ jQuery.fn.enableTextSelect = function() {
     this.$svg;
     
 	load();
-	printGroupList();
 
-	$(document).bind('keydown.presentation.navigation', function(e){ 
+	$(document).bind('keydown.presentation.navigation', function(e){
 		if( e.which === 32 || e.which === 39 ){
-			console.log("premuta freccia avanti");
          next();
       }else if( e.which === 37 ){
-		  console.log("premuta freccia indietro");
         previous();
-      } 
+      }
+      return false;
     });
     
-    
-    
-    function load(options) {
+    $(document).bind('click', function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		if (e.which == 1) next();
+		return false;
+	});
+}
+    function load(/*options*/) {
 		var that = this;
-		options = options || {};
+		//options = options || {};
 		this.canvas = $('#canvas'); //OK
 		var groups = this.canvas.find('g');
 		//alert(groups.length);
@@ -11279,7 +11284,7 @@ jQuery.fn.enableTextSelect = function() {
 			that.getGroup($(this));
 		});
 		
-		console.log('caricati i gruppi esistenti');
+		console.log('Loaded groups. Ready to present.');
 		
 		$(window).bind('resize', function () {
             this.$svg = $('svg');
@@ -11291,18 +11296,14 @@ jQuery.fn.enableTextSelect = function() {
           });
           $(window).resize();
           
-          console.log('impostate le corrette dimensioni dello schermo');
+          console.log('Screen dimensions set.');
     }
-    
-    function printGroupList(){
-		console.log(this.groupList);
-	}
 
     function createGroup() {
       var canvas = this.getGroup(0);
       var newGroup = $(this.svg.group(canvas.dom())); //add this as a new group, son of canvas
 
-      var newTransform = Transformation.createTransform(canvas.transformation().matrix().inverse()); // ???
+      var newTransform = Transformation.createTransform(canvas.transformation().matrix().inverse());
 
       newGroup.addClass('group');
 
@@ -11313,28 +11314,13 @@ jQuery.fn.enableTextSelect = function() {
       return newDizzyGroup;
     }
 
-    function removeGroup(g) {
-      var removed;
-      var idToRemove = g.dom().attr('id');
-      for (var i=0; i<this.groupList.length; i++)
-		if (this.groupList[i].dom().attr('id') == idToRemove){
-			g.dom().remove();
-			removed = this.groupList.splice(i,1);
-			console.log("Group "+idToRemove+" removed!");
-			
-			break;
-		}
-    }
-
     /*
      * Finds a group by it's node representation. <g id="..." ...></g>
      * This is done by comparing ids. Every group gets a random (dom-)id when it is created internally.
      */
     function findGroup(node) {
-		console.log('sono in findGroup');
       for (var i = 0; i < this.groupList.length; ++i) {
         if (this.groupList[i] && this.groupList[i].dom().attr('id') === $(node).attr('id')) {
-			console.log("fondgroup trovato al "+i+" posto della lista");
           return this.groupList[i];
         }
       }
@@ -11342,11 +11328,8 @@ jQuery.fn.enableTextSelect = function() {
       node = jQuery(node);
       if (node.size() > 0) {
         g = new Group(node[0]);
-        console.log('creato un nuovo gruppo:');
-        console.log(g);
         this.groupList.push(g);
       }
-      console.log('esco da findGroup');
       return g;
     }
     
@@ -11365,22 +11348,17 @@ jQuery.fn.enableTextSelect = function() {
      * @param number the number of the group to get
      */
     function getGroup(number) {
-		console.log('sono in getGroup');
       // passed in element is already a group, dummy (o:
       if (number.dom && number.transformation) {
-		  console.log('esco da getGroup: è già un gruppo!');
         return number;
       }
       var groupNode;
       if (number > 0) {
         groupNode = this.canvas.find('.group_' + number);
-        console.log("cercando per .group_ ho trovato:");
-        console.log(groupNode);
       } else if (number === 0) {
         groupNode = this.canvas;
       }
       var g = this.findGroup(groupNode || number); // there should only be one group with that number
-      console.log('esco da getGroup');
       return g;
     }
 
@@ -11452,68 +11430,36 @@ jQuery.fn.enableTextSelect = function() {
 		var canvas = this.getGroup(0);
 		
 		if (group !== undefined) {
-			var groupTransform = group.transformation();
+			try {
+			//var groupTransform = group.transformation();
+			var groupTransform = group.transform;
 			var inverseTransform = Transformation.createTransform(groupTransform.matrix());
 			
 			//var mt = inverseTransform.matrix();
 			inverseTransform.inverse(); //inversion is here
 			
-			//console.log("group transf: "+groupTransform);
-			//console.log("inver transf: "+inverseTransform);
+			console.log("group transf: "+groupTransform);
+			console.log("inver transf: "+inverseTransform);
 			
 			if(group.dom().attr('id')!='canvas') {
-				try {
+				//get the rect
 				var elem = group.dom().children().first();
 				var SVGtype = elem.prop('localName');
 				
-				if (SVGtype=='rect' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line' || SVGtype=='text'){
+				if (SVGtype=='rect' || SVGtype == 'text' || SVGtype=='image' || SVGtype=='ellipse' || SVGtype == 'line'){
 					var ex, ey, ew, eh;
 					
-					switch (SVGtype){ //get dimensions and position of the element
-						case 'rect':
-							ex = elem.attr('x');
-							ey = elem.attr('y');
-							ew = elem.attr('width');
-							eh = elem.attr('height');
-							break;
+					var ele = elem[0];
+					var bbox = ele.getBBox();
+					//elem.removeAttr('id');
+					ex = bbox.x;
+					ey = bbox.y;
+					ew = bbox.width;
+					eh = bbox.height;
 							
-						case 'image':
-							ex = elem.attr('x');
-							ey = elem.attr('y');
-							ew = elem.attr('width');
-							eh = elem.attr('height');
-							ew = ew.substring(0, ew.length-2);
-							eh = eh.substring(0, eh.length-2);
-							break;
-							
-						case 'ellipse':
-							ex = elem.attr('cx')-elem.attr('rx');
-							ey = elem.attr('cy')-elem.attr('ry');
-							ew = elem.attr('rx')*2;
-							eh = elem.attr('ry')*2;
-							break;
-						
-						case 'line':
-							ex = elem.attr('x1');
-							ey = elem.attr('y1');
-							ew = Math.abs(ex-elem.attr('x2'));
-							eh = Math.abs(ey-elem.attr('y2'));
-							break;
-						case 'text':
-							elem.attr('id', 'tempTextId');
-							var ele = document.getElementById('tempTextId'); //this method is not avaiable for the jquery object
-							var bbox = document.getElementById('tempTextId').getBBox();
-							elem.removeAttr('id');
-							ex = bbox.x;
-							ey = bbox.y;
-							ew = bbox.width;
-							eh = bbox.height;
-							break;
-					}
-						
 				//get width and height of document and ViewBox
-				var svgWidth = $(document).width();
-				var svgHeight = $(document).height();
+				var svgWidth = window.innerWidth;//$(document).width();
+				var svgHeight = window.innerHeight;//$(document).height();			
 				var viewBox = $('svg').attr('viewBox');
 				var viewBoxParams = viewBox.split(" ", 4);
 				var viewWidth = viewBoxParams[2];
@@ -11524,7 +11470,7 @@ jQuery.fn.enableTextSelect = function() {
 				var wpixels, hpixels; 
 				
 				var ratio = svgWidth/svgHeight;
-				if(ratio >= viewWidth/viewHeight) {
+				if(ratio >= 4/3) {
 					hpixels = viewHeight;
 					wpixels = (viewHeight/svgHeight)*svgWidth;
 				} else {
@@ -11537,10 +11483,6 @@ jQuery.fn.enableTextSelect = function() {
 				zoomPercentage /= 100;
 				//get the scale value to make the rect fit the viewbox area
 				var scaleVal = Math.min(wpixels*zoomPercentage/ew, hpixels*zoomPercentage/eh);
-				
-				if(options!=undefined && options.scale!=undefined){ //if with the option.scale value the element would be bigger than the window, make it fit the screen (a bit smaller) instead
-					scaleVal = scaleVal < options.scale ? scaleVal-0.06 : options.scale;
-				}
 				
 				//Translate tha canvas to display the group at the svg point (0,0)
 				var mat = inverseTransform.matrix();
@@ -11556,29 +11498,26 @@ jQuery.fn.enableTextSelect = function() {
 				//Center the group in the screen (independant to Screen Dimensions :)
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
+				console.log("transforming canvas to: "+inverseTransform);
 				
-				console.log("final transform: "+inverseTransform);
-				
-				//Get the animation speed
 				var speed = elem.parent().attr('speed');
 				speed = speed ? speed : 1;
 				options = $.extend({
 					duration: parseInt(speed*1000)
 				}, options);
 				
-				// use this.transformSVGanimation(...) to see animation by SVG instead of JQuery (alpha)
-				// for some reason it works only on Chrome ç_ç
 				this.transform(canvas, inverseTransform, options);
+				}
 				
-				}
-				} catch (e){
-					alert("errore: "+e.message);
-				}
 				
 			} else {
 				this.transform(canvas, inverseTransform, options);
 			}
+			} catch (e){
+					console.log("errore tranformCanvasTo: "+e.message);
+			}
       } else {
+		  console.log("group is undefined D:");
         throw "Ops! This should not have happened! (o:"
       }
 		
@@ -11589,17 +11528,10 @@ jQuery.fn.enableTextSelect = function() {
      * Returns currently active pathnumber.
      */
     function current(options) {
-		console.log('sono in current');
       var canvas = this.getGroup(0);
-      console.log("Canvas:");
-      console.log(canvas);
       var group = this.getGroup(this.activeGroupNumber);
-      console.log("Gruppo trovato:");
-      console.log(group);
       
       this.transformCanvasTo(group, options);
-      console.log('ho trasformato il canvas');
-      //return this.activeGroupNumber;
     }
 
     /*
@@ -11629,9 +11561,8 @@ jQuery.fn.enableTextSelect = function() {
         */
         
       }
-      console.log("animazione effettuata");
 		} catch(e){
-			console.log("errore transform: "+e.message);
+			console.log("Transform error: "+e.message);
 		}	
     }
 
@@ -11748,11 +11679,7 @@ jQuery.fn.enableTextSelect = function() {
 		}
 		
 		this.transformation = function(setTransform) {
-			console.log("sono in group.transformation, la trasf da settare è:");
-			console.log(setTransform);
 		  if (setTransform === undefined) { //if the parameter is not set (getter)
-			console.log('la trasformazione da settare è undefined, quindi restituisco la corrente, che è:');
-			console.log(this.transform);
 			return this.transform;
 		  } else { //(setter)
 			this.transform = setTransform;
@@ -11794,16 +11721,6 @@ jQuery.fn.enableTextSelect = function() {
 		}
 		
 	}
-    /*
-    Group.prototype.dom = function(optionalDom){
-		if (optionalDom === undefined) { //if the parameter is not set (getter)
-				return this.domContent;
-			  } else { //(setter)
-				this.domContent = $(optionalDom);
-				return this;
-			  }
-	}*/
-
 
 	//TRANSFORMATION
 	function Transformation (matrix) {

@@ -15,7 +15,7 @@ define(['sandbox'], function (sandbox) {
 	 * Mode to register
 	 */
 	var ellipseMode = {
-		depends: ['zoom'],
+		depends: ['zoom', 'rightClick'],
 		start: function () {
 			if(canvas){
 				$(canvas.svg.root()).bind('mousedown.dizzy.mode.ellipse', function(e){ return editorStart(e); });
@@ -35,6 +35,8 @@ define(['sandbox'], function (sandbox) {
         var that = this;
         ev.stopPropagation();
 		ev.preventDefault();
+		
+		if(ev.which != 1) return false; // if right or middle click do nothing
 		
         $(canvas.svg.root()).bind('mousemove.dizzy.mode.ellipse', function(e){ return editorDrag(e); });
         

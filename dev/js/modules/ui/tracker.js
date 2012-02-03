@@ -36,7 +36,7 @@ define(['sandbox'],  function (sandbox) {
 		  icon = '';
 	  }
 	  trackerList.append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+(++count)+'"/></td><td><input class="tracker-path-numbers" type="text" size="7"/></td><td><input class="tracker-zoom" type="text" size="2" value="100"/></td><td><input class="tracker-speed" type="text" size="1" value="1"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
-	  console.log("Group "+id+" tracked");
+	  //console.log("Group "+id+" tracked");
   });
   
   sandbox.subscribe('dizzy.canvas.group.removed',function(d){
@@ -49,7 +49,7 @@ define(['sandbox'],  function (sandbox) {
 			  break;
 		  }
 	  }
-	  console.log("Group "+id+" removed from tracker");
+	  //console.log("Group "+id+" removed from tracker");
 	  //console.log(list.length);
   });
   
@@ -107,7 +107,7 @@ define(['sandbox'],  function (sandbox) {
 			list.push({type: type, id: id});
 			
 			trackerList.append('<tr '+invisible+'><td><img src="'+icon+'" /></td><td><input class="tracker-name" type="text" size="7" value="'+name+'"/></td></td><td><input class="tracker-path-numbers" type="text" size="7" value="'+pathNumbers+'"/></td><td><input class="tracker-zoom" type="text" size="2" value="'+zoom+'"/></td><td><input class="tracker-speed" type="text" size="1" value="'+speed+'"/></td><td class="tracker-go"><img src="./img/tracker_go.png"/></td></tr>');
-			console.log("Group "+id+" tracked");
+			//console.log("Group "+id+" tracked");
 		};		
 	}
 	

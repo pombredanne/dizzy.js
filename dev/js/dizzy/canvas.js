@@ -338,7 +338,7 @@ define(['dizzy/group', 'dizzy/transformation', 'sandbox'], function (Group, Tran
 				var mat2 = inverseTransform.matrix();
 				inverseTransform.multiply(mat2.inverse()).translate(toTranslateX,toTranslateY).multiply(mat2);
 				
-				console.log("final transform: "+inverseTransform);
+				//console.log("final transform: "+inverseTransform);
 				
 				//Get the animation speed
 				var speed = elem.parent().attr('speed');

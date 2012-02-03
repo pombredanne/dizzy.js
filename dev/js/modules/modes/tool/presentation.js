@@ -30,13 +30,21 @@ define(['sandbox'], function (sandbox) {
 				if (mMove) clearTimeout(mMove);
 				$('#toolbar, #tracker').removeClass('invisible');
 				mMove = setTimeout(function(){$('#toolbar, #tracker').addClass('invisible');}, 1000);
-			} );
+			});
+			
+			// right click does nothing
+			$(document).bind('contextmenu', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			});
 		},
 	
 		stop: function () {
 			if (mMove) clearTimeout(mMove);
 			$(document).unbind('keydown.dizzy.presentation');
 			$(document).unbind('mousemove.dizzy.presentation');
+			$(document).unbind('contextmenu');
 		}
 	};
 	

@@ -47,7 +47,6 @@ define(['sandbox'], function (sandbox) {
 	sandbox.subscribe('dizzy.canvas.group.visited', function(){
 		if (toolbar){
 			$('#tool-goto-inp').val(canvas.activeGroupNumber);
-			console.log('visited group: '+canvas.activeGroupNumber);
 		}
    });
    

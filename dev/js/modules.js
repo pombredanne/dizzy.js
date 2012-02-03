@@ -5,9 +5,9 @@
 define(
  [
     'modules/canvas', 'modules/modes',
-    'modules/io/mouse', 
+    'modules/io/mouse',
     'modules/ui/dialog', 'modules/ui/toolbar', 'modules/ui/toolbar.menu', 'modules/ui/toolbar.control',
-    'modules/modes/canvas/pan', 'modules/modes/canvas/zoom', 'modules/modes/canvas/zebra',
+    'modules/modes/canvas/pan', 'modules/modes/canvas/zoom', 'modules/modes/canvas/zebra', 'modules/modes/canvas/rightClick',
     'modules/modes/tool/default', 'modules/modes/tool/image', 'modules/modes/tool/path', 
     'modules/modes/tool/line', 'modules/modes/tool/rect', 'modules/modes/tool/text',
     'modules/ui/slider', 'modules/ui/slider.filler', 'modules/ui/image_drop',

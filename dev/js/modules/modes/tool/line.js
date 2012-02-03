@@ -10,7 +10,7 @@ define(['sandbox'], function (sandbox) {
 	 * Mode to register
 	 */
 	var lineMode = {
-		depends: ['zoom'],
+		depends: ['zoom', 'rightClick'],
 		
 		start: function () {
 			if(canvas){
@@ -35,7 +35,7 @@ define(['sandbox'], function (sandbox) {
         var that = this;
         ev.stopPropagation();
 		ev.preventDefault();
-		
+		if(ev.which != 1) return false; // if right or middle click do nothing
         $(canvas.svg.root()).bind('mousemove.dizzy.mode.line', function(e){ return editorLineDrag(e); });
         
         var svgOffset = canvas.toViewboxCoordinates({

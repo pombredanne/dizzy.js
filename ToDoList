@@ -1,5 +1,5 @@
 
-- toDo: test SVG animation instead of JQuery ones (something done, see in js/dizzy/canvas.js -> this.transformSVGanimation() )
+- toDo: test SVG animation instead of JQuery ones (something done, see in js/dizzy/canvas.js -> this.transformSVGanimation())
 
 - toDo: simplified Path Tool
 
@@ -9,4 +9,8 @@
 
 - toDo: avoiding TextSelection in Opera (default mode)
 
-- to Remember: some svg images used in css are not visible using XAMPP for Linux (LAMPP) as Server.
+- toDo: merge default and text modes
+
+- toDo: cleanup and simplify Animation Script in .svg
+
+- toRemember: some svg images used in css are not visible using XAMPP for Linux (LAMPP) as Server.

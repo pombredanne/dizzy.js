@@ -46,7 +46,7 @@ define(['sandbox'],  function(sandbox){
 	});
 
     var textMode = {
-      depends: ['zoom', 'pan'],
+      depends: ['zoom', 'pan', 'rightClick'],
 
       start: function () {
         if( canvas ){
@@ -116,7 +116,7 @@ define(['sandbox'],  function(sandbox){
       
       // new text
       $(canvas.svg.root()).bind('click.dizzy.mode.text.new', function (e) {
-        newText(e);
+		  if(e.which == 1) newText(e);
       });
     }
     
@@ -267,6 +267,7 @@ define(['sandbox'],  function(sandbox){
       var text = groupDom.find('text');
       var spans = text.children('tspan');
       
+      textOverlay.bind('contextmenu', function(e){e.preventDefault(); return false;});
       $(document).bind('keypress.dizzy.editor', function(event){ return keyPressed(event, text); });
       $(document).bind('keydown.dizzy.editor',  function(event){ return keyDown(event, text); });
       
@@ -400,6 +401,7 @@ define(['sandbox'],  function(sandbox){
       $('.invisible').removeClass('invisible');
       //textBox.unbind();
       textOverlay.hide();
+      textOverlay.unbind('contextmenu');
       $('#tool-textMode-bigger').unbind();
       $('#tool-textMode-smaller').unbind();
       $('#tool-textMode-family').unbind();
