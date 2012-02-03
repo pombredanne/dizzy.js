@@ -40,10 +40,10 @@ define(['sandbox'],  function (sandbox) {
         that.assignEventHandlers();
         that.setColorPickers();
         
-        // click default button ??? sometimes the zebra mode hasn't been registered yet when this happens
-        // that's why I put this timeout, waiting for a better solution to come :)
-        // "how to check if all modes have been registered?"
-        setTimeout(function(){var firstButton = $('#toolbar .toolbutton.pressed').click();}, 400);
+        // when the app is ready start the default mode
+        // the toolbar module is at the last place in js/modules.js
+        //$(function(){sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});});
+        sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});
       });
 
     },
