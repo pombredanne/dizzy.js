@@ -83,7 +83,7 @@ define(['sandbox'], function(sandbox){
       for (var mod in this.modules) {
         this.initialize(mod);
       }
-
+      
     },
 
     stopAll: function () {

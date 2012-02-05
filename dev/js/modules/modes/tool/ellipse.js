@@ -25,9 +25,11 @@ define(['sandbox'], function (sandbox) {
 		},
 	
 		stop: function () {
-			$(canvas.svg.root()).unbind('mousedown.dizzy.mode.ellipse');
-			$(canvas.svg.root()).unbind('mouseup.dizzy.mode.ellipse');
-			$(canvas.svg.root()).removeClass('editing drawing');
+			if(canvas){
+				$(canvas.svg.root()).unbind('mousedown.dizzy.mode.ellipse');
+				$(canvas.svg.root()).unbind('mouseup.dizzy.mode.ellipse');
+				$(canvas.svg.root()).removeClass('editing drawing');
+			}
 		}
 	};
 	

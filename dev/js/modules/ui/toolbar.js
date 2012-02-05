@@ -42,8 +42,8 @@ define(['sandbox'],  function (sandbox) {
         
         // when the app is ready start the default mode
         // the toolbar module is at the last place in js/modules.js
-        //$(function(){sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});});
-        sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});
+        setTimeout(function(){sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});}, 1000);
+        //sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {button: 'tool-default'});
       });
 
     },
