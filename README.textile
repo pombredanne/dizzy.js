@@ -1,7 +1,7 @@
 h1. dizzy.js
 
 Dizzy enables you to create non-linear presentations on a single canvas, using SVG and Javascript.
-There is a version of the "online editor":http://www.dizzypresentation.tk (if broken "here":http://dizzy.x10.bz) for presentation files available, although you could also host your own with the newer code provided here (no serverside code needed). (:
+There is a version of the "online editor":http://dizzy.cascone.net for presentation files available, although you could also host your own with the newer code provided here (no serverside code needed). (:
 
 If you wanan try it, I just suggest to use the same browser for editing and viewing :)
 
