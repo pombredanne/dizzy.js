@@ -14,7 +14,8 @@ define(['sandbox'], function (sandbox) {
       enabled = false;
     }
   };
-
+	
+  // to return
   var obj = {
     init: function () {
       sandbox.publish('dizzy.modes.register', {
@@ -31,7 +32,7 @@ define(['sandbox'], function (sandbox) {
       var delta = d.delta;
 
       // maps the +1/-1 delta to a value like 0.5 / 2 for zooming
-      var zoomInOut = Math.pow(2, delta); // TODO: options (2) configurable
+      var zoomInOut = Math.pow(1.2, delta); // TODO: options (2) configurable
       var canvasGroup = canvas.getGroup(0);
       var canvasTransform = canvasGroup.transformation();
 
@@ -44,7 +45,7 @@ define(['sandbox'], function (sandbox) {
       canvasTransform.scale(zoomInOut);
 
       canvas.transform(canvasGroup, canvasTransform, {
-        duration: 10
+        duration: 70
       });
       sandbox.publish('dizzy.presentation.transform.start');
       sandbox.publish('dizzy.presentation.transform');

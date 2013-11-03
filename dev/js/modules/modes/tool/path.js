@@ -21,6 +21,7 @@ define(['sandbox'], function (sandbox) {
     stop: function () {
       $(canvas.svg.root()).undelegate('g.group', 'click');
       $(canvas.svg.root()).undelegate('.pathNumber', 'mousedown');
+      $(canvas.svg.root()).removeClass('path');
       $('.pathnum').remove();
     }
   };
@@ -107,7 +108,10 @@ define(['sandbox'], function (sandbox) {
 
   return {
     init: function () {
-      sandbox.publish('dizzy.modes.register', pathMode);
+      sandbox.publish('dizzy.modes.register', {
+		  name: 'tool-path',
+		  instance: pathMode
+	  });
     },
     destroy: function () {}
   };

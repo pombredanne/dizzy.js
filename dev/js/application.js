@@ -1,6 +1,9 @@
 /*
  * Application core handles module registration/creation [and abstracts away the base lib (jQuery, dojo, YUI..) | TODO! ]
  */
+/* The module has dependncies ['sandbox'] -> sandbox.js.
+ * the function specifies an argument "sandbox". This is the module represented by the "sandbox" module name */
+
 define(['sandbox'], function(sandbox){
 
   var application = function(){
@@ -13,7 +16,7 @@ define(['sandbox'], function(sandbox){
     registerModule: function (name, factory) {
       if (arguments.length === 1) { // name ommited
         factory = name;
-        name = ''+Math.random();
+        name = ''+Math.random(); //random???
       }
 
       if (!(name in this.modules)) {
@@ -23,7 +26,7 @@ define(['sandbox'], function(sandbox){
       if( typeof factory === 'function' ){
         mod = {
           'builder': factory
-        }
+        };
       }else{
         mod = {
           'instance': factory
@@ -80,7 +83,7 @@ define(['sandbox'], function(sandbox){
       for (var mod in this.modules) {
         this.initialize(mod);
       }
-
+      
     },
 
     stopAll: function () {

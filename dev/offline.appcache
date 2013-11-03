@@ -2,11 +2,11 @@ CACHE MANIFEST
 
 # Dizzy version 0.8
 CACHE:
-./css/*
-./js/*
-./img/*
-./html/*
-./svg/*
+./css/
+./js/
+./img/
+./html/
+./svg/
 ./favicon.png
 
 NETWORK:

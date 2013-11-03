@@ -3,10 +3,10 @@
 
 
 /* TEAM */
-  Author: Murphy
-  Site: http://murphy.metafnord.org
-  Twitter: @MrMoerphy
-  Location: Germany
+  Author: Linuslabo (forked Murphy)
+  Site: http://www.dizzypresentation.tk (http://dizzy.x10.bz)
+  Murphy's Site: http://murphy.metafnord.org
+  Location: Italy, Germany
   
 
 /* SITE */

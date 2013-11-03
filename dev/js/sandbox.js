@@ -2,6 +2,8 @@
  * The Sandbox provides subscribe/notify service for modules to communicate with each other.
  * Also does relay some calls to the Application core (not yet, but probably will be necessary any time)
  */
+/* The module does not have dependencies, but needs to use a function to do some setup work, then define itself */
+ 
 define(function(){
   var subscriptions = {
     handler: [],

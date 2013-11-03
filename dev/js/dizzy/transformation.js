@@ -14,7 +14,7 @@ define(function () {
   };
 
   /*
-   * Methods proxy methods of SVGMatrix, with one little difference. Changes on the object (via translate, rotate, scale) change the matrix of this object.
+   * Methods proxy methods of SVGMatrix, with one little difference. Changes on the object (via translate, rotate, scale) change the matrix of THIS object.
    * These methods do not return a new object, but "this".
    */
   Transformation.prototype = {
@@ -23,9 +23,9 @@ define(function () {
      * Gets or sets the current matrix
      */
     matrix: function (optionalMatrix) {
-      if (optionalMatrix !== undefined) {
+      if (optionalMatrix !== undefined) { //setter
         this.transformationMatrix = optionalMatrix;
-      } else {
+      } else { //getter
         return this.transformationMatrix;
       }
     },
@@ -58,7 +58,7 @@ define(function () {
     },
 
     multiply: function (m) {
-      m = m.transformationMatrix || m; // Dizzy.Transformation or CTM?
+      m = m.transformationMatrix || m; // Dizzy.Transformation or CTM (current trans. matrix)?
       this.matrix(this.matrix().multiply(m));
       return this;
     },
@@ -84,16 +84,18 @@ define(function () {
    * Helper function, makes getting a transformation easier.
    */
   Transformation.createTransform = function (obj) {
+	  
     // obj is Dizzy.Group ?
     if (obj.dom && obj.transformation) {
       obj = obj.transformation();
     }
+    
     // obj is Dizzy.Transformation ?
     if (obj.transformationMatrix) {
       obj = obj.transformationMatrix;
     }
 
-    // obj is SVG-Element?
+    // obj is SVG-Element ?
     if (obj.getCTM) {
       obj = obj.getCTM();
     }
@@ -103,7 +105,6 @@ define(function () {
       return new Transformation(obj);
     }
 
-    // sorry no Transform for you >:-/
   };
 
   return Transformation;

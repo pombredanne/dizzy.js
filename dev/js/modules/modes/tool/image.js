@@ -24,18 +24,27 @@ define(['sandbox'], function (sandbox) {
           sandbox.publish('dizzy.presentation.insertImage', {
             ref: data
           });
-          sandbox.publish('dizzy.ui.toolbar.clicked.tool-default', {
+          sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {
             button: 'tool-default'
           });
         },
         cancel: function () {
-          sandbox.publish('dizzy.ui.toolbar.clicked.tool-default', {
+          sandbox.publish('dizzy.ui.toolbar.clicked.mode.tool-default', {
             button: 'tool-default'
           });
         }
       });
+      
+      // right click does nothing
+      $(document).bind('contextmenu', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		return false;
+	  });
     },
-    stop: function () {}
+    stop: function () {
+		$(document).unbind('contextmenu');
+	}
   };
 
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
@@ -60,11 +69,17 @@ define(['sandbox'], function (sandbox) {
       }, {
         ignoreCanvas: true
       });
-      var img = $(canvas.svg.image(group.dom(), ((canvas.WIDTH - widthHeight.x) / 2).toString(), ((canvas.HEIGHT - widthHeight.y) / 2).toString(), image.width + 'px', image.height + 'px', data.ref));
+      var img = $(canvas.svg.image(group.dom(), ((canvas.WIDTH - widthHeight.x) / 2).toString(), ((canvas.HEIGHT - widthHeight.y) / 2).toString(), Math.max(image.width, 600) + 'px', Math.max(image.height, 600) + 'px', data.ref));
 
       image.src = '';
+      
+      sandbox.publish('dizzy.canvas.group.created.image', {
+		  group: group
+	  });
     };
     image.src = data.ref;
+    
+    
   });
 
 

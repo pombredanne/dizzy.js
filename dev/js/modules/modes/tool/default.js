@@ -1,5 +1,5 @@
 /*
- * The default mode is the mode in which groups can be moved, resized and rotated. 
+ * The default mode is the mode in which groups can be moved, resized and rotated. (TODO: and deleted)
  * TODO: as soon as the user starts typing it should activate text mode and open the text box with the typed text (similiar to the old version)
  */
 define(['sandbox'], function (sandbox) {
@@ -8,23 +8,28 @@ define(['sandbox'], function (sandbox) {
   var ready = false;
 
   var defaultMode = {
-    depends: ['zoom', 'pan', 'zebra'],
+    depends: ['zoom', 'pan', 'zebra', 'resizer'],
     start: function () {
       if (ready) {
-        $(canvas.svg.root()).addClass('editing');
+		//add the class 'editing' to the svg canvas
+        $(canvas.svg.root()).addClass('editing default');
         this.bindMouselistener();
+        this.bindKeyboardlistener();
       }
     },
 
     stop: function () {
       if (ready) {
-        $(canvas.svg.root()).removeClass('editing');
+        $(canvas.svg.root()).removeClass('editing default');
         this.unbindMouselistener();
+        this.unbindKeyboardlistener();
       }
     },
 
     bindMouselistener: function () {
       var svg = canvas.svg.root();
+      
+      //touchstart: happens every time a finger is placed on the screen
       $(svg).delegate('g.group', 'click.dizzy.default touchstart.dizzy.default', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -37,22 +42,58 @@ define(['sandbox'], function (sandbox) {
 
         return false;
       });
-
+      
+      // right click does nothing
+      $(document).bind('contextmenu', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+	  });
     },
 
     unbindMouselistener: function () {
       var svg = canvas.svg.root();
-      $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace
-    }
-
-
+      $(svg).undelegate('g.group', 'click.dizzy.default  touchstart.dizzy.default'); // undelegate everything under .dizzy.default namespace (???)
+      $(document).unbind('contextmenu');
+    },
+    
+    //as soon as I can, I'll change this function somehow
+    bindKeyboardlistener: function() {
+	  //Deletes from the DOM the selected item when pressing 'Del' ???????
+	  $(document).bind('keydown.dizzy.default', function (e) {
+			var keycode =  e.keyCode ? e.keyCode : e.which;
+			if (keycode == 46){
+				var sel = canvas.findGroup("g.selected");
+				if (sel){
+					canvas.removeGroup(sel);
+					sandbox.publish('dizzy.presentation.transform'); //just to close zebra and resizer
+				}
+			}
+      });
+	},
+	
+	unbindKeyboardlistener: function() {
+		$(document).unbind('keydown.dizzy.default');
+	}
   };
 
   sandbox.subscribe('dizzy.presentation.loaded', function (c) {
     canvas = c.canvas;
     ready = true;
   });
-
+  
+  sandbox.subscribe('dizzy.ui.toolbar.color.fill.changed', function(d){
+	  var selex = canvas.findGroup("g.selected");
+	  if(selex)
+	  selex.dom().children().first().attr('fill', d.color);
+  });
+  
+  sandbox.subscribe('dizzy.ui.toolbar.color.stroke.changed', function(d){
+	  var selex = canvas.findGroup("g.selected");
+	  if (selex)
+	  selex.dom().children().first().attr('stroke', d.color);
+  });
+  
   var selected;
   sandbox.subscribe('dizzy.presentation.group.selected', function (g) {
     if (selected !== undefined) {

@@ -1,5 +1,6 @@
 /*
  * Switches between different modes, making sure there is only one active mode. 
+ * TODO: don't stop modes if they will be started instantly by the current button clicked (also if dependencies)
  */
 define(['sandbox'], function (sandbox) {
   var modes = {};
@@ -13,7 +14,7 @@ define(['sandbox'], function (sandbox) {
   function startMode(name) {
     var mod = modes[name];
     if (mod === undefined) {
-      console.log("Mode " + name + " called but not defined");
+      console.log("Mode " + name + " called but not defined"); //when trying to start a mode not "registered"
     } else {
       console.log("Starting mode: " + name);
       var dependencies = mod.depends || [];
@@ -31,13 +32,15 @@ define(['sandbox'], function (sandbox) {
       }
     }
   }
-
-  sandbox.subscribe('dizzy.ui.toolbar.clicked', function (data, name) {
+  
+  //Chagnged to handle modes and other buttons differently
+  sandbox.subscribe('dizzy.ui.toolbar.clicked.mode', function (data, name) { //what's name for???
     stopModes();
-    startMode(data.button);
+    startMode(data.button); // data.button contains the button id (from toolbar.js) that should correspond to the mode name
   });
 
   sandbox.subscribe('dizzy.modes.register', function (data, name) {
+	  //data is usually { name: ...., instance: modenameMode }
     var mod = modes[data.name];
     if (mod === undefined) {
       console.log("Registering mode: " + data.name);
